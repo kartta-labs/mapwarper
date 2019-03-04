@@ -1,0 +1,27 @@
+docker notes
+docker build -t mapwarper-simple .
+docker run -i -t --rm mapwarper-simple
+docker exec -it 0cefd023d894 /bin/bash
+
+
+Use Docker Compose to run Rails, Postgis and Redis
+
+#build everything
+docker-compose build  
+
+#create the new db and run migrations
+docker-compose run web rake db:create db:migrate  
+
+#Add super user (Make a note of the password)
+
+docker-compose run web rake warper:create_superuser
+
+#OR manually
+docker exec -it mapwarper_web_1 /bin/bash
+bundle exec rake warper:superuser
+
+
+#Run everything
+docker-compose up
+
+connect to localhost:3000
