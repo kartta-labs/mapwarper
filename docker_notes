@@ -1,10 +1,14 @@
 docker notes
+==========
+
+#On it's own but trouble connecting to exernal database and redis...
 docker build -t mapwarper-simple .
-docker run -i -t --rm mapwarper-simple
-docker exec -it 0cefd023d894 /bin/bash
+docker run  -p 3000:3000 -i -t --rm mapwarper-simple  
+docker exec -it 0cefd023d894 /bin/bash 
 
 
 Use Docker Compose to run Rails, Postgis and Redis
+===================
 
 #build everything
 docker-compose build  
@@ -24,4 +28,4 @@ bundle exec rake warper:superuser
 #Run everything
 docker-compose up
 
-connect to localhost:3000
+connect to localhost:3000 in your browser
