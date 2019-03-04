@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/rails-api/active_model_serializers.git
+  remote: https://github.com/rails-api/active_model_serializers
   revision: 0c552614a84fb7a62983dcbbc71be800ffac6f25
   tag: v0.10.5
   specs:
@@ -10,7 +10,7 @@ GIT
       jsonapi-renderer (>= 0.1.1.beta1, < 0.2)
 
 GIT
-  remote: git://github.com/timwaters/actionpack-action_caching.git
+  remote: https://github.com/timwaters/actionpack-action_caching
   revision: 61d36c171d53402b08c98d60c12230b4f9b42fd2
   branch: feature/take_format_from_request
   specs:
@@ -324,6 +324,8 @@ GEM
     tilt (1.4.1)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
+    tzinfo-data (1.2018.9)
+      tzinfo (>= 1.0.0)
     uglifier (4.1.20)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.4.1)
@@ -384,6 +386,7 @@ DEPENDENCIES
   spawnling (~> 2.1)
   spring
   thin
+  tzinfo-data
   uglifier (>= 1.3.0)
   web-console (~> 2.0)
   webmock
