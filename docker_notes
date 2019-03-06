@@ -10,13 +10,15 @@ docker exec -it 0cefd023d894 /bin/bash
 Use Docker Compose to run Rails, Postgis and Redis
 ===================
 
+First, copy config/application.yml config/secrets.yml and config/database.yml from their non example files
+
 #build everything
 docker-compose build  
 
 #create the new db and run migrations
 docker-compose run web rake db:create db:migrate  
 
-#Add super user (Make a note of the password)
+#Add super user (Make a note of the password, the email is super@example.com)
 
 docker-compose run web rake warper:create_superuser
 
