@@ -2,6 +2,16 @@ CONFIG_PATH="#{Rails.root}/config/application.yml"
 
 APP_CONFIG = YAML.load_file(CONFIG_PATH)[Rails.env]
 
+#
+# Overide APP_CONFIG values from the environment. For example
+# MW_SITE_NAME=New Name
+# will overide APP_CONFIG['site_name']
+#
+ENV.each do |key, value|
+  APP_CONFIG[Regexp.last_match(1).downcase] = value if key =~ /^MW_(.*)$/
+end
+
+
 #directories for maps and layer/mosaic tileindex shapefiles
 DST_MAPS_DIR = APP_CONFIG['dst_maps_dir'].blank? ? File.join(Rails.root, '/public/mapimages/dst/') : APP_CONFIG['dst_maps_dir']
 SRC_MAPS_DIR = APP_CONFIG['src_maps_dir'].blank? ? File.join(Rails.root, '/public/mapimages/src/') : APP_CONFIG['src_maps_dir']
