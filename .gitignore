@@ -49,3 +49,6 @@ vendor/bundle
 
 #test files
 test/test_files/*
+
+#docker stuff
+.env

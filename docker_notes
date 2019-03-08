@@ -1,11 +1,6 @@
 docker notes
 ==========
 
-#On it's own but trouble connecting to exernal database and redis...
-docker build -t mapwarper-simple .
-docker run  -p 3000:3000 -i -t --rm mapwarper-simple  
-docker exec -it 0cefd023d894 /bin/bash 
-
 
 Use Docker Compose to run Rails, Postgis and Redis
 ===================
@@ -22,7 +17,7 @@ docker-compose run web rake db:create db:migrate
 
 docker-compose run web rake warper:create_superuser
 
-#OR manually
+#or do it the long way around manually
 docker exec -it mapwarper_web_1 /bin/bash
 bundle exec rake warper:superuser
 
@@ -31,3 +26,20 @@ bundle exec rake warper:superuser
 docker-compose up
 
 connect to localhost:3000 in your browser
+
+Configuration
+=========
+copy the .env.example file to .env and configure it
+
+----
+
+development
+============
+
+docker-compose is set up for production but you can use it in development by passing in the build arg and setting the correct environment variables
+
+docker-compose build  --build-arg RAILS_ENV_ARG=development web
+
+and then making sure in your .env file that these are set to development too and changing the database 
+RAILS_ENV=development
+RACK_ENV=development

@@ -1,0 +1,10 @@
+# ignore secrets
+.env
+docker-compose.yml
+
+# Ignore git repo
+.git*
+
+# Ignore temporary files and logs
+tmp/*
+log/*
