@@ -15,14 +15,16 @@ RUN mkdir -p $RAILS_ROOT
 
 WORKDIR $RAILS_ROOT
 
-COPY Gemfile Gemfile
+COPY Gemfile  Gemfile
 COPY Gemfile.lock Gemfile.lock
 
 RUN gem install bundler -v=1.17.3 
 
-COPY . .
-
 
 RUN if [ "$BUILD_ENV" = "production" ]; then bundle install --without development test; else bundle install; fi
+
+
+COPY . .
+
 
 RUN if [ "$BUILD_ENV" = "production" ]; then bundle exec rake assets:precompile RAILS_ENV=production; fi
