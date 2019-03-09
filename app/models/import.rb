@@ -8,9 +8,9 @@ class Import < ActiveRecord::Base
 
   has_attached_file :metadata,
     path: ":rails_root/db/:class/:attachment/:id_partition/:filename", 
-    url:  ":rails_root/db/:class/:attachment/:id_partition/:filename",
     preserve_files: false,
-    restricted_characters: /[&$+,\/:;=?@<>\[\]\{\}\)\(\'\"\|\\\^~%# ]/
+    restricted_characters: /[&$+,\/:;=?@<>\[\]\{\}\)\(\'\"\|\\\^~%# ]/,
+    :fog_public => false
   
   validates_attachment_content_type :metadata, content_type: ["text/csv", "text/plain"]
   validates_presence_of :metadata, :message => :no_file_uploaded
@@ -42,6 +42,7 @@ class Import < ActiveRecord::Base
   def prepare_run
     self.update_attribute(:status, :running)
     self.update_attribute(:log_filename, logfile)
+    import_logger.info "prepared run"
   end
   
   def finish_import(options)
@@ -70,13 +71,20 @@ class Import < ActiveRecord::Base
         self.save
       end
       
+    else
+      log_error "Import not run"
+      log_error "CSV File was either not valid or there were no files in the directory"
+      self.status = :failed
+      self.save
     end
     
     self.status
   end
   
   def import_maps
-    data = open(self.metadata.path)
+    local_copy = File.join("tmp", self.metadata_file_name)
+    self.metadata.copy_to_local_file(nil, local_copy)
+    data = open(local_copy)
     map_data = CSV.parse(data, :headers => true, :header_converters => :symbol, :col_sep => "," , :quote_char => '"', :liberal_parsing => true)
     map_data.by_row!
     map_data.each do  | map_row |

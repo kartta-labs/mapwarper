@@ -14,9 +14,11 @@ class Map < ActiveRecord::Base
   has_attached_file :upload, :styles => {:thumb => ["100x100>", :png]} ,
     :url => '/:attachment/:id/:style/:basename.:extension',
     :default_url => "missing.png",
-    :restricted_characters => /[&$+,\/:;=?@<>\[\]\{\}\)\(\'\"\|\\\^~%# ]/
+    :restricted_characters => /[&$+,\/:;=?@<>\[\]\{\}\)\(\'\"\|\\\^~%# ]/ ,
+    :fog_public => true
+    
   validates_attachment_size(:upload, :less_than => MAX_ATTACHMENT_SIZE) if defined?(MAX_ATTACHMENT_SIZE)
-  #attr_protected :upload_file_name, :upload_content_type, :upload_size
+ 
   validates_attachment_content_type :upload, :content_type => ["image/jpg", "image/jpeg","image/pjpeg", "image/png","image/x-png", "image/gif", "image/tiff"]
   
   validates_presence_of :title
@@ -137,7 +139,9 @@ class Map < ActiveRecord::Base
   def setup_image
     logger.info "setup_image "
     self.filename = upload.original_filename
-    save!
+
+    #save!  I think this is no longer needed as saving will trigger the saving of file to filesystem or cloud and we want to convert to tiff before that happens.
+    
     if self.upload?
       
       if  defined?(MAX_DIMENSION) && (width > MAX_DIMENSION || height > MAX_DIMENSION)
@@ -151,7 +155,7 @@ class Map < ActiveRecord::Base
         end
         self.width = dest_width
         self.height = dest_height
-        save!
+        
         outsize = ["-outsize", dest_width.to_i, dest_height.to_i]
       else
         outsize = []
@@ -166,12 +170,15 @@ class Map < ActiveRecord::Base
 
       #for those greyscale or black and white images with one band
       bands  = []
-      if raster_bands_count(self.upload.path) == 1
-        if has_palette_colortable?(self.upload.path)
+
+      tmp_upload_path = upload.queued_for_write[:original].path
+
+      if raster_bands_count(tmp_upload_path) == 1
+        if has_palette_colortable?(tmp_upload_path)
           bands = ["-expand", "rgb"]
         else
           #if it has one band and grey scale, we need to convert e.g convert grey1band.jpg -type TrueColor  rgb3band.jpg
-          command = ["mogrify" , "-type",  "TrueColor", self.upload.path ]
+          command = ["mogrify" , "-type",  "TrueColor", tmp_upload_path ]
           logger.info command
           c_stdin, c_stdout, c_stderr = Open3::popen3(*command)
       
@@ -186,11 +193,11 @@ class Map < ActiveRecord::Base
       end
       
       #transparent pngs may cause issues, so let's remove the alpha band
-      if raster_bands_count(self.upload.path) == 4 && orig_ext == ".png"
+      if raster_bands_count(tmp_upload_path) == 4 && orig_ext == ".png"
         bands = ["-b", "1", "-b", "2", "-b", "3"]
       end
       
-      command  = ["#{GDAL_PATH}gdal_translate", self.upload.path, outsize, bands, "-co", "COMPRESS=DEFLATE", "-co",  "PHOTOMETRIC=RGB", "-co", "PROFILE=BASELINE", tiffed_file_path].reject(&:empty?).flatten
+      command  = ["#{GDAL_PATH}gdal_translate", tmp_upload_path, outsize, bands, "-co", "COMPRESS=DEFLATE", "-co",  "PHOTOMETRIC=RGB", "-co", "PROFILE=BASELINE", tiffed_file_path].reject(&:empty?).flatten
       logger.info command
       ti_stdin, ti_stdout, ti_stderr =  Open3::popen3( *command )
       logger.info ti_stdout.readlines.to_s
@@ -210,7 +217,7 @@ class Map < ActiveRecord::Base
       
       self.filename = tiffed_filename
       
-      #now delete the original
+      #now delete the original if on file system for example
       logger.debug "Deleting uploaded file, now it's a usable tif"
       if File.exists?(self.upload.path)
         logger.debug "deleted uploaded file"

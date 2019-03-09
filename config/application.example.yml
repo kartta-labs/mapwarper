@@ -35,6 +35,10 @@ defaults: &defaults
   gdal_path: ""
   gdal_memory_limit: ""
   disabled_site: false
+  google_storage_enabled: false
+  google_json_key_location: ""
+  google_storage_project: ""
+  google_storage_bucket: "" 
 
 development:
   <<: *defaults
