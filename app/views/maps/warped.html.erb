@@ -29,7 +29,7 @@
       var layers_array = [<%=@other_layers.join(",")-%>];
       var warpedtiles_url = '<%= tile_map_base_url %>/';
       var use_tiles = <%= !user_signed_in? %>;
-      var mask_geojson = <%= @map.mask_status != :masked || @map.mask_geojson.blank? ? false : @map.mask_geojson.html_safe %>;
+      var mask_geojson = <%= @map.mask_status != :masked || (@map.masking.nil? || @map.masking.transformed_geojson.blank? )? false : @map.masking.transformed_geojson.html_safe %>;
     </script>
 
 

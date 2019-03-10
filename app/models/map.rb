@@ -9,6 +9,7 @@ class Map < ActiveRecord::Base
   has_many :layers, :through => :layers_maps # ,:after_add, :after_remove
   has_many :my_maps, :dependent => :destroy
   has_many :users, :through => :my_maps
+  has_one :masking
   belongs_to :owner, :class_name => "User"
   
   has_attached_file :upload, :styles => {:thumb => ["100x100>", :png]} ,
@@ -391,12 +392,12 @@ class Map < ActiveRecord::Base
   end
 
   def masking_file_gml
-    File.join(Rails.root, "/public/mapimages/",  self.id.to_s) + ".gml"
+    File.join(MAP_MASK_DIR,  self.id.to_s) + ".gml"
   end
 
   #file made when rasterizing
   def masking_file_gfs
-    File.join(Rails.root, "/public/mapimages/",  self.id.to_s) + ".gfs"
+    File.join(MAP_MASK_DIR,  self.id.to_s) + ".gfs"
   end
 
   def masked_src_filename
@@ -613,8 +614,8 @@ class Map < ActiveRecord::Base
       return "no masking file matching specified format found."
     end
 
-    self.mask_geojson = convert_mask_to_geojson
-    
+    Masking.find_or_initialize_by(map_id: self.id).update(transformed_geojson: convert_mask_to_geojson)
+
     masked_src_filename = self.masked_src_filename
     if File.exists?(masked_src_filename)
       #deleting old masked image
@@ -671,7 +672,8 @@ class Map < ActiveRecord::Base
       src_filename = self.masked_src_filename
       mask_options_array = ["-srcnodata", "17 17 17"]
 
-      self.mask_geojson = convert_mask_to_geojson  if self.mask_geojson.blank?
+      map_mask = Masking.find_or_initialize_by(map_id: self.id)
+      map_mask.update(transformed_geojson: convert_mask_to_geojson) if map_mask.transformed_geojson.blank?
     else
       src_filename = self.unwarped_filename
     end

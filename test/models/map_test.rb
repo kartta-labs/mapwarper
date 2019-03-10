@@ -46,8 +46,8 @@ class MapTest < ActiveSupport::TestCase
     Map.any_instance.stubs(:masking_file_gml).returns(test_gml)
     @map.mask!
 
-    assert_not_nil @map.mask_geojson
-    json = JSON.parse(@map.mask_geojson)
+    assert_not_nil @map.masking.transformed_geojson
+    json = JSON.parse(@map.masking.transformed_geojson)
     assert_equal "FeatureCollection", json["type"]
   end
 

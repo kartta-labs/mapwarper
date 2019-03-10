@@ -48,6 +48,7 @@ Rails.application.routes.draw do
       get 'id'
       get 'trace'
       get 'idland'
+      get 'masking'
     end
     collection do
         get 'geosearch'
@@ -59,7 +60,6 @@ Rails.application.routes.draw do
   
   get '/maps/tag/:query' => 'maps#tag', :as => "map_tag"
   
-  get '/mapimages/:id.gml.ol' => 'maps#get_mask', :as => "masking_map"
   get '/maps/thumb/:id' => 'maps#thumb', :as =>'thumb_map'
   get '/maps/thumb' => 'maps#thumb', :as => 'map_thumb_base'
   get '/layers/thumb' => 'layers#thumb', :as => 'layer_thumb_base'

@@ -869,6 +869,16 @@ class MapsController < ApplicationController
     wms
     
   end
+
+  # sends the masking file
+  def masking
+    mask_file = @map.masking_file_gml+".ol"
+    if File.exists? mask_file
+      send_file mask_file, :x_sendfile => (Rails.env != "development") 
+    else
+      render :json => {:stat => "not found", :items =>[]}.to_json, :status => 404
+    end
+  end
   
   
   private
