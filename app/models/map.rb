@@ -381,14 +381,6 @@ class Map < ActiveRecord::Base
     warped_png + ".aux.xml"
   end
 
-  def public_warped_tif_url
-    "mapimages/dst/"+id.to_s + ".tif"
-  end
-  
-  def public_warped_png_url
-    public_warped_tif_url + ".png"
-  end
-
   def mask_file_format
     "gml"
   end
