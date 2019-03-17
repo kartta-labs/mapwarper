@@ -3,6 +3,9 @@ Paperclip.options[:content_type_mappings] = {
    jpg: %w( application/octet-stream )
 }
 
+if !APP_CONFIG["public_shared_dir"].blank?
+  Map.attachment_definitions[:upload][:url] =  "/#{APP_CONFIG['public_shared_dir']}/:attachment/:id/:style/:basename.:extension"
+end
 
 if APP_CONFIG["google_storage_enabled"]
   #clear the path for Import as the one defined in the import model is for normal file storage 

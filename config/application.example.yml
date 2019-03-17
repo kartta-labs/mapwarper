@@ -41,6 +41,8 @@ defaults: &defaults
   google_json_key_location: ""
   google_storage_project: ""
   google_storage_bucket: ""
+  public_shared_dir: ""  #used when saving to a shared directory (e.g. shared_uploads_dir: "shared" for RAILS_ROOT/public/shared/ which can be mounted as a volume via k8s ) 
+  debug_k8s: false
 
 development:
   <<: *defaults

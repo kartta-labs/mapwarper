@@ -33,6 +33,7 @@ public/mapimages/src/*
 public/mapimages/dst/*
 public/mapimages/*
 
+
 #ignore tileindex files
 db/maptileindex/*
 
@@ -52,3 +53,7 @@ test/test_files/*
 
 #docker stuff
 .env
+
+#ignore k8s uploads path
+public/shared
+

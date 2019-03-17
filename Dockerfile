@@ -3,13 +3,19 @@
 FROM ubuntu:18.04
 
 RUN apt-get update -qq && apt-get install -y build-essential ruby-dev nodejs git libpq-dev postgresql-client ruby-mapscript zlib1g-dev liblzma-dev imagemagick gdal-bin
+ENV LISTEN_PORT 3000
+EXPOSE 3000
 
 ENV RAILS_ROOT /app
 
 #docker-compose build  --build-arg BUILD_ENV=development web
 ARG BUILD_ENV=production
 ENV SECRET_KEY_BASE dummytokenforbuild
-ENV DATABASE_URL postgresql:does_not_exist
+ENV DB_USER = postgres
+ENV DB_PASSWORD = password
+ENV DB_NAME = foo
+ENV DB_HOST = foo
+#ENV DATABASE_URL postgresql:does_not_exist
 
 RUN mkdir -p $RAILS_ROOT
 
