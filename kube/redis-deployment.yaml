@@ -1,0 +1,20 @@
+#
+# deploys redis one master for in memmory. we should look at the maxmemory here and pod resources too
+#
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  containers:
+    - name: master
+      image: redis
+      args: ["--appendonly", "no", "--save", "", "--maxmemory", "900mb", "--maxmemory-policy", "allkeys-lru"]
+      ports:
+        - containerPort: 6379
+      resources:
+          limits:
+            memory: 1Gi

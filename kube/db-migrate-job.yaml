@@ -1,0 +1,72 @@
+# A job to deploy the image and just run database migration.
+# Note: when there is the cloud sql proxy running also this job will not exit cleaning, so will need to be manually deleted. e.g kubectl delete job db-migration
+# If we use internal cloud sql IP or a put the proxy as a service this should be a solution 
+# in meantime, as backup we fail this job after 360 seconds, 6 minutes
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migration
+spec:
+  completions: 1
+  backoffLimit: 5
+  activeDeadlineSeconds: 360
+  template:
+    metadata:
+      name: db-migration
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: db-migration
+        image: 127.0.0.1:32000/mapwarper_web:latest
+        command: ["bundle", "exec", "rake", "db:migrate"]
+        # set variables form config map, app non secrets
+        envFrom:
+          - configMapRef:
+              name: mapwarper-app-config
+        # Set env variables
+        env:
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: cloudsql-db-credentials
+                key: username
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: cloudsql-db-credentials
+                key: password
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: cloudsql-db-credentials
+                key: dbname
+          # set env manually
+          - name: RAILS_ENV
+            value: "production"
+          - name: DB_HOST
+            value: "127.0.0.1"
+          # comment out RAILS_SERVE_STATIC_FILES if you want to disable that setting, rather than change the value. Uncomment for use with Puma in production 
+          - name: RAILS_SERVE_STATIC_FILES
+            value: "true"
+          # app secrets -for api keys etc
+          - name: SECRET_KEY_BASE
+            valueFrom:
+              secretKeyRef:
+                name: mapwarper-config
+                key: secret-key-base
+
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy:1.11
+        command: ["/cloud_sql_proxy",
+                    "-instances=URL=tcp:5432",
+                    "-credential_file=/secrets/cloudsql/cloud_sql.json"]
+        volumeMounts:
+          - name: my-secrets-volume
+            mountPath: /secrets/cloudsql
+            readOnly: true
+
+      volumes:
+        - name: my-secrets-volume
+          secret:
+            secretName: cloudsql-instance-credentials

@@ -1,0 +1,19 @@
+# Environment config File to set non secret stuff
+# config map 
+# load in via kubectl create -f mapwarper-app-config
+# for mapwarper env variables, prefix with MW_
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mapwarper-app-config
+  namespace: default
+data:
+  MW_EMAIL: k8sexample2@example.com
+  MW_SRC_MAPS_DIR: /mnt/mapwarper/maps/src/
+  MW_DST_MAPS_DIR: /mnt/mapwarper/maps/dst/
+  MW_MAP_MASK_DIR: /mnt/mapwarper/maps/masks
+  MW_GDAL_PATH: "" 
+  MW_PUBLIC_SHARED_DIR: shared
+  MW_DEBUG_K8S: "true"
+  REDIS_URL: redis://redis:6379/0 
