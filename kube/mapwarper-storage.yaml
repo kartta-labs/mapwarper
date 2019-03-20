@@ -3,29 +3,32 @@ kind: PersistentVolumeClaim
 metadata:
   name: mapwarper-pv-claim
 spec:
-  storageClassName: manual
+  # storageClassName: manual
+  # storageClassName: ""
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 3Gi
+      storage: 3G
 
----
+#---
+# Uncomment if you want to specify the host path for the storage, if not, k8s will set up the path itself  and make sure the storageClassName in the pvc above is also uncommented
+#
 
-apiVersion: v1
-kind: PersistentVolume
-metadata: 
-  name: mapwarper-pv-volume
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 8Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/tmp/mapwarper-k8s-storage"  #TODO use default?
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata: 
+#   name: mapwarper-pv-volume
+#   labels:
+#     type: local
+# spec:
+#   storageClassName: manual
+#   capacity:
+#     storage: 8Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   hostPath:
+#     path: "/tmp/mapwarper-k8s-storage"  #TODO use default?
 
 
 

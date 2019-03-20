@@ -92,9 +92,14 @@ spec:
 
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.11
-          command: ["/cloud_sql_proxy",
-                    "-instances=URL=tcp:5432",
-                    "-credential_file=/secrets/cloudsql/cloud_sql.json"]
+          env:
+            - name: DB_INSTANCE
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key:  dbinstance
+          command: ["/cloud_sql_proxy"]
+          args: ["-instances=$(DB_INSTANCE)=tcp:5432", "-credential_file=/secrets/cloudsql/secret_cloud_sql.json"]
           volumeMounts:
             - name: my-secrets-volume
               mountPath: /secrets/cloudsql
