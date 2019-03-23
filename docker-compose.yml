@@ -1,4 +1,4 @@
-version: '2'
+version: '3.3'
 services:
   db:
     image: mdillon/postgis
@@ -10,6 +10,8 @@ services:
     build: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     env_file: .env
+    secrets:                    
+     - bucket-service-account
     volumes:
       - .:/app
     ports:
@@ -17,3 +19,13 @@ services:
     depends_on:
       - db
       - redis
+    cap_add:
+      - SYS_ADMIN
+    devices:
+      - "/dev/fuse"
+    privileged: true
+
+secrets:
+  bucket-service-account:
+    file:
+      ../uploads-bucket-service-account.json
