@@ -1,0 +1,133 @@
+# Deployment to import maps from special bucket, reads in extra env variables 
+# Of imports bucket
+# with priviledged context, so we have a separate deployment
+# this might be an anti pattern....
+# 
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mapwarper-priv
+  labels:
+    app: web
+spec:
+  replicas: 1
+  # strategy: 
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxSurge: 1
+  #     maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      # This section describes the containers that make up the deployment
+      containers:
+        - name: web
+          image: 127.0.0.1:32000/mapwarper_web:latest
+          imagePullPolicy: Always
+          command: ["/bin/bash"]
+          args: ["-c", "rm -f tmp/pids/server.pid && bundle exec rails s -p 30001 -b '0.0.0.0'"]  #30001 as we don't really want this to be serving
+          ports:
+            - containerPort: 3000
+          #elevate security as it needs to mount fuse
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+          
+          # livenessProbe:
+          #   tcpSocket:
+          #     port: 3000
+          #   initialDelaySeconds: 15
+          #   periodSeconds: 20
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 3000
+          #   initialDelaySeconds: 45
+          #   periodSeconds: 20
+          #   timeoutSeconds: 5
+          volumeMounts:
+            - name: mapwarper-persistent-volume
+              mountPath: /mnt/mapwarper/maps
+              subPath: maps
+            - name: mapwarper-persistent-volume
+              mountPath: /app/public/shared
+              subPath: shared
+            - name: bucket-secrets-volume
+              mountPath: /secrets/service-account
+              readOnly: true
+
+          # set variables form config map, app non secrets
+          envFrom:
+            - configMapRef:
+                name: mapwarper-app-config
+          # Set env variables
+          env:
+            - name: K8S_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: dbname
+            # set env manually
+            - name: RAILS_ENV
+              value: "production"
+            - name: RACK_ENV
+              value: "production"
+            - name: DB_HOST
+              value: "127.0.0.1"
+            # comment out RAILS_SERVE_STATIC_FILES if you want to disable that setting, rather than change the value. Uncomment for use with Puma in production 
+            - name: RAILS_SERVE_STATIC_FILES
+              value: "true"
+            # app secrets -for api keys etc
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: mapwarper-config
+                  key: secret-key-base
+
+
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.11
+          env:
+            - name: DB_INSTANCE
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key:  dbinstance
+          command: ["/cloud_sql_proxy"]
+          args: ["-instances=$(DB_INSTANCE)=tcp:5432", "-credential_file=/secrets/cloudsql/secret_cloud_sql.json"]
+          volumeMounts:
+            - name: my-secrets-volume
+              mountPath: /secrets/cloudsql
+              readOnly: true
+
+      volumes:
+        - name: mapwarper-persistent-volume
+          persistentVolumeClaim:
+            claimName: mapwarper-pv-claim
+        - name: my-secrets-volume
+          secret:
+            secretName: cloudsql-instance-credentials
+        - name: bucket-secrets-volume
+          secret:
+            secretName: bucket-credentials
+
