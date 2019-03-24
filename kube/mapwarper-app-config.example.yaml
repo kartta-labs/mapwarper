@@ -17,7 +17,8 @@ data:
   MW_PUBLIC_SHARED_DIR: shared
   MW_DEBUG_K8S: "true"
   REDIS_URL: redis://redis:6379/0
-  MW_GOOGLE_JSON_KEY_LOCATION: creds.json
-  MW_GOOGLE_STORAGE_PROJECT: project
-  MW_GOOGLE_STORAGE_BUCKET: bucketname
+  MW_GOOGLE_STORAGE_ENABLED: true
+  MW_GOOGLE_JSON_KEY_LOCATION: /secrets/service-account/credentials.json
+  MW_GOOGLE_STORAGE_PROJECT: project-name
+  MW_GOOGLE_STORAGE_BUCKET: bucket-name
 

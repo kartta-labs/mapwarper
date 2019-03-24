@@ -46,6 +46,9 @@ spec:
             - name: mapwarper-persistent-volume
               mountPath: /app/public/shared
               subPath: shared
+            - name: bucket-secrets-volume
+              mountPath: /secrets/service-account
+              readOnly: true
 
           # set variables form config map, app non secrets
           envFrom:
@@ -112,5 +115,9 @@ spec:
         - name: my-secrets-volume
           secret:
             secretName: cloudsql-instance-credentials
+        - name: bucket-secrets-volume
+          secret:
+            secretName: bucket-credentials
+
 
 

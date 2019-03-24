@@ -58,3 +58,6 @@ test/test_files/*
 #ignore k8s uploads path
 public/shared
 
+#ignore k8s app config
+kube/mapwarper-app-config.yaml
+
