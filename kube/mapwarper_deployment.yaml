@@ -80,8 +80,6 @@ spec:
               value: "production"
             - name: RACK_ENV
               value: "production"
-            - name: DB_HOST
-              value: "127.0.0.1"
             # comment out RAILS_SERVE_STATIC_FILES if you want to disable that setting, rather than change the value. Uncomment for use with Puma in production 
             - name: RAILS_SERVE_STATIC_FILES
               value: "true"
