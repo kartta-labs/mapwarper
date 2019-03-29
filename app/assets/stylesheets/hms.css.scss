@@ -1,0 +1,181 @@
+body {
+  color: black;
+}
+
+$primary: #005ece;
+$primary-slight: rgba($primary, 0.2);
+$primary-dark: #002d64;
+$complim: #ffb36f;
+$complim-slight: rgba($complim, 0.2);
+$primary-slighter: rgba($primary, 0.05);
+
+
+a:hover {
+  color: $primary;
+}
+h1 {
+  background: none;
+  padding: 0px 1em;
+}
+.headerDiv{
+  padding: 2px 0px 0 0px;
+}
+.headerDiv h1 {
+  font-size: 36px;
+  margin-left: 5px;
+  line-height: 1;
+  padding: 8px 0 7px 10px !important;
+  font-weight: bold;
+}
+
+#search-form {
+  background: $primary-slight;
+}
+
+#left-col {
+  background: $primary-slight;
+}
+
+#map_table tbody tr:nth-of-type(odd),
+#layer_table tr:nth-of-type(odd)
+{
+  background: white;
+  margin-bottom: 15px;
+  border-bottom: 5px solid #ddd;
+}
+#map_table tbody tr:nth-of-type(even),
+#layer_table tr:nth-of-type(even) {
+  background: $primary-slighter;
+  margin-bottom: 15px;
+  border-bottom: 5px solid #ddd;
+}
+
+#map_table td,
+#map_table th,
+#layer_table td,
+#layer_table th {
+  border-top: 0px solid #ddd;
+}
+
+#map_table, #layer_table {
+  border-top:0px;
+  -webkit-box-shadow:2px 2px 4px  0 rgba(0,0,0,0.3);
+  -moz-box-shadow: 2px 2px 4px  0 rgba(0,0,0,0.3);
+   box-shadow: 2px 2px 4px  0 rgba(0,0,0,0.3);
+
+  tr:last-child
+  {
+    border-bottom: none !important;
+  }
+}
+
+#map_table.card, #layer_table.card {
+  td {
+    background: $complim-slight;
+  }
+} 
+
+#map_table th, #layer_table th {
+  background: rgba($complim, 0.5);
+  color: black;
+}
+
+#map_table th a, #layer_table th a {
+  color: black;
+}
+#map_table th a:hover, #layer_table th a:hover {
+  color: white;
+}
+
+#map_table th:nth-child(odd), #layer_table th:nth-child(odd) {
+  background: $complim;
+}
+
+
+#warper-maindiv .buttonWarper {
+  background: $primary;
+  color: white;
+}
+
+#warper-maindiv .buttonWarper:hover {
+  background: $primary;
+
+}
+
+.buttonWarper,
+.buttonWarperBlue,
+input[type="submit"],
+.headerDiv .user_status a,
+.selected-locale,
+.selective-locale {
+  background: $primary;
+  color: white;
+}
+
+.buttonWarper:hover, .buttonWarperBlue:hover, input[type="submit"]:hover, .headerDiv .user_status a:hover, 
+.selective-locale:hover {
+  box-shadow:1px 2px 4px 2px rgba(0,0,0,0.2), inset 1px 2px 4px rgba(255,255,255,0.4);;
+
+	background:rgba(255,255,255,0.7) !important; 
+	color: black !important;
+	-moz-transition:all 0.42 ease-in-out;
+	-webkit-transition:all 0.2s ease-in-out;
+	transition:all 0.2s ease-in-out;
+}
+
+
+#navlist li a,
+#navlist li span {
+  background: $complim;
+}
+
+#navlist li span {
+  background: $primary;
+  color: white;
+}
+
+#navlist li a:hover {
+  background: $primary;
+  color: white;
+}
+
+
+.noUi-handle {
+  background: $complim ;
+  border: 1px solid $complim;
+  box-shadow: inset 0 0 1px $complim,inset 0 1px 7px $complim,0 3px 6px -3px $complim;
+}
+
+.ui-widget-header {
+  background: $primary-slight;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default {
+  background: $complim;
+}
+
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
+  color: black;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus {
+  background: $complim;
+}
+
+.ui-widget-content .ui-state-active,   {
+  background-color: $primary;
+
+}
+
+.ui-tabs-active a, .ui-state-active a {
+color:white !important;
+}
+
+
+.addPointHighlighted{
+  border: 2px solid $primary;
+}
+
+.noUi-connect {
+  background: $primary !important;
+}

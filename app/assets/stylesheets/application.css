@@ -15,4 +15,6 @@
  *= require custom-theme/jquery-ui-1.7.custom
  *= require main
  *= require jquery.nouislider.min
+ *= require hms
+ *= require headersvg
  */
