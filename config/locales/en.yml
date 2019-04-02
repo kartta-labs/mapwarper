@@ -890,20 +890,20 @@ en:
       privacy: Data Privacy / Terms
       supported_by_html: Hosted, developed and maintained by Tim Waters | <a href='https://www.paypal.me/timdevelops'>Donate</a>
     header:
-      admin_users: Administer Users
-      all_activity: All Activity
-      all_comments: All Comments
-      all_layers: All Mosaics
+      admin_users: Users
+      all_activity: Activity
+      all_comments: Comments
+      all_layers: Mosaics
       all_maps: All Maps
       imports: Imports
       log_in: Log In
       log_out: Log Out
-      logged_in_as: 'Logged in as:'
+      logged_in_as: 'Logged in:'
       my_activity: My Activity
       my_maps: Favourites
       settings: Settings
       sign_up: Create Account
-      user_stats: User Stats
+      user_stats: Stats
     nav:
       about: About
       add_layer: Add Mosaic

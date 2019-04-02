@@ -1,31 +1,47 @@
 <div class="user_status">
-  <% if user_signed_in? %>
-    <%= t('.logged_in_as') %>
-    <% if current_user.provider? %>
-      <%= link_to "#{image_tag(current_user.provider+'_logo.png', width: '17', height: '17', class: 'user_provider')} #{current_user.login.capitalize}".html_safe, user_path(current_user) %>
+    <nav class="navbar navbar-expand-md  navbar-light " style="background-color: rgba(255, 179, 111, 0.4);" >
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav" >
+    <ul class=" navbar-nav mr-auton text-right">
+
+    <% if user_signed_in? %>
+    <li class="nav-item">
+      <%= t('.logged_in_as') %>
+      <% if current_user.provider? %>
+        <%= link_to "#{image_tag(current_user.provider+'_logo.png', width: '17', height: '17', class: 'user_provider')} #{current_user.login.capitalize}".html_safe, user_path(current_user), class: "nav-link" %>
+      <% else %>
+        <%= link_to h(current_user.login.capitalize), user_path(current_user),  class: "nav-link" %>
+      <% end %>
+      </li>
+      <li class="nav-item"> <%= link_to t('.my_maps'), my_maps_path(current_user),  class: "nav-link" %> </li>
+      <li class="nav-item"><%= link_to t('.my_activity'), user_activity_path(current_user),  class: "nav-link" %></li>
+      <li class="nav-item"><%= link_to t('.settings'), edit_user_registration_path,  class: "nav-link" %></li>
+      <li class="nav-item"><%= link_to t('.log_out'), destroy_user_session_path, :method => :delete ,  class: "nav-link"%></li>
     <% else %>
-      <%= link_to h(current_user.login.capitalize), user_path(current_user) %>
+    <li class="nav-item"><%= link_to t('.log_in'), new_user_session_path ,  class: "nav-link"%></li>
+    <li class="nav-item"> <%= link_to t('.sign_up'), new_user_registration_path,  class: "nav-link" %></li>
     <% end %>
-    <%= link_to t('.my_maps'), my_maps_path(current_user) %>
-    <%= link_to t('.my_activity'), user_activity_path(current_user) %>
-    <%= link_to t('.settings'), edit_user_registration_path %>
-    <%= link_to t('.log_out'), destroy_user_session_path, :method => :delete %>
-  <% else %>
-    <%= link_to t('.log_in'), new_user_session_path %>
-    <%= link_to t('.sign_up'), new_user_registration_path %>
-  <% end %>
-  <% if user_signed_in? %>
-    <% if current_user.has_role?("administrator") || current_user.has_role?("super user") %>
+
+
+      <% if user_signed_in? && (current_user.has_role?("administrator") || current_user.has_role?("super user")) %>
+    
       <br />
-      <%= link_to t('.all_maps'), maps_path %>
-      <%= link_to t('.all_layers'), layers_path %>
-      <%= link_to t('.all_activity'), activity_path %>
-      <%= link_to t('.all_comments'), comments_path %>
-      <%# link_to "Groups", groups_path %>
-      <%= link_to t('.imports'), imports_path %>
-      <%= link_to t('.user_stats'), stats_users_path %>
-      <%= link_to t('.admin_users'), users_path %>
-    <% end %>
-  <% end %>
-  <%= render :partial => 'shared/locales' %>
+
+      <li class="nav-item"><%= link_to t('.all_activity'), activity_path,  class: "nav-link" %></li>
+      <li class="nav-item"><%= link_to t('.all_comments'), comments_path,  class: "nav-link" %></li>
+      <li class="nav-item"><%= link_to t('.imports'), imports_path,  class: "nav-link" %></li>
+      <li class="nav-item"><%= link_to t('.user_stats'), stats_users_path,  class: "nav-link" %></li>
+      <li class="nav-item"> <%= link_to t('.admin_users'), users_path ,  class: "nav-link"%></li>
+      <% end %>
+    </ul> 
+    <ul class="text-right locales">
+    <%= render :partial => 'shared/locales' %>
+    </ul>
+  </div>
+  </nav>
+</div>
+ 
+
 </div>

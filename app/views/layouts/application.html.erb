@@ -17,12 +17,14 @@
   <%else-%>
     <body>
   <%end%>
+
+    <%= render :partial => 'shared/header' %>
+
     <div id="headerDiv" class="headerDiv">
       <% if APP_CONFIG["debug_k8s"] %>
         Pod: <%= ENV["K8S_POD_NAME"] %> 
       <% end %>
       <h1><%= link_to t('common.site_title'), root_path %></h1>
-      <%= render :partial => 'shared/header' %>
       <%= render :partial => 'shared/nav' %>
       <%= render :partial => 'shared/disabled_site'%>
     </div>
@@ -40,6 +42,7 @@
 
     <%= render :partial => 'shared/analytics' %>
 
+    <%= javascript_include_tag 'bootstrap-native-v4.min.js' %>
 
   </body>
 </html>

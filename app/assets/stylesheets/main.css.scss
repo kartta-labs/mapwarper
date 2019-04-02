@@ -517,7 +517,7 @@ p {
 	color: #fff;
 }
 
-.buttonWarper, .buttonWarperBlue, input[type="submit"], .headerDiv .user_status a,
+.buttonWarper, .buttonWarperBlue, input[type="submit"], .user_status a,
 .selected-locale, .selective-locale  {
 	background: #191970;
  	color:#e3e3d4;
@@ -533,7 +533,7 @@ p {
 
 /* rules for locale switcher */
 
-.headerDiv .locale-switcher {
+.locale-switcher {
 
 	display: inline-block;
 	position: relative;
@@ -617,7 +617,7 @@ select {
 	border:1px solid #ccc;
 }
 
-.buttonWarper:hover, .buttonWarperBlue:hover, input[type="submit"]:hover, .headerDiv .user_status a:hover, /*KAREN ADDED*/
+.buttonWarper:hover, .buttonWarperBlue:hover, input[type="submit"]:hover,  .user_status a:hover, /*KAREN ADDED*/
 .selective-locale:hover {
   box-shadow:1px 2px 4px 2px rgba(0,0,0,0.2), inset 1px 2px 4px rgba(255,255,255,0.4);;
 	background: #e3e3d4;
@@ -752,7 +752,7 @@ clear: both;
   font-size: smaller;
 }
 
-.headerDiv .header .userStatus {
+.userStatus {
   color: #999999;
   font-size: 11px  !important;;
   padding: 6px 10px 2px !important;;

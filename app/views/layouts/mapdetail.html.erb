@@ -131,9 +131,9 @@ type="text/javascript"></script>
     <body>
     <%end%>
     <%= render :partial => 'shared/analyticstop' %>
+    <%= render :partial => 'shared/header' %>
     <div id="headerDiv" class="headerDiv">
       <h1><%= link_to t('common.site_title'), root_path %></h1>
-      <%= render :partial => 'shared/header' %>
       <%= render :partial => 'shared/nav' %>
       <%= render :partial => 'shared/disabled_site'%>
     </div>
@@ -185,5 +185,8 @@ type="text/javascript"></script>
     <%= render :partial => 'shared/analyticsbottom', :locals => {
       :map => @map, :current_tab => @current_tab
       } %>
+
+      <%= javascript_include_tag 'bootstrap-native-v4.min.js' %>
+      
   </body>
 </html>
