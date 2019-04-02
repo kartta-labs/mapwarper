@@ -26,7 +26,9 @@ function init(){
   layerMap = new OpenLayers.Map("map",options);
   mapnik_lay1 = mapnik.clone();
 
-  layerMap.addLayers([mapnik_lay1]);
+  var gms3 =  new OpenLayers.Layer.Google( "Google Satellite", {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 20}); 
+
+  layerMap.addLayers([mapnik_lay1, gms3]);
 
   wmslayer =  new OpenLayers.Layer.WMS
   ( "Layer"+layer_id,

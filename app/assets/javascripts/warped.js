@@ -77,6 +77,9 @@ function warpedinit() {
       warpedmap.zoomToExtent(clipmap_bounds_merc);
     }
 
+    var gms1 = new OpenLayers.Layer.Google( "Google Satellite", {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 20}); 
+    warpedmap.addLayers([gms1]);
+
     //set up slider
     jQuery("#slider").slider({
         value: 100 * opacity,

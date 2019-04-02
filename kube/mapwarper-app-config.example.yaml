@@ -22,4 +22,5 @@ data:
   MW_GOOGLE_STORAGE_PROJECT: project-name
   MW_GOOGLE_STORAGE_BUCKET: bucket-name
   DB_HOST: 127.0.0.1
+  MW_GOOGLE_MAPS_KEY: "" 
 

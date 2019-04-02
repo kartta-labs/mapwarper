@@ -83,6 +83,9 @@ function init() {
   satellite.setVisibility(false);
   to_map.addLayer(satellite);
 
+  var gms = new OpenLayers.Layer.Google( "Google Satellite", {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 20}); 
+  to_map.addLayers([gms]);
+
   if (map_has_bounds) {
     map_bounds_merc = new OpenLayers.Bounds();
     map_bounds_merc = lonLatToMercatorBounds(map_bounds);
