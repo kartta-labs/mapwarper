@@ -1,6 +1,6 @@
 <div id="container">
-
-  <div id="left-col">
+  <div class="row">
+  <div id="left-col" class="col-lg-3">
     <div id="video-intro" class="paraMargin">
       <h2><%= t('.overview_header') %></h2>
       <p><%= t('.overview_p1') %></p>
@@ -29,7 +29,7 @@
 
 
   </div>
-  <div id="right-col">
+  <div id="right-col" class="col-lg-9">
     <div id="search-form">
       <%= render :partial => 'shared/search' -%>
       <br/>
@@ -101,4 +101,6 @@
 
   </div>
   <div class="clear"></div>
+</div>
+
 </div>

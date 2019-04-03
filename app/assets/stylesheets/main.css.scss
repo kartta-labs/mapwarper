@@ -934,10 +934,11 @@ clear: both;
 }
 
 #left-col {
-	float: left;
-	margin: 10px 30px 10px 10px;
-	padding: 1em;
-	width: 320px;
+  //float: left;
+  margin-bottom: 1em;
+	// margin: 10px 30px 10px 10px;
+//	padding: 1em;
+	//width: 320px;
 	background: #eeeee0;
 	border: 1px solid #ccc;
 	border-radius:6px;
@@ -948,8 +949,8 @@ clear: both;
 }
 
 #right-col{
-/*margin-left:386px;*/
-padding: 10px;
+/*margin-left:386px;
+padding: 10px;*/
 }
 
 #whats_this_all_about
