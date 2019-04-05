@@ -20,6 +20,14 @@ GDAL 2.2.3
 so no need to compile!
 
 
+For RVM on 18.04 you would need to compile mapscript (see below for 16.04) and link in 
+
+
+For large images, you need to loosen up imagemagick's policy.xml
+sudo cp config/imagemagick-policy.xml /etc/ImageMagick-6/policy.xml
+
+---------------------
+
 
 ubuntu 16 Install Notes
 

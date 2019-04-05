@@ -9,6 +9,9 @@ RUN echo "deb http://packages.cloud.google.com/apt gcsfuse-bionic main" | tee /e
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 RUN apt-get update -qq && apt-get install -y gcsfuse
 
+#for 18.04 we need to loosen up the imagemagick policy limits
+COPY config/imagemagick-policy.xml /etc/ImageMagick-6/policy.xml
+
 ENV LISTEN_PORT 3000
 EXPOSE 3000
 
