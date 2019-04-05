@@ -432,7 +432,7 @@ DEPENDENCIES
   redcarpet
   redis-rails (~> 5)
   rvm1-capistrano3
-  sass-rails (~> 4.0.5)
+  sass-rails
   sdoc (~> 0.4.0)
   simple_token_authentication (~> 1.0)
   spawnling (~> 2.1)

@@ -9,7 +9,7 @@ var to_vectors;
 var from_vectors;
 var active_to_vectors;
 var active_from_vectors;
-var transformation = new ol.transform.Helmert();
+var transformation = new olt.transform.Helmert();
 var dialogOpen = false;
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -82,9 +82,10 @@ function init() {
 
   satellite.setVisibility(false);
   to_map.addLayer(satellite);
-
-  var gms = new OpenLayers.Layer.Google( "Google Satellite", {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 20}); 
-  to_map.addLayers([gms]);
+  if (typeof (G_SATELLITE_MAP) != 'undefined') {
+    var gms = new OpenLayers.Layer.Google( "Google Satellite", {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 20}); 
+    to_map.addLayers([gms]);
+  }
 
   if (map_has_bounds) {
     map_bounds_merc = new OpenLayers.Bounds();
@@ -854,7 +855,6 @@ function add_gcp_marker(markers_layer, lonlat, is_active_marker, id_index, gcp_i
   resetHighlighting();
 }
 
-
 function show_warped_map() {
   warped_layer.setVisibility(true);
   warped_layer.mergeNewParams({'random': Math.random()});
@@ -863,8 +863,7 @@ function show_warped_map() {
 
   //cross tab issue - reloads the rectified map in the preview tab if its there
   if (typeof warpedmap != 'undefined' && typeof warped_wmslayer != 'undefined') {
-    warped_wmslayer.mergeNewParams({'random': Math.random()});
-    warped_wmslayer.redraw(true);
+    warped_wmslayer.getSource().updateParams({'random': Math.random()})
   }
 }
 

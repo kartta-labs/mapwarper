@@ -11,7 +11,7 @@
       margin-left:auto;
       margin-right:auto;
       width:10em;
-    }
+    }          
   </style>
   <script type="text/javascript">
     var warpedwms_url = '<%= url_for wms_layer_path(:id => @layer.id) -%>';
@@ -28,6 +28,10 @@
 <% @onload = "init();" -%>
 <div id="map-container">
   <div id="map"></div>
+  <div id="popup" class="ol-popup" style="visibility:hidden;">
+    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+    <div id="popup-content"></div>
+  </div>
   <div id="layer-slider"><div class="ui-slider-handle"> </div> </div>
 </div>
 <div id="opacity-info">

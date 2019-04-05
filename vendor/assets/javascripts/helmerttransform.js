@@ -3,8 +3,8 @@
 // Map-georeferencer is licenced under the French Opensource BSD like CeCILL-B FREE SOFTWARE LICENSE.
 // (c) 2016 - Jean-Marc Viglino
 //
-var ol = OpenLayers;
-if (!ol.transform) ol.transform = {};
+var olt = OpenLayers;
+if (!olt.transform) olt.transform = {};
 
 /** Helmert transformation is a transformation method within a three-dimensional space. 
 *	It is frequently used in geodesy to produce distortion-free transformations from one datum to another. 
@@ -15,7 +15,7 @@ if (!ol.transform) ol.transform = {};
 *	
 *	With the similarity option the scale is the same along both axis ie. sx = sy
 */
-ol.transform.Helmert = function (options)
+olt.transform.Helmert = function (options)
 {	if (!options) options={};
 	this.similarity = options.similarity;
 	this.matrix = [1,0,0,0,1,0];
@@ -23,10 +23,10 @@ ol.transform.Helmert = function (options)
 }
 
 /** Calculate the helmert transform with control points.
-* @return {Array.<ol.Coordinate>}: source coords 
-* @return {Array.<ol.Coordinate>: projected coords
+* @return {Array.<olt.Coordinate>}: source coords 
+* @return {Array.<olt.Coordinate>: projected coords
 */
-ol.transform.Helmert.prototype.setControlPoints = function(xy, XY)
+olt.transform.Helmert.prototype.setControlPoints = function(xy, XY)
 {	if (xy.length<2) 
 	{	this.matrix = [1,0,0,0,1,0];
 		this.hasControlPoints = false;
@@ -42,38 +42,38 @@ ol.transform.Helmert.prototype.setControlPoints = function(xy, XY)
 /** Get the rotation of the transform
 * @return {Number}: angle
 */
-ol.transform.Helmert.prototype.getRotation = function()
+olt.transform.Helmert.prototype.getRotation = function()
 {	return this.a_;
 }
 
 /** Get the scale of the transform
-* @return {ol.Coordinate}: scale along x and y axis
+* @return {olt.Coordinate}: scale along x and y axis
 */
-ol.transform.Helmert.prototype.getScale = function()
+olt.transform.Helmert.prototype.getScale = function()
 {	return this.sc_
 }
 
 /** Get the rotation of the translation
-* @return {ol.Coordinate}: translation
+* @return {olt.Coordinate}: translation
 */
-ol.transform.Helmert.prototype.getTranslation = function()
+olt.transform.Helmert.prototype.getTranslation = function()
 {	return this.tr_;
 }
 
 /** Transform a point 
-* @param {ol.Coordinate}: coordinate in the origin datum 
-* @return {ol.Coordinate}: coordinate in the destination datum 
+* @param {olt.Coordinate}: coordinate in the origin datum 
+* @return {olt.Coordinate}: coordinate in the destination datum 
 */
-ol.transform.Helmert.prototype.transform = function(xy)
+olt.transform.Helmert.prototype.transform = function(xy)
 {	var m = this.matrix;
 	return [ m[0]*xy[0] + m[1]*xy[1] +m[2], m[3]*xy[0] + m[4]*xy[1] +m[5] ];
 }
 
 /** Revers transform of a point 
-* @param {ol.Coordinate}: coordinate in the destination datum
-* @return {ol.Coordinate}: coordinate in the origin datum
+* @param {olt.Coordinate}: coordinate in the destination datum
+* @return {olt.Coordinate}: coordinate in the origin datum
 */
-ol.transform.Helmert.prototype.revers = function(xy)
+olt.transform.Helmert.prototype.revers = function(xy)
 {	var a = this.matrix[0];
 	var b = this.matrix[1];
 	var c = this.matrix[3];
@@ -93,7 +93,7 @@ Transformee de Helmert au moindre carre :
 	[a -b]
 	[b  a]
 **/
-ol.transform.Helmert.prototype._similarity = function( xy, XY )
+olt.transform.Helmert.prototype._similarity = function( xy, XY )
 {	if ( !xy.length || xy.length != XY.length ) 
 	{	console.log ("Helmert : Taille des tableaux de points incompatibles");
 		return false; 
@@ -161,7 +161,7 @@ Transformee de Helmert-Etendue au moindre carre :
 	[a -b][k 0]
 	[b  a][0 h]
 **/
-ol.transform.Helmert.prototype._helmert = function (xy, XY, poids, tol)
+olt.transform.Helmert.prototype._helmert = function (xy, XY, poids, tol)
 {	if ( !xy.length || xy.length != XY.length ) 
 	{	console.log ("Helmert : Taille des tableaux de points incompatibles");
 		return false; 

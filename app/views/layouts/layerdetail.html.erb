@@ -7,8 +7,10 @@
 
     <%= stylesheet_link_tag "application" %>
     <link href='//fonts.googleapis.com/css?family=Lato:400,700|Sorts+Mill+Goudy|Vidaloka' rel='stylesheet' type='text/css'>
-    <script src="http://maps.google.com/maps?file=api&v=2&sensor=false&key=<%=APP_CONFIG['google_maps_key']-%>"
+    <% unless APP_CONFIG['google_maps_key'].blank? %>
+      <script src="http://maps.google.com/maps?file=api&v=2&sensor=false&key=<%=APP_CONFIG['google_maps_key']-%>"
 type="text/javascript"></script>
+    <% end %>
     <%= javascript_include_tag "openlayers/2.8/OpenLayers-2.8/OpenLayers" %>
     <%= javascript_include_tag "application" %>
     <%= javascript_tag "jQuery.noConflict();" -%>

@@ -18,4 +18,6 @@
  *= require hms
  *= require headersvg
  *= require bootstrap.min.css
+ *= require openlayers/5.3/ol.css
+ *= require ol-layerswitcher
  */

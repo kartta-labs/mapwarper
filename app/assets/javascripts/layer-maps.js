@@ -2,79 +2,79 @@ var layerMap;
 var mapIndexLayer;
 var mapIndexSelCtrl;
 var selectedFeature;
+
+
 function init(){
-  OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
-  OpenLayers.Util.onImageLoadErrorColor = "transparent";
 
-  var switcher = new OpenLayers.Control.LayerSwitcher(); 
-  var options = {
-    projection: new OpenLayers.Projection("EPSG:900913"),
-    displayProjection: new OpenLayers.Projection("EPSG:4326"),
-    units: "m",
-    numZoomLevels:20,
-    maxResolution: 156543.0339,
-    maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
-      20037508, 20037508.34),
-    controls: [
-    new OpenLayers.Control.Attribution(),
-    switcher,
-    new OpenLayers.Control.Navigation(),
-    new OpenLayers.Control.PanZoomBar()
-    ]
-  };
+  wmslayer = new ol.layer.Tile({
+    title: "Mosaic " + layer_id,
+    visible: true,
+    source: new ol.source.TileWMS({
+        url: warpedwms_url,
+        projection:  'epsg:3857',
+        params: {'FORMAT': 'image/png', 'STATUS': 'warped', 'SRS':'epsg:3857'}
+    })
+  });
 
-  layerMap = new OpenLayers.Map("map",options);
-  mapnik_lay1 = mapnik.clone();
+  var opacity = 1;
+  wmslayer.setOpacity(opacity);
 
-  var gms3 =  new OpenLayers.Layer.Google( "Google Satellite", {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 20}); 
+  var base_layers = [ new ol.layer.Group({
+    title: 'Base Layer',
+    layers: [ new ol.layer.Tile({ 
+      title: 'OpenStreetMap',
+      type: 'base',
+      visible: true,
+      source: new ol.source.OSM() 
+    }) ]
+    })
+  ] ;
 
-  layerMap.addLayers([mapnik_lay1, gms3]);
+  var styles = [
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'red',
+        width: 3
+      }),
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 0, 0, 0)'
+      })
+    })
+  ];
 
-  wmslayer =  new OpenLayers.Layer.WMS
-  ( "Layer"+layer_id,
-    warpedwms_url,
-    {format: 'image/png', layers: "image" },
-    {         TRANSPARENT:'true', reproject: 'true'},
-    { gutter: 15, buffer:0},
-    { projection:"epsg:4326", units: "m"  }
-  );
-  wmslayer.setIsBaseLayer(false);
-  wmslayer.visibility = true;
-  layerMap.addLayer(wmslayer);
-  
-  bounds_merc = new OpenLayers.Bounds();
-  bounds_merc = warped_bounds.transform(layerMap.displayProjection, layerMap.projection);
-  
-  layerMap.zoomToExtent(bounds_merc);
-  layerMap.updateSize();
-  
-  layerMap.events.register("zoomend", mapnik_lay1, function(){
-      if (this.map.getZoom() > 18 && this.visibility == true){
-        this.map.setBaseLayer(nyc_lay1);
-        switcher.maximizeControl();
-      } 
-    });
-  
-  //set up the map index layer to help find individual maps
-  var mapIndexLayerStyle = OpenLayers.Util.extend({strokeWidth: 3}, OpenLayers.Feature.Vector.style['default']);
-  var mapIndexSelectStyle = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['select']);
-  var style_red = {
-    fill: true,
-    strokeColor: "#FF0000",
-    strokeWidth: 3,
-    fillOpacity: 0
-  };
-  var styleMap = new OpenLayers.StyleMap({
-      'default': style_red,
-      'select': mapIndexSelectStyle
-    });
-  
-  mapIndexLayer = new OpenLayers.Layer.Vector(I18n['layers']['map_outlines_label'], {styleMap: styleMap, visibility: false});
-  mapIndexSelCtrl = new OpenLayers.Control.SelectFeature(mapIndexLayer, {hover:false, onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
-  layerMap.addControl(mapIndexSelCtrl);
-  mapIndexSelCtrl.activate();
-  layerMap.addLayer(mapIndexLayer);
+  mapIndexLayer = new ol.layer.Vector({
+    title: I18n['layers']['map_outlines_label'],
+    visible: false,
+    source: new ol.source.Vector({  features: [] }),
+    style: styles
+  });
 
+  var overlay_layers = [
+    new ol.layer.Group({
+      title: 'Overlays',
+      layers:  [wmslayer, mapIndexLayer]
+    })
+  ];
+
+  var layers = base_layers.concat(overlay_layers); 
+
+  layerMap = new ol.Map({
+    layers: layers,
+    target: 'map',
+    view: new ol.View({
+      minZoom: 2,
+      maxZoom: 20,
+      center: ol.extent.getCenter(warped_bounds.toArray())
+    })
+  });
+
+  var layerSwitcher = new ol.control.LayerSwitcher({
+    tipLabel: 'Layers' 
+  });
+  layerMap.addControl(layerSwitcher);
+
+  var extent = ol.proj.transformExtent(warped_bounds.toArray(), 'EPSG:4326', 'EPSG:3857');
+  layerMap.getView().fit(extent, layerMap.getSize()); 
 
   jQuery("#layer-slider").slider({
       value: 100,
@@ -88,13 +88,58 @@ function init(){
   loadMapFeatures();
 
   jQuery("#view-maps-index-link").append("(<a href='javascript:toggleMapIndexLayer();'>"+I18n['layers']['map_outlines_toggle']+"</a>)");
+
+  //Add popup interaction on map bounding boxes
+  var container = document.getElementById('popup');
+  var content = document.getElementById('popup-content');
+  var closer = document.getElementById('popup-closer')
+  container.style.visibility = "visible";
+
+  var popup = new ol.Overlay({
+    element: container,
+    autoPan: true,
+    positioning: 'bottom-center',
+    autoPanAnimation: {
+      duration: 250
+    }
+  });
+
+  closer.onclick = function() {
+    popup.setPosition(undefined);
+    closer.blur();
+    return false;
+  };
+
+  layerMap.addOverlay(popup);
+
+  layerMap.on('click', function(evt) {
+    var feature = layerMap.forEachFeatureAtPixel(evt.pixel,
+      function(feature) {
+        return feature;
+      });
+    if (feature) {
+      var coordinates = evt.coordinate;
+      popup.setPosition(coordinates);
+      content.innerHTML = "<div class='layermap-popup'> Map "+
+      feature.get('mapId') + "<br /> <a href='" + mapBaseURL + "/"+ feature.get('mapId') + "' target='_blank'>"+feature.get('mapTitle')+"</a><br />"+
+      "<img src='"+mapThumbBaseURL+ feature.get('mapId')+"' height='80'>"+
+      "<br /> <a href='"+mapBaseURL+"/"+ feature.get('mapId')+"#Rectify_tab' target='_blank'>"+I18n['layers']['edit_map']+"</a>"+
+      "</div>";
+
+    } else {
+      popup.setPosition(undefined);
+      closer.blur();
+    }
+  });
+
 }
 
 function toggleMapIndexLayer(){
-  var vis = mapIndexLayer.getVisibility();
-  mapIndexLayer.setVisibility(!vis);
+  var vis = mapIndexLayer.getVisible();
+  mapIndexLayer.setVisible(!vis);
 }
 
+// TODO This function use old OL library
 function loadMapFeatures(){
   var options = {'format': 'json'};
   OpenLayers.loadURL(mapLayersURL,
@@ -104,8 +149,9 @@ function loadMapFeatures(){
     failMessage);
 }
 
+// TODO This function use old OL library
 function loadItems(resp){
-  var g = new OpenLayers.Format.JSON();
+  var g = new OpenLayers.Format.JSON();  
   jobj = g.read(resp.responseText);
   lmaps = jobj.items;
   for (var a=0;a<lmaps.length;a++){
@@ -119,34 +165,15 @@ function failMessage(resp){
 }
 
 function addMapToMapLayer(mapitem){
-  var feature = new OpenLayers.Feature.Vector((
-      new OpenLayers.Bounds.fromString(mapitem.bbox).transform(layerMap.displayProjection, layerMap.projection)).toGeometry());
-  feature.mapTitle = mapitem.title; 
-  feature.mapId = mapitem.id;
-  mapIndexLayer.addFeatures([feature]);
+  var bbox_array = mapitem.bbox.split(",").map(Number);
+  var bbox = ol.proj.transformExtent(bbox_array, 'EPSG:4326', 'EPSG:3857');
+
+  var feature = new ol.Feature({
+    geometry: new ol.geom.Polygon.fromExtent(bbox),
+    name: mapitem.title,
+    mapTitle: mapitem.title,
+    mapId:   mapitem.id
+  });
+  mapIndexLayer.getSource().addFeature(feature);
 }
 
-function onPopupClose(evt) {
-  mapIndexSelCtrl.unselect(selectedFeature);
-}
-function onFeatureSelect(feature) {
-  selectedFeature = feature;
-  popup = new OpenLayers.Popup.FramedCloud("amber_lamps", 
-    feature.geometry.getBounds().getCenterLonLat(),
-    null,
-    "<div class='layermap-popup'> Map "+
-      feature.mapId + "<br /> <a href='" + mapBaseURL + "/"+ feature.mapId + "' target='_blank'>"+feature.mapTitle+"</a><br />"+
-      "<img src='"+mapThumbBaseURL+feature.mapId+"' height='80'>"+
-      "<br /> <a href='"+mapBaseURL+"/"+feature.mapId+"#Rectify_tab' target='_blank'>"+I18n['layers']['edit_map']+"</a>"+
-      "</div>",
-    null, true, onPopupClose);
-  popup.minSize = new OpenLayers.Size(180,150);
-  feature.popup = popup;
-  layerMap.addPopup(popup);
-}
-
-function onFeatureUnselect(feature) {
-  layerMap.removePopup(feature.popup);
-  feature.popup.destroy();
-  feature.popup = null;
-}  

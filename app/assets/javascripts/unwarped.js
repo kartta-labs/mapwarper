@@ -1,35 +1,40 @@
 var un_bounds;
-function uinit() {
-  delete umap;
-  delete unwarped_image;
-  un_bounds = new OpenLayers.Bounds(0, 0, unwarped_image_width, unwarped_image_height);
-
+var umap;
+function uinit() { 
   unwarped_init();
 }
 
 function unwarped_init() {
-  var mds = new OpenLayers.Control.MouseDefaults();
-  mds.defaultDblClick = function() {
-    return true;
-  };
+  un_bounds =  [0, 0, unwarped_image_width, unwarped_image_height];
+  var extent = un_bounds;
 
   if (typeof (umap) == 'undefined') {
-
-
-    umap = new OpenLayers.Map('unmap',
-            {controls: [mds, new OpenLayers.Control.PanZoomBar()], maxExtent: un_bounds, maxResolution: 10.496, numZoomLevels: 8});
-    umap.events.register("addlayer", umap, function(e) {
-      umap.zoomToMaxExtent();
+    var projection = new ol.proj.Projection({
+      code: 'EPSG:32663',
+      units: 'degrees'
     });
-    var unwarped_image = new OpenLayers.Layer.WMS(title,
-            wms_url, {format: 'image/png', status: 'unwarped'});
-
-    umap.addLayer(unwarped_image);
+    var layers = [
+      new ol.layer.Image({
+        source: new ol.source.ImageWMS({
+          extent: extent,
+          url: wms_url,
+          projection:  'EPSG:32663',
+          params: {'FORMAT': 'image/png', 'STATUS': 'unwarped', 'SRS':'epsg:4326'}
+        })
+      })
+    ];
+    umap = new ol.Map({
+      layers: layers,
+      target: 'unmap',
+      view: new ol.View({
+        center: ol.extent.getCenter(extent),
+        minZoom: -4,
+        maxZoom: 6,
+        maxResolution: 10.496,
+        projection: projection
+      })
+    });
+    umap.getView().fit(extent, umap.getSize()); 
   }
-  if (!umap.getCenter()) {
-    umap.zoomToExtent(un_bounds);
-  }
-//umap.zoomToExtent(un_bounds);
-  umap.zoomToMaxExtent();
 
-}
+};

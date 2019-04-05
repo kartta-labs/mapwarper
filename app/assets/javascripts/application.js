@@ -24,6 +24,8 @@
 //= require querystring
 //= require jquery.nouislider.all.min
 //= require cookies_helper
+//= require openlayers/5.3/ol
+//= require ol-layerswitcher
 
 var querystring = require('querystring-component');
 
