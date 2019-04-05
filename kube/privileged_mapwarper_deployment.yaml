@@ -26,7 +26,7 @@ spec:
       # This section describes the containers that make up the deployment
       containers:
         - name: web
-          image: 127.0.0.1:32000/mapwarper_web:latest
+          image: localhost:32000/mapwarper_web:latest
           imagePullPolicy: Always
           command: ["/bin/bash"]
           args: ["-c", "rm -f tmp/pids/server.pid && bundle exec rails s -p 30001 -b '0.0.0.0'"]  #30001 as we don't really want this to be serving

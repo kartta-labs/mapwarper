@@ -18,7 +18,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: db-migration
-        image: 127.0.0.1:32000/mapwarper_web:latest
+        image: localhost:32000/mapwarper_web:latest
         command: ["bundle", "exec", "rake", "db:migrate"]
         # set variables form config map, app non secrets
         envFrom:
