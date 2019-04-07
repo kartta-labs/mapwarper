@@ -1,7 +1,7 @@
 <h2><%= t('.header') %></h2>
+<div class="row">
 
-
-<div class="column span-12">
+<div class="column col-lg-3">
   <p>
     <b><%= t('maps.form.title') %></b><br />
     <%= h @map.title %>
@@ -27,7 +27,7 @@
   </p>
 </div>
 
-<div class="column span-12 last">
+<div class="column col-lg-3 last">
   <p>
     <b><%= t('maps.form.source') %></b><br />
     <%= @map.source_uri %>
@@ -56,5 +56,5 @@
       <%= @map.reprint_date %>
   </p>
 </div>
-
+</div>
 <div style="clear: both;"></div>

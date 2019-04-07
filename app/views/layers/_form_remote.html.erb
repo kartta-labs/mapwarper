@@ -6,9 +6,9 @@
   });
 </script>
 <%= form_for(@layer, :remote=>true) do |f| %>
-
   <%= render "shared/error_messages", :target => @layer %>
-  <div class="column span-12">
+  <div class="row">
+  <div class="column col-lg-3">
 
     <p>
       <b><%= f.label :name  %></b> <br />
@@ -32,8 +32,8 @@
       <%= f.text_field :depicts_year %>
     </p>
   </div>
-  <div class="column span-12 last layer-maps-col">
-    <h3><%= t('layers.form.select_map_head') %></h3>
+  <div class="column col-lg-3  last layer-maps-col">
+    <b><%= t('layers.form.select_map_head') %></b>
 
     <% if @maps.length == 0 %>
       <p><%= t('layers.form.no_maps') %> <%= link_to t('layers.form.my_maps'), my_maps_path(current_user) %> </p>
@@ -75,8 +75,8 @@
       <p><%= link_to t('home.index.all_my_maps'), my_maps_path(current_user) %> </p>
     <% end %>
   </div>
-  <div class="column span-12">
-    <%= f.submit((defined?(page) && page =~ /new/) ? t('common.create_button') : t('common.update_button') )%>
+  <div class="column col-lg-3">
+    <%= f.submit((defined?(page) && page =~ /new/) ? t('common.create_button') : t('common.update_button'), class: "wider" )%>
 
   <%end%>
 </div>

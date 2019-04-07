@@ -573,7 +573,7 @@ en:
       name: Name
     new:
       header: New Mosaic
-      help: 'Note: All Mosaics are public, you can add unlisted maps to them they won''t be listed<br /> but they would be seen on the final map image.'
+      help_html: 'Note: All Mosaics are public, you can add unlisted maps to them they won''t be listed<br /> but they would be seen on the final map image.'
       title: Make new mosaic -
     publish:
       flash: Mosaic will be published

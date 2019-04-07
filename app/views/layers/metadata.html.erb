@@ -1,6 +1,6 @@
 <h2><%= t('.header') %></h2>
-
-<div class="column span-12">
+<div class="row">
+<div class="column col-lg-3">
   <p>
     <b><%= t('.name') %></b> <br />
     <%= @layer.name %>
@@ -14,9 +14,10 @@
     <%= @layer.source_uri %>
   </p>
 </div>
-<span>
+<div class="column col-lg-3">
   <span id="depicts-year-span">
     <%= t('.depicts_year') %>  : <%if @layer.depicts_year%><%= @layer.depicts_year %><%end%>
   </span>
-</span>
+</div>
+</div>
 <div style="clear: both;"></div>
