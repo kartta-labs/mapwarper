@@ -198,7 +198,7 @@ class Map < ActiveRecord::Base
         bands = ["-b", "1", "-b", "2", "-b", "3"]
       end
       
-      command  = ["#{GDAL_PATH}gdal_translate", tmp_upload_path, outsize, bands, "-co", "COMPRESS=DEFLATE", "-co",  "PHOTOMETRIC=RGB", "-co", "PROFILE=BASELINE", tiffed_file_path].reject(&:empty?).flatten
+      command  = ["#{GDAL_PATH}gdal_translate", tmp_upload_path, outsize, bands, "-co", "COMPRESS=DEFLATE", "-co",  "PHOTOMETRIC=RGB", "-co", "PROFILE=BASELINE", "-co", "BIGTIFF=YES", tiffed_file_path].reject(&:empty?).flatten
       logger.info command
       ti_stdin, ti_stdout, ti_stderr =  Open3::popen3( *command )
       logger.info ti_stdout.readlines.to_s
@@ -707,7 +707,7 @@ class Map < ActiveRecord::Base
      
     memory_limit = APP_CONFIG["gdal_memory_limit"].blank? ? [] : ["-wm",  APP_CONFIG['gdal_memory_limit'] ]
 
-    command = ["#{GDAL_PATH}gdalwarp", memory_limit, transform_option.strip, resample_option.strip, "-dstalpha", mask_options_array, "-dstnodata", "none", "-s_srs", "EPSG:4326", "#{temp_filename}.vrt", dest_filename, "-co", "TILED=YES", "-co", "COMPRESS=LZW"].reject(&:empty?).flatten
+    command = ["#{GDAL_PATH}gdalwarp", memory_limit, transform_option.strip, resample_option.strip, "-dstalpha", mask_options_array, "-dstnodata", "none", "-s_srs", "EPSG:4326", "#{temp_filename}.vrt", dest_filename, "-co", "TILED=YES", "-co", "COMPRESS=LZW", "-co", "BIGTIFF=YES"].reject(&:empty?).flatten
     logger.info command
    
     w_stdout, w_stderr = Open3.capture3( *command )
