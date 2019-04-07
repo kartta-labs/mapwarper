@@ -392,7 +392,7 @@ class MapsController < ApplicationController
 
     @current_tab = "show"
     @selected_tab = 0
-    @disabled_tabs =[]
+    @disabled_tabs =["align"]
     @map = Map.find(params[:id])
     @html_title = t('.title', :map_id =>@map.id.to_s)
 
