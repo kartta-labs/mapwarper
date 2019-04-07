@@ -353,9 +353,9 @@ en:
       all_my_maps: See all Favourites
       click_news: click here to read this story
       create_layer: Create a new mosaic
-      info_contact: Mail me at tim@geothings.net for more information!
+      info_contact: Contact email@example.com for more information!
       info_header: What is it?
-      info_paragraph_html: It's a free to use, open source map warper / map georectifier, and image georeferencer tool for individuals and small groups. Developed, hosted and maintained by <a href='https://thinkwhere.wordpress.com'>Tim Waters</a>. If you like this project, please consider <a href='https://www.paypal.me/timdevelops'>donating</a> to keep the project going.
+      info_paragraph_html: It's a free to use, open source map warper / map georectifier, and image georeferencer tool.
       more: read more
       news: News
       overview_header: Overview
@@ -888,7 +888,7 @@ en:
       help: Help
       home: Home
       privacy: Data Privacy / Terms
-      supported_by_html: Hosted, developed and maintained by Tim Waters | <a href='https://www.paypal.me/timdevelops'>Donate</a>
+      supported_by_html: A Historic Map Stack Website
     header:
       admin_users: Users
       all_activity: Activity
