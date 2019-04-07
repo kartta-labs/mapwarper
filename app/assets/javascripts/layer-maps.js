@@ -19,16 +19,43 @@ function init(){
   var opacity = 1;
   wmslayer.setOpacity(opacity);
 
-  var base_layers = [ new ol.layer.Group({
-    title: 'Base Layer',
-    layers: [ new ol.layer.Tile({ 
+  var blayers = [ 
+    new ol.layer.Tile({ 
       title: 'OpenStreetMap',
       type: 'base',
       visible: true,
       source: new ol.source.OSM() 
-    }) ]
+    }),
+    new ol.layer.Tile({
+      visible: false,
+      type: 'base',
+      title: 'Esri World Imagery',
+      source: new ol.source.XYZ({
+        attributions: 'Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community',
+        url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+      })
     })
-  ] ;
+  ]
+
+  if (mapbox_access_token.length > 1) {  //only add it if theres a token for it.
+    blayers.push(
+      new ol.layer.Tile({
+        visible: false,
+        type: 'base',
+        title: 'Mapbox Satellite',
+        source: new ol.source.XYZ({
+          attributions: I18n['layers']['mbox_satellite_attribution'],
+          url: "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token="+ mapbox_access_token
+        })
+      })
+    )
+  } 
+
+  var base_layers = [ new ol.layer.Group({
+      title: 'Base Layer',
+      layers: blayers
+      })
+    ] ;
 
   var styles = [
     new ol.style.Style({

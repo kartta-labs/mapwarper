@@ -20,7 +20,7 @@
     var mapLayersURL = '<%=url_for :controller => 'layers', :action => 'maps', :id => @layer.id -%>';
     var mapBaseURL = '<%=url_for :controller=> 'maps' %>';
     var mapThumbBaseURL = "<%= url_for(map_thumb_base_path) %>/";
- 
+    var mapbox_access_token = '<%= APP_CONFIG['mapbox_access_token'] %>';
   </script>
   <%= javascript_include_tag "layer-maps" -%>
 

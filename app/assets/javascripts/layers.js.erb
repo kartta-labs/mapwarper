@@ -48,7 +48,7 @@ var mapnik = new OpenLayers.Layer.TMS("OpenStreetMap", "http://tile.openstreetma
     transitionEffect: 'resize',
     attribution: I18n['layers']['osm_attribution']
 });
-
+ 
 
 var satellite = new OpenLayers.Layer.XYZ(
   'Mapbox Satellite',
@@ -57,6 +57,16 @@ var satellite = new OpenLayers.Layer.XYZ(
     sphericalMercator: true,
     wrapDateLine: true,
     attribution: I18n['layers']['mbox_satellite_attribution']
+  }
+);
+
+var esri_sat =  new OpenLayers.Layer.XYZ(
+  'Esri World Imagery',
+  ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}'],
+  {
+    sphericalMercator: true,
+    wrapDateLine: true,
+    attribution: "Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community"
   }
 );
 

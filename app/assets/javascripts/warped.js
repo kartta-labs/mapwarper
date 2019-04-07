@@ -47,16 +47,43 @@ function warpedinit() {
   var opacity = .7;
   warped_wmslayer.setOpacity(opacity);
 
-  var base_layers = [ new ol.layer.Group({
-    title: 'Base Layer',
-    layers: [ new ol.layer.Tile({ 
+  var blayers = [ 
+    new ol.layer.Tile({ 
       title: 'OpenStreetMap',
       type: 'base',
       visible: true,
       source: new ol.source.OSM() 
-    }) ]
+    }),
+    new ol.layer.Tile({
+      visible: false,
+      type: 'base',
+      title: 'Esri World Imagery',
+      source: new ol.source.XYZ({
+        attributions: 'Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community',
+        url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+      })
     })
-  ] ;
+  ]
+
+  if (mapbox_access_token.length > 1) {  //only add it if theres a token for it.
+    blayers.push(
+      new ol.layer.Tile({
+        visible: false,
+        type: 'base',
+        title: 'Mapbox Satellite',
+        source: new ol.source.XYZ({
+          attributions: I18n['layers']['mbox_satellite_attribution'],
+          url: "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token="+ mapbox_access_token
+        })
+      })
+    )
+  } 
+
+  var base_layers = [ new ol.layer.Group({
+      title: 'Base Layer',
+      layers: blayers
+      })
+    ] ;
 
   var overlays = [warped_wmslayer]
 
@@ -89,11 +116,6 @@ function warpedinit() {
     tipLabel: 'Layers' 
   });
   warpedmap.addControl(layerSwitcher);
-
-  // if (typeof (G_SATELLITE_MAP) != 'undefined') {
-  //   var gms1 = new OpenLayers.Layer.Google( "Google Satellite", {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 20}); 
-  //   warpedmap.addLayers([gms1]);
-  // }
 
   var extent;
   if (mask_geojson) {

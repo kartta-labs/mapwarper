@@ -81,7 +81,13 @@ function init() {
 
 
   satellite.setVisibility(false);
-  to_map.addLayer(satellite);
+  if (!satellite.url[0].endsWith("access_token=")) {  //only add it if theres a token for it.
+    to_map.addLayer(satellite);
+  }
+
+  esri_sat.setVisibility(false);
+  to_map.addLayer(esri_sat);
+
   if (typeof (G_SATELLITE_MAP) != 'undefined') {
     var gms = new OpenLayers.Layer.Google( "Google Satellite", {type: G_SATELLITE_MAP, 'sphericalMercator': true, numZoomLevels: 20}); 
     to_map.addLayers([gms]);
