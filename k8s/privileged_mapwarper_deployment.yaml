@@ -1,8 +1,5 @@
 # Deployment to import maps from special bucket, reads in extra env variables 
-# Of imports bucket
-# with priviledged context, so we have a separate deployment
-# this might be an anti pattern....
-# 
+# Of imports bucket with priviledged context, so we have a separate deployment
 
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -12,11 +9,6 @@ metadata:
     app: web
 spec:
   replicas: 1
-  # strategy: 
-  #   type: RollingUpdate
-  #   rollingUpdate:
-  #     maxSurge: 1
-  #     maxUnavailable: 1
   minReadySeconds: 5
   template:
     metadata:
@@ -28,8 +20,10 @@ spec:
         - name: web
           image: localhost:32000/mapwarper_web:latest
           imagePullPolicy: Always
-          command: ["/bin/bash"]
-          args: ["-c", "rm -f tmp/pids/server.pid && bundle exec rails s -p 30001 -b '0.0.0.0'"]  #30001 as we don't really want this to be serving
+          stdin: true
+          tty: true
+          #command: ["/bin/bash"]
+          #args: ["-c", "rm -f tmp/pids/server.pid && bundle exec rails s -p 30001 -b '0.0.0.0'"]  #30001 as we don't really want this to be serving
           ports:
             - containerPort: 3000
           #elevate security as it needs to mount fuse
@@ -38,19 +32,6 @@ spec:
             capabilities:
               add:
                 - SYS_ADMIN
-          
-          # livenessProbe:
-          #   tcpSocket:
-          #     port: 3000
-          #   initialDelaySeconds: 15
-          #   periodSeconds: 20
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 3000
-          #   initialDelaySeconds: 45
-          #   periodSeconds: 20
-          #   timeoutSeconds: 5
           volumeMounts:
             - name: mapwarper-persistent-volume
               mountPath: /mnt/mapwarper/maps
@@ -94,7 +75,6 @@ spec:
               value: "production"
             - name: DB_HOST
               value: "127.0.0.1"
-            # comment out RAILS_SERVE_STATIC_FILES if you want to disable that setting, rather than change the value. Uncomment for use with Puma in production 
             - name: RAILS_SERVE_STATIC_FILES
               value: "true"
             # app secrets -for api keys etc
