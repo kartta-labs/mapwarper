@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190310152111) do
+ActiveRecord::Schema.define(version: 20190408175158) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -219,6 +219,7 @@ ActiveRecord::Schema.define(version: 20190310152111) do
     t.integer  "map_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "geojson"
   end
 
   create_table "memberships", force: :cascade do |t|
