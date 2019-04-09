@@ -19,7 +19,7 @@ spec:
       containers:
       - name: db-migration
         image: localhost:32000/mapwarper_web:latest
-        command: ["bundle", "exec", "rake", "db:migrate"]
+        command: ["bundle", "exec", "rake", "db:create", "db:migrate"]
         # set variables form config map, app non secrets
         envFrom:
           - configMapRef:
