@@ -11,14 +11,14 @@ function unwarped_init() {
   if (typeof (umap) == 'undefined') {
     var projection = new ol.proj.Projection({
       code: 'EPSG:32663',
-      units: 'degrees'
+      units: 'm'
     });
     var layers = [
-      new ol.layer.Image({
-        source: new ol.source.ImageWMS({
+      new ol.layer.Tile({
+        source: new ol.source.TileWMS({
           extent: extent,
           url: wms_url,
-          projection:  'EPSG:32663',
+          projection:  projection,
           params: {'FORMAT': 'image/png', 'STATUS': 'unwarped', 'SRS':'epsg:4326'}
         })
       })
