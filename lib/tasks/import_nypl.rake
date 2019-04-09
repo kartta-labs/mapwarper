@@ -16,10 +16,17 @@ namespace :warper do
     
     print "Are you sure you want to continue ? [y/N] "
     break unless STDIN.gets.match(/^y$/i)
-
+    count = 0
     maps_items = JSON.parse(File.read(metadata_file))
     maps_items.each do | m | 
+      print "."
      
+      if ENV['MAX_MAPS_COUNT'] && count >= ENV['MAX_MAPS_COUNT'].to_i
+        puts ""
+        puts "stopping after #{count} maps saved"
+        break
+      end 
+
       uuid = m["uuid"]
 
       if Map.exists?(unique_id: uuid)
@@ -95,6 +102,7 @@ namespace :warper do
       if map.valid?
         puts "INFO Saving new map #{uuid}"
         map.save
+        count  = count + 1
       else
         puts "ERROR Map Invalid"    
         puts m.inspect 
@@ -136,7 +144,8 @@ namespace :warper do
  
       
     end  #each map item
-
+     puts ""
+     puts "#{count} maps saved"
   end
 end
 
