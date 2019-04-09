@@ -31,7 +31,7 @@ namespace :warper do
      
       file_base =  nypl_maps_dir+"/"+uuid
       next if Dir.glob(file_base).empty?
-      upload_filename = File.join(file_base +"/highres.tiff")      
+      upload_filename = File.join(file_base +"/highres.tiff")
       unless File.exists? upload_filename
         puts "INFO Map image file doesnt exist at #{upload_filename} Skipping #{uuid}"
         next
@@ -83,6 +83,7 @@ namespace :warper do
         publisher: publisher
       )
       map.upload = File.new(upload_filename)
+      map.upload.instance_write(:file_name, "#{uuid}.tiff")
       map.owner = Role.find_by_name('administrator').users.last
 
       # if date_depicted.nil? && issue_year.nil?
@@ -91,15 +92,16 @@ namespace :warper do
       # end
       # TODO get from layer?
 
-      unless map.valid?
+      if map.valid?
+        puts "INFO Saving new map #{uuid}"
+        map.save
+      else
         puts "ERROR Map Invalid"    
         puts m.inspect 
         puts map.errors.inspect
         puts "----"
         next
       end
-
-      #Map.save here
 
       if m["mapwarper"] && m["mapwarper"]["coordinates"]
         coords = m["mapwarper"]["coordinates"].reverse.map {|c| [c["lng"], c["lat"]] }
@@ -126,12 +128,12 @@ namespace :warper do
 
         transformed_geojson = o_out 
       
+        puts "INFO Saving geojson maskings for map id: #{map.id}"
         #save the maskings:
-        # Masking.find_or_initialize_by(map_id: Map.id).update(transformed_geojson: transformed_geojson, geojson: geojson)
+        Masking.find_or_initialize_by(map_id: map.id).update(transformed_geojson: transformed_geojson, geojson: geojson)
 
       end #if coordinates
  
-
       
     end  #each map item
 
