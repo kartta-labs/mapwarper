@@ -33,5 +33,13 @@ GDAL_PATH = APP_CONFIG['gdal_path'] || ""
 
 Rails.application.routes.default_url_options[:host] = APP_CONFIG['host']
 ActionMailer::Base.default_url_options[:host] = APP_CONFIG['host']
-ActionMailer::Base.delivery_method = :sendmail
+#ActionMailer::Base.delivery_method = :sendmail
 Devise.mailer_sender = APP_CONFIG['email']
+
+ActionMailer::Base.delivery_method = :sendgrid_actionmailer
+ActionMailer::Base.sendgrid_actionmailer_settings = {
+    api_key: APP_CONFIG['sendgrid_api_key'],
+    raise_delivery_errors: true
+}
+ActionMailer::Base.raise_delivery_errors = true
+
