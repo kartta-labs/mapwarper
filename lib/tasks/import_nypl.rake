@@ -156,7 +156,7 @@ namespace :warper do
 
         puts "Map Layer: #{layer_title} #{layer_uuid}"
         layer = Layer.find_or_create_by(unique_id: layer_uuid, name: layer_title)
-        map.layers << layer
+        layer.maps << map unless layer.maps.include? map
       end
 
     end  #each map item
