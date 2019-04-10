@@ -79,6 +79,7 @@ namespace :warper do
       publisher =  m["publisher"].nil? ? nil : m["publisher"].compact.join(". ")
       tags = m["place"].nil? ? nil : m["place"].compact.join(",")
       title = m["title"].nil? ? nil : m["title"].compact.join(". ")
+      source_uri = "https://digitalcollections.nypl.org/items/#{uuid}"
      
       map = Map.new(
         unique_id: uuid,
@@ -87,7 +88,8 @@ namespace :warper do
         description: description,
         date_depicted: date_depicted,
         issue_year: issue_year,
-        publisher: publisher
+        publisher: publisher,
+        source_uri: source_uri
       )
       map.upload = File.new(upload_filename)
       map.upload.instance_write(:file_name, "#{uuid}.tiff")
