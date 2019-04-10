@@ -45,6 +45,7 @@ defaults: &defaults
   debug_k8s: false
   google_maps_key: ""
   sendgrid_api_key: ""
+  nypl_repo_token: ""
 
 development:
   <<: *defaults

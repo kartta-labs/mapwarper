@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190408175158) do
+ActiveRecord::Schema.define(version: 20190410163436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -148,6 +148,7 @@ ActiveRecord::Schema.define(version: 20190408175158) do
     t.boolean  "is_visible",                                                   default: true
     t.string   "source_uri"
     t.geometry "bbox_geom",            limit: {:srid=>0, :type=>"st_polygon"}
+    t.string   "unique_id"
   end
 
   add_index "layers", ["bbox_geom"], name: "index_layers_on_bbox_geom", using: :gist

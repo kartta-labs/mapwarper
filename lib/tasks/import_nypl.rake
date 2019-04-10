@@ -3,6 +3,7 @@ namespace :warper do
   task :import_nypl =>  :environment  do |t, args|
     require "json"
     require "open3"
+    require "nypl_repo"
 
     puts "Starts an import from the NYPL Metadata. Pass in or set env NYPL_METADATA_FILE=/mnt/metadata.json and NYPL_MAPS_DIR=/mnt/maps"
     puts "USAGE rake 'warper:import_nypl NYPL_METADATA_FILE=/mnt/metadata.json NYPL_MAPS_DIR=/mnt/maps' where x is the ID of an import in the ready state"
@@ -143,8 +144,21 @@ namespace :warper do
         Masking.find_or_initialize_by(map_id: map.id).update(transformed_geojson: transformed_geojson, geojson: geojson)
 
       end #if coordinates
- 
-      
+
+      if APP_CONFIG["nypl_repo_token"]
+        token = APP_CONFIG["nypl_repo_token"]
+        client = NyplRepo::Client.new(token)
+        item = client.get_mods_item(uuid)
+        layer_title = item["relatedItem"]["titleInfo"]["title"]["$"]
+
+        layer_uuid = item["relatedItem"]["identifier"]["$"] if item["relatedItem"]["identifier"].class == Hash
+        layer_uuid = item["relatedItem"]["identifier"][0]["$"] if item["relatedItem"]["identifier"].class == Array
+
+        puts "Map Layer: #{layer_title} #{layer_uuid}"
+        layer = Layer.find_or_create_by(unique_id: layer_uuid, name: layer_title)
+        map.layers << layer
+      end
+
     end  #each map item
      puts ""
      puts "#{count} maps saved"

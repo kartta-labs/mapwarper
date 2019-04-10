@@ -77,6 +77,7 @@ gem 'puma'
 gem 'fog-google', '~> 1.8'
 
 gem 'sendgrid-actionmailer'
+gem 'nypl_repo'
 
 group :development do
    gem 'web-console', '~> 2.0'
