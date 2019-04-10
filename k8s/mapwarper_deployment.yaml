@@ -17,7 +17,8 @@ spec:
       # This section describes the containers that make up the deployment
       containers:
         - name: web
-          image: localhost:32000/mapwarper_web:latest
+          #image: localhost:32000/mapwarper_web:latest
+          image: gcr.io/***REMOVED***/mapwarper_web_dev:latest
           imagePullPolicy: Always
           command: ["/bin/bash"]
           args: ["-c", "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"]
@@ -37,10 +38,10 @@ spec:
             periodSeconds: 20
             timeoutSeconds: 5
           volumeMounts:
-            - name: mapwarper-persistent-volume
+            - name: mapwarper-filestore-volume
               mountPath: /mnt/mapwarper/maps
               subPath: maps
-            - name: mapwarper-persistent-volume
+            - name: mapwarper-filestore-volume
               mountPath: /app/public/shared
               subPath: shared
             - name: bucket-secrets-volume
@@ -87,26 +88,27 @@ spec:
                   name: mapwarper-config
                   key: secret-key-base
 
-
-        - name: cloudsql-proxy
-          image: gcr.io/cloudsql-docker/gce-proxy:1.11
-          env:
-            - name: DB_INSTANCE
-              valueFrom:
-                secretKeyRef:
-                  name: cloudsql-db-credentials
-                  key:  dbinstance
-          command: ["/cloud_sql_proxy"]
-          args: ["-instances=$(DB_INSTANCE)=tcp:5432", "-credential_file=/secrets/cloudsql/secret_cloud_sql.json"]
-          volumeMounts:
-            - name: my-secrets-volume
-              mountPath: /secrets/cloudsql
-              readOnly: true
+        ## Uncomment to use proxy in local env for example or where a private ip isnt set up
+        # - name: cloudsql-proxy
+        #   image: gcr.io/cloudsql-docker/gce-proxy:1.11
+        #   env:
+        #     - name: DB_INSTANCE
+        #       valueFrom:
+        #         secretKeyRef:
+        #           name: cloudsql-db-credentials
+        #           key:  dbinstance
+        #   command: ["/cloud_sql_proxy"]
+        #   args: ["-instances=$(DB_INSTANCE)=tcp:5432", "-credential_file=/secrets/cloudsql/secret_cloud_sql.json"]
+        #   volumeMounts:
+        #     - name: my-secrets-volume
+        #       mountPath: /secrets/cloudsql
+        #       readOnly: true
 
       volumes:
-        - name: mapwarper-persistent-volume
+        - name: mapwarper-filestore-volume
           persistentVolumeClaim:
-            claimName: mapwarper-pv-claim
+            claimName: mapwarper-fileserver-claim
+            readOnly: false
         - name: my-secrets-volume
           secret:
             secretName: cloudsql-instance-credentials

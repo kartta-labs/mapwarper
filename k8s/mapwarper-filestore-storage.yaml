@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mapwarper-fileserver
+spec:
+  capacity:
+    storage: 1T
+  accessModes:
+  - ReadWriteMany
+  nfs:
+    path: /mapfileshare
+    server: ***REMOVED***
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mapwarper-fileserver-claim
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1T
