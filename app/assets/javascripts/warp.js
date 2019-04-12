@@ -101,6 +101,13 @@ function init() {
 
   } else if (map_center){
     to_map.setCenter(lonLatToMercator(map_center), 15);
+  } else if (mask_geojson){
+    var vector = new OpenLayers.Layer.Vector("GeoJSON", {
+      projection: "EPSG:4326"
+    });
+    var gformat = new OpenLayers.Format.GeoJSON();
+    vector.addFeatures(gformat.read(mask_geojson));
+    to_map.zoomToExtent(vector.getDataExtent());
   } else {
     //set to the world
     to_map.setCenter(lonLatToMercator(new OpenLayers.LonLat(0.0, 0.0)), 3);
