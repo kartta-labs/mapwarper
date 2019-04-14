@@ -412,8 +412,8 @@ class MapsController < ApplicationController
         @disabled_tabs += ["warped"]
       end
       
-      flash.now[:notice] = t('.login_notice')
-      flash.now[:notice_item] = [t('.login_notice_link'), :new_user_session]
+      #flash.now[:notice] = t('.login_notice')
+      #flash.now[:notice_item] = [t('.login_notice_link'), :new_user_session]
       session[:user_return_to] = request.url
       
       if request.xhr?
