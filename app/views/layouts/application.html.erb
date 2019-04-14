@@ -22,7 +22,7 @@
 
     <div id="headerDiv" class="headerDiv">
       <% if APP_CONFIG["debug_k8s"] %>
-        Pod: <%= ENV["K8S_POD_NAME"] %> 
+        <span class="debug-info">Pod: <%= ENV["K8S_POD_NAME"] %></span>
       <% end %>
       <h1><%= link_to t('common.site_title'), root_path %></h1>
       <%= render :partial => 'shared/nav' %>
