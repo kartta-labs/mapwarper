@@ -18,6 +18,7 @@ if APP_CONFIG["google_storage_enabled"]
       google_project: APP_CONFIG["google_storage_project"],
       google_json_key_location:  APP_CONFIG["google_json_key_location"]
     },
+    fog_attributes: { cache_control: "public, max-age=#{365.days.to_i}" },
     fog_directory: APP_CONFIG["google_storage_bucket"],
     path: ":class/:attachment/:id_partition/:style/:filename"
   )
