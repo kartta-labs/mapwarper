@@ -8,8 +8,9 @@ spec:
   accessModes:
   - ReadWriteMany
   nfs:
-    path: /mapfileshare
-    server: ***REMOVED***
+    #  change this with the name and internal IP address of the NFS server
+    # path: /mapfileshare
+    # server: 10.xx.xx.xx
 
 ---
 
