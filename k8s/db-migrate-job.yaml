@@ -19,7 +19,7 @@ spec:
       containers:
       - name: db-migration
         image: localhost:32000/mapwarper_web:latest
-        command: ["bundle", "exec", "rake", "db:create", "db:migrate"]
+        command: ["bundle", "exec", "rake", "db:migrate"]
         # set variables form config map, app non secrets
         envFrom:
           - configMapRef:
@@ -44,9 +44,8 @@ spec:
           # set env manually
           - name: RAILS_ENV
             value: "production"
-          - name: DB_HOST
-            value: "127.0.0.1"
-          # comment out RAILS_SERVE_STATIC_FILES if you want to disable that setting, rather than change the value. Uncomment for use with Puma in production 
+          #- name: DB_HOST
+          #  value: "127.0.0.1"
           - name: RAILS_SERVE_STATIC_FILES
             value: "true"
           # app secrets -for api keys etc
@@ -56,22 +55,22 @@ spec:
                 name: mapwarper-config
                 key: secret-key-base
 
-      - name: cloudsql-proxy
-        image: gcr.io/cloudsql-docker/gce-proxy:1.11
-        env:
-          - name: DB_INSTANCE
-            valueFrom:
-              secretKeyRef:
-                name: cloudsql-db-credentials
-                key:  dbinstance
-        command: ["/cloud_sql_proxy"]
-        args: ["-instances=$(DB_INSTANCE)=tcp:5432", "-credential_file=/secrets/cloudsql/secret_cloud_sql.json"]
-        volumeMounts:
-          - name: my-secrets-volume
-            mountPath: /secrets/cloudsql
-            readOnly: true
+      # - name: cloudsql-proxy
+      #   image: gcr.io/cloudsql-docker/gce-proxy:1.11
+      #   env:
+      #     - name: DB_INSTANCE
+      #       valueFrom:
+      #         secretKeyRef:
+      #           name: cloudsql-db-credentials
+      #           key:  dbinstance
+      #   command: ["/cloud_sql_proxy"]
+      #   args: ["-instances=$(DB_INSTANCE)=tcp:5432", "-credential_file=/secrets/cloudsql/secret_cloud_sql.json"]
+      #   volumeMounts:
+      #     - name: my-secrets-volume
+      #       mountPath: /secrets/cloudsql
+      #       readOnly: true
 
-      volumes:
-        - name: my-secrets-volume
-          secret:
-            secretName: cloudsql-instance-credentials
+      # volumes:
+      #   - name: my-secrets-volume
+      #     secret:
+      #       secretName: cloudsql-instance-credentials
