@@ -18,7 +18,10 @@ spec:
       restartPolicy: Never
       containers:
       - name: db-migration
-        image: localhost:32000/mapwarper_web:latest
+        # image: localhost:32000/mapwarper_web:latest
+        # You can use envsubst to set the image
+        # e.g. IMAGE=localhost:32000/mapwarper_web:latest envsubst < file.yaml 
+        image: ${IMAGE}
         command: ["bundle", "exec", "rake", "db:migrate"]
         # set variables form config map, app non secrets
         envFrom:

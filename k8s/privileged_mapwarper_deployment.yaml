@@ -9,7 +9,6 @@ metadata:
     app: priv
 spec:
   replicas: 1
-  #minReadySeconds: 5
   template:
     metadata:
       labels:
@@ -18,13 +17,13 @@ spec:
       # This section describes the containers that make up the deployment
       containers:
         - name: priv
-          image: gcr.io/***REMOVED***/mapwarper_web_dev:latest
-          #image: localhost:32000/mapwarper_web:latest
+          # image: localhost:32000/mapwarper_web:latest
+          # You can use envsubst to set the image
+          # e.g. IMAGE=localhost:32000/mapwarper_web:latest envsubst < file.yaml 
+          image: ${IMAGE}
           imagePullPolicy: Always
           stdin: true
           tty: true
-          #command: ["/bin/bash"]
-          #args: ["-c", "rm -f tmp/pids/server.pid && bundle exec rails s -p 30001 -b '0.0.0.0'"]  #30001 as we don't really want this to be serving
           ports:
             - containerPort: 3000
           #elevate security as it needs to mount fuse

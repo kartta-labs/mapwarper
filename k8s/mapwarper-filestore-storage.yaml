@@ -8,9 +8,13 @@ spec:
   accessModes:
   - ReadWriteMany
   nfs:
-    #  change this with the name and internal IP address of the NFS server
+    # change this with the name and internal IP address of the NFS server
     # path: /mapfileshare
     # server: 10.xx.xx.xx
+    # You can use envsubst to set the image
+    # e.g. FS_PATH=mapfileshare FS_SERVER=10.01.01.01 envsubst < file.yaml
+    path: ${FS_PATH}
+    server: ${FS_SERVER}
 
 ---
 

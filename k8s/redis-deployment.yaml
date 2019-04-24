@@ -1,7 +1,3 @@
-#
-# deploys redis one master for in memmory. we should look at the maxmemory here and pod resources too
-#
-
 apiVersion: v1
 kind: Pod
 metadata:
