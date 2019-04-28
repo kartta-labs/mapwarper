@@ -26,7 +26,11 @@ spec:
           args: ["-c", "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"]
           ports:
             - containerPort: 3000
-
+          resources:
+            limits:
+              cpu: 1
+            requests:
+              cpu: 250m
           livenessProbe:
             tcpSocket:
               port: 3000
@@ -105,6 +109,11 @@ spec:
         #     - name: my-secrets-volume
         #       mountPath: /secrets/cloudsql
         #       readOnly: true
+        #   resources:
+        #     limits:
+        #       cpu: 1
+        #     requests:
+        #       cpu: 250m
 
       volumes:
         - name: mapwarper-filestore-volume
