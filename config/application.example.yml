@@ -28,6 +28,8 @@ defaults: &defaults
   omniauth_github_secret: "ABC"
   omniauth_facebook_key: "ABC"
   omniauth_facebook_secret: "ABC"
+  omniauth_google_key: ""
+  omniauth_google_secret: ""
   id_key: ""
   id_secret: ""
   mapbox_access_token: ""

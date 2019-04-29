@@ -56,6 +56,17 @@ class  OmniauthCallbacksController < Devise::OmniauthCallbacksController
       redirect_to root_path
     end
   end
+
+  def google_oauth2
+    @user = User.find_for_google_oauth(request.env["omniauth.auth"], current_user)
+    if @user.persisted?
+      flash[:notice] = I18n.t "devise.omniauth_callbacks.success", :kind => "Google"
+      sign_in_render_or_redirect
+    else
+      redirect_to root_path
+    end
+
+  end
   
   protected
   

@@ -41,6 +41,7 @@ gem 'omniauth-osm'
 gem 'omniauth-github'
 gem 'omniauth-mediawiki'
 gem 'omniauth-facebook'
+gem 'omniauth-google-oauth2'
 
 gem 'pg', '~>0.21'
 
