@@ -18,7 +18,7 @@
   <%= link_to t('.new_unlock_instructions'), new_unlock_path(resource_name), :class=>"devise-link"%><br />
 <% end -%>
 
-<%- if devise_mapping.omniauthable? %>
+<%- if false && devise_mapping.omniauthable? %>
 <%- sign_action = t('.login').downcase
     if controller_name == "registrations"
       sign_action = t('.sign_up').downcase
@@ -27,6 +27,7 @@
      
 <div class="omniauth_links">
   <%= t('.social_sign_in', :action => sign_action) %> <br /> 
+  <% if false %>
   <span class="osm">
     <%= link_to "#{image_tag("osm_logo.png", width: '25', height: '25')} #{t('.openstreetmap')}".html_safe, omniauth_authorize_path(resource_name, "osm"), :class=>"osm" %>
   </span>
@@ -36,5 +37,6 @@
   <span class="facebook">
     <%= link_to "#{image_tag("facebook_logo.png", width: '25', height: '25')} #{t('.facebook')}".html_safe, omniauth_authorize_path(resource_name, "facebook"), :class=>"facebook" %>
   </span>
+  <% end %>
 </div>
 <% end -%>
