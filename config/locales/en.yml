@@ -818,7 +818,7 @@ en:
       bilinear: Bilinear
       click_button: Add Control Point
       click_text_btm: Do this for at least three points.
-      click_text_top: Double-click on both maps, then click
+      click_text_top: Add points to both maps and click
       close_popup: Close popup
       cubic: Cubic
       cubicspline: Cubic Spline , slower but best quality
