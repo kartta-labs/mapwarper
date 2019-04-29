@@ -924,6 +924,10 @@ clear: both;
   font-size: smaller;
 }
 
+.pagination em.current{
+  padding: .2em .5em;
+  border: 1px solid white;
+}
 .clear{
 	clear: both;        /* extend height of .main to longest column */
 	height: 1px;
