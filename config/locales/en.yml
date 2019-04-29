@@ -31,6 +31,9 @@ en:
         map:
           error_url: is invalid or inaccessible
           filename_not_unique: is already being used
+          attributes:
+            upload:
+              no_file_uploaded: image file is not uploaded
         my_map:
           attributes:
             map_id:

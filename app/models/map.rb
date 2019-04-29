@@ -21,6 +21,7 @@ class Map < ActiveRecord::Base
   validates_attachment_size(:upload, :less_than => MAX_ATTACHMENT_SIZE) if defined?(MAX_ATTACHMENT_SIZE)
  
   validates_attachment_content_type :upload, :content_type => ["image/jpg", "image/jpeg","image/pjpeg", "image/png","image/x-png", "image/gif", "image/tiff"]
+  validates_presence_of :upload, :message => :no_file_uploaded, :unless => :upload_url_provided?
   
   validates_presence_of :title
   validates_numericality_of :rough_lat, :rough_lon, :rough_zoom, :allow_nil => true
