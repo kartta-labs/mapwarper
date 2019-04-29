@@ -3,7 +3,7 @@
 <div class="row">
   <div class="column col-lg-4">
     <p>
-      <b> <%= t('.title') %></b><br />
+      <b> <%= t('.title') %></b><span class="tiny-text"> <%= t('.title_hint') %> </span><br />
       <%= f.text_field :title %>
     </p>
 
@@ -68,12 +68,12 @@
      </p>
 
     <p>
-      <b><%= t('.published') %></b><span class="tiny-text"> <%= t('.optional_hint') %></span><br />
+      <b><%= t('.published') %></b><span class="tiny-text"> <%= t('.published_hint') %></span><br />
       <%= f.date_select(:published_date, :include_blank => true, :order => [:day, :month, :year ], :start_year => 1500, :end_year =>Time.now.year)  %>
     </p>
 
     <p>
-      <b><%= t('.reprint') %> </b><span class="tiny-text"> <%= t('.optional_hint') %></span><br />
+      <b><%= t('.reprint') %> </b><span class="tiny-text"> <%= t('.published_hint') %></span><br />
       <%= f.date_select(:reprint_date, :include_blank => true, :order => [:day, :month, :year ], :start_year => 1500, :end_year =>Time.now.year)  %>
     </p>
     
@@ -87,9 +87,9 @@
       <%= f.text_field :metadata_projection %>
     </p>
     <p>
-      <b><%= t('.location') %></b><span class="tiny-text"> <%= t('.optional_hint') %></span><br />
-      <b><%= t('.lat') %> </b> <%= f.text_field :metadata_lat %><br />
-      <b><%= t('.lon') %> </b> <%= f.text_field :metadata_lon %>
+      <b><%= t('.location') %></b><span class="tiny-text"> <%= t('.location_hint') %> </span><br />
+      <b><%= t('.lat') %> </b><span class="tiny-text"> <%= t('.lat_hint') %> </span> <%= f.text_field :metadata_lat %><br />
+      <b><%= t('.lon') %> </b> <span class="tiny-text"> <%= t('.lon_hint') %> </span> <%= f.text_field :metadata_lon %>
     </p>
 
   </div>

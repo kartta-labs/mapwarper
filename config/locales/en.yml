@@ -527,7 +527,7 @@ en:
       header: Export Mosaic
       title: Export Mosaic %{mosaic_id}
     form:
-      depicts_hint: "(year, optional)"
+      depicts_hint: "(year in numbers, YYYY, optional)"
       depicts_hint_2: Used to display layers by year.
       detail: detail
       my_maps: favourites
@@ -694,22 +694,26 @@ en:
       author: Author(s)
       call: Call Number
       depicted: Date Depicted
-      depicted_hint: "(year, optional)"
+      depicted_hint: "(year in numbers, YYYY format, optional)"
       desc: Description
       desc_hint: "(max 256 chars)"
       issue: Issue Year
-      issue_hint: "(year, optional)"
+      issue_hint: "(year in numbers, YYYY format, optional)"
       issue_hint_2: Used to display maps by year.
       lat: 'Lat:'
+      lat_hint: "(decimal degrees e.g. 54.213, optional)"
       location: Metadata Locations
+      location_hint: Maps will zoom to this location if provided
       lon: 'Lon:'
+      lon_hint: "(decimal degrees e.g. -1.034, optional)"
       make_public: Make Public
       max_size: 'Max size:'
-      optional_hint: "(optional)"
+      optional_hint: "(text, optional)"
       photo_uuid: Photo Number
       place: Place of Publication
       projection: Metadata Projection
       published: Published Date
+      published_hint: "(date, optional)"
       publisher: Publisher
       reprint: Reprint Date
       scale: Scale
@@ -718,6 +722,7 @@ en:
       tags: Tags
       tags_hint: "(comma separated)"
       title: Title
+      title_hint: (required)
       unique_id: Metadata Unique ID
       upload_file: 'Upload An Image File:'
       upload_or_url: OR
