@@ -85,7 +85,7 @@ class Import < ActiveRecord::Base
     local_copy = File.join("tmp", self.metadata_file_name)
     self.metadata.copy_to_local_file(nil, local_copy)
     data = open(local_copy)
-    map_data = CSV.parse(data, :headers => true, :header_converters => :symbol, :col_sep => "," , :quote_char => '"', :liberal_parsing => true)
+    map_data = CSV.parse(data, :headers => true, :header_converters => :symbol, :col_sep => "," , :quote_char => '"')
     map_data.by_row!
     map_data.each do  | map_row |
       uuid = map_row[:uuid]
