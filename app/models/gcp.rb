@@ -5,6 +5,7 @@ class Gcp < ActiveRecord::Base
   
   validates_numericality_of :x, :y, :lat, :lon
   validates_presence_of :x, :y, :lat, :lon, :map_id
+  validate :unique_coordinates
   
   scope :soft, -> { where(:soft => true)}
   scope :hard, -> { where('soft IS NULL OR soft = ?', false) }
@@ -118,6 +119,21 @@ class Gcp < ActiveRecord::Base
   
   def update_map_timestamp
     self.map.update_gcp_touched_at
+  end
+
+  #
+  # Validation to check if a point does not have a duplicate x,y or lat,lon with the same map 
+  #
+  def unique_coordinates
+    if new_record?
+      if Gcp.exists?({x: x, y: y, lon: lon, lat: lat, map_id: map_id}) || ( Gcp.exists?({x: x, y: y, map_id: map_id}) || Gcp.exists?({lon: lon, lat: lat, map_id: map_id}) )
+        errors.add("coordinates", "Coordinates are not unique") 
+      end
+    else
+      if Gcp.where.not(id: id).exists?({x: x, y: y, lon: lon, lat: lat, map_id: map_id}) || ( Gcp.where.not(id: id).exists?({x: x, y: y, map_id: map_id}) || Gcp.where.not(id: id).exists?({lon: lon, lat: lat, map_id: map_id}) )
+        errors.add("coordinates", "Coordinates are not unique") 
+      end
+    end
   end
   
 end

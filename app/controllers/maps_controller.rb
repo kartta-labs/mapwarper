@@ -924,23 +924,29 @@ class MapsController < ApplicationController
     if @map.gcps.hard.size.nil? || @map.gcps.hard.size < 3
       @too_few = true
       @notice_text = t('maps.rectify_main.not_enough_points')
-      @output = @notice_text
+      return @notice_text
     elsif @map.status == :warping
       @fail = true
       @notice_text = t('maps.rectify_main.being_rectified_error')
-      @output = @notice_text
-    else
-      if user_signed_in?
-        um  = current_user.my_maps.new(:map => @map)
-        um.save if um.valid?
-      end
-      
-      @output = @map.warp! resample_option, transform_option, use_mask #,masking_option
-      
-      @map.clear_cache
-
-      @notice_text = t('maps.rectify_main.rectified_success')
+      return @notice_text
     end
+
+    if user_signed_in?
+      um  = current_user.my_maps.new(:map => @map)
+      um.save if um.valid?
+    end
+    
+    begin
+      @map.warp! resample_option, transform_option, use_mask 
+    rescue Map::TransformNotSolveableError
+      @fail = true
+      @notice_text = t('maps.rectify_main.transform_not_solveable')
+      return @notice_text
+    end
+
+    @map.clear_cache
+
+    @notice_text = t('maps.rectify_main.rectified_success')
   end
   
   

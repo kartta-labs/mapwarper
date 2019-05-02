@@ -99,8 +99,13 @@ class Api::V1::MapsController < Api::V1::ApiController
       render :json => { :errors => [{:title => "Map busy", :detail => "Map currently being rectified. Try again later."}] },:status => :unprocessable_entity
       return false
     end
-     
-    @map.warp! transform_option, resample_option, use_mask
+         
+    begin
+      @map.warp! resample_option, transform_option, use_mask 
+    rescue Map::TransformNotSolveableError
+      render :json => { :errors => [{:title => "Rectify Error", :detail => "There was an error rectifying the map, transform not solveable. Try changing some points"}] },:status => :unprocessable_entity
+      return false
+    end
     
     @map.clear_cache
     

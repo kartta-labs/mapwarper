@@ -39,7 +39,7 @@ class GcpsController < ApplicationController
         format.xml {render :xml => @gcps.to_xml(:methods => :error)}
       else
 
-        format.json { render :json => {:stat => "fail", :message =>"Could not update GCP", :errors => @gcp.errors.to_a, :items => []}.to_json , :callback => params[:callback]}
+        format.json { render :json => {:stat => "fail", :message =>"Could not update GCP", :errors => @gcp.errors.to_a, :items => []}.to_json , :callback => params[:callback], :status => :unprocessable_entity}
         format.html {  redirect_to_index(t('.error'))}
       end
 
@@ -54,7 +54,7 @@ class GcpsController < ApplicationController
     value = params[:value]
 
     respond_to do |format|
-      if @gcp.update_attribute(attribute, value)
+      if @gcp.update_attributes(attribute => value)
         @map = @gcp.map
         @gcps = @map.gcps_with_error(params[:soft])
 
@@ -67,7 +67,7 @@ class GcpsController < ApplicationController
 
       else
 
-        format.json { render :json => {:stat => "fail", :message =>"Could not update GCP", :errors => @gcp.errors.to_a, :items => []}.to_json , :callback => params[:callback]}
+        format.json { render :json => {:stat => "fail", :message =>"Could not update GCP", :errors => @gcp.errors.to_a, :items => []}.to_json , :callback => params[:callback], :status => :unprocessable_entity}
         format.html {redirect_to_index(t('.error'))}
       end
     end
@@ -123,7 +123,7 @@ class GcpsController < ApplicationController
         format.xml {render :xml => @gcps.to_xml(:methods => :error)}
 
       else
-        format.json { render :json => {:stat => "fail", :message =>"Could not add GCP", :errors => @gcp.errors.to_a, :items => []}.to_json, :callback => params[:callback]}
+        format.json { render :json => {:stat => "fail", :message =>"Could not add GCP", :errors => @gcp.errors.to_a, :items => []}.to_json, :callback => params[:callback], :status => :unprocessable_entity}
       end
     end
 

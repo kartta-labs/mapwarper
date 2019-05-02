@@ -719,6 +719,7 @@ class Map < ActiveRecord::Base
       logger.error "Error gdal warp script" + w_err
       logger.error "output = "+w_out
       w_out = "error with gdal warp: "+ w_err +"<br /> try it again?<br />"+ w_out
+      raise TransformNotSolveableError if w_err.to_s.include?("Transform is not solvable")
     else
       w_out = "Okay, warp command ran fine! <div id='scriptout'>" + w_out +"</div>"
     end
@@ -1002,6 +1003,12 @@ class Map < ActiveRecord::Base
 
 
       return o_out
+    end
+  end
+  
+  class TransformNotSolveableError < StandardError
+    def message
+      "Transform not solveable"
     end
   end
   

@@ -788,6 +788,7 @@ en:
       being_rectified_error: Sorry, the map is currently being rectified somewhere else, please try again later.
       not_enough_points: Sorry, the map needs at least three control points to be able to rectify it
       rectified_success: Map rectified.
+      transform_not_solveable: There was an error rectifying the map. Please change some points and try again.
     save_mask_and_warp:
       masked_needs_more_points: Map masked, but it needs more control points to rectify. Click the Rectify tab to add some.
       masked_warp_failed: Mask saved, but not applied as the map is currently being rectified somewhere else, please try again later.
