@@ -4,6 +4,7 @@ require 'rails/test_help'
 require 'webmock/minitest'
 #require "mocha/test_unit"
 require 'mocha/minitest'
+require 'capybara/rails'
 
 FileUtils.cp(Dir[File.join(Rails.root, "/test/fixtures/data/*.tif")].select {|f| test ?f, f}, File.join(Rails.root, "/test/fixtures/data/src/"))
 
@@ -76,5 +77,23 @@ end
    # this path may not be on all systems, but should be common across *nix ones
    def self.get_words
      File.read('/usr/share/dict/words').lines.select {|l| (5..15).cover?(l.strip.size) }.sample(160).sort_by(&:downcase).collect(&:strip)
+   end
+ end
+
+
+ require 'capybara/rails'
+ require 'capybara/minitest'
+ require 'capybara/minitest/spec'
+
+ class ActionDispatch::IntegrationTest
+   # Make the Capybara DSL available in all integration tests
+   include Capybara::DSL
+   # Make `assert_*` methods behave like Minitest assertions
+   include Capybara::Minitest::Assertions
+
+   # Reset sessions and driver between tests
+   teardown do
+     Capybara.reset_sessions!
+     Capybara.use_default_driver
    end
  end
