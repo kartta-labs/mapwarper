@@ -116,19 +116,15 @@ class MapsControllerTest < ActionController::TestCase
         assert_response :unprocessable_entity
         body = JSON.parse(response.body)
         
-        assert body["errors"][0]["source"]["pointer"].include?("title")
-        assert body["errors"][0]["detail"].include?("blank")
+        assert body["errors"][1]["source"]["pointer"].include?("title")
+        assert body["errors"][1]["detail"].include?("blank")
       end
 
-      test "create map basic" do
-
-        assert_difference('Map.count', 1) do
+      test "create map basic without an upload should fail" do
+        assert_difference('Map.count', 0) do
           post 'create', :format => :json, 'data' => {'type' => "maps", "attributes"=>{"description"=>"foo", "title"=>"new map"}}
         end
-        assert_response :created
-        body = JSON.parse(response.body)
-        #puts body.inspect
-        assert_equal "new map", body["data"]["attributes"]["title"]
+        assert_response :unprocessable_entity
       end
       
       test "create map from file upload" do

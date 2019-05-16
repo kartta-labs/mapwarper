@@ -34,6 +34,8 @@ class LayersControllerTest < ActionController::TestCase
       assert_response :ok
       assert_not_nil assigns(:layers)
       body = JSON.parse(response.body)
+      #ids = body["data"].map{ |b | b["attributes"]["name"]}
+      #puts ids
       assert_equal Layer.count, body["data"].length
       assert_equal @index_layers.first.name, body["data"][0]["attributes"]["name"]
     end

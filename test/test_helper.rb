@@ -65,3 +65,16 @@ end
     end
   end
 end
+
+ class WordArray
+   def self.word_seq(n)
+     @@words ||= get_words
+
+     @@words[n]
+   end
+
+   # this path may not be on all systems, but should be common across *nix ones
+   def self.get_words
+     File.read('/usr/share/dict/words').lines.select {|l| (5..15).cover?(l.strip.size) }.sample(160).sort_by(&:downcase).collect(&:strip)
+   end
+ end

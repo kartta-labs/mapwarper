@@ -70,7 +70,7 @@ class ApiImportsControllerTest < ActionController::TestCase
   end
 
   test "maps" do
-    map = FactoryGirl.create(:basic_map)
+    map = FactoryGirl.create(:index_map)
     map2 = FactoryGirl.create(:unstubbed_map)
     @import.maps << [map, map2]
     get :maps, :id => @import.id
@@ -79,7 +79,7 @@ class ApiImportsControllerTest < ActionController::TestCase
     assert_equal 2, body["data"].size
     
     assert_equal "maps", body["data"][0]["type"]
-    assert_equal map.title, body["data"][0]["attributes"]["title"]
+    assert_equal map2.title, body["data"][0]["attributes"]["title"]
   end
 
 end

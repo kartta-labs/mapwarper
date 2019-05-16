@@ -63,14 +63,13 @@ class ImportsControllerTest < ActionController::TestCase
   end
 
   test "maps of import" do
-    map = FactoryGirl.create(:basic_map)
+    map = FactoryGirl.create(:index_map)
     map2 = FactoryGirl.create(:unstubbed_map)
     @import.maps << [map, map2]
     get :maps, :id => @import.id
     assert_response :ok
     
     assert_select "tr", 3  #two tr the thead row and the import
-   
     assert_select 'a[href=?]', map_path(map), { text: map.title }
 
   end

@@ -11,7 +11,7 @@ FactoryGirl.define do
 
   factory :index_map, :parent => :basic_map do
     sequence :title do |n|
-      "map #{n}"
+      "map #{WordArray::word_seq(n)}"
     end
     sequence :description do | n|
       "description #{n}"

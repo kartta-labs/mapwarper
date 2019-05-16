@@ -28,7 +28,7 @@ FactoryGirl.define do
     
     factory :index_layer, :parent => :layer do
       sequence :name do |n|
-        "layer #{n}"
+        "layer #{WordArray::word_seq(n)}"
       end
       sequence :description do | n|
         "layer_desc #{n}"
