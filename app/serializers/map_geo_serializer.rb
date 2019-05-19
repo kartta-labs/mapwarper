@@ -11,11 +11,13 @@ class MapGeoSerializer < ActiveModel::Serializer
   end
 
   def geometry
-    if object.bbox_geom
+    if object.bbox_geom && instance_options[:geo] == "bbox"
       polygon = GeoRuby::SimpleFeatures::Polygon.from_ewkt(object.bbox_geom.as_text)
-      coords = polygon.as_json[:coordinates].to_s
+      coords = polygon.as_json[:coordinates]
+    elsif instance_options[:geo] == "mask" && object.masking && object.masking.transformed_geojson
+      coords = JSON.parse(object.masking.transformed_geojson)["features"][0]["geometry"]["coordinates"]
     else
-      coords = ""
+      coords = []
     end
     {type: "Polygon", coordinates: coords}
   end

@@ -11,7 +11,8 @@ class Api::V1::MapsController < Api::V1::ApiController
   
   def show
     if request.format == "geojson"
-      render :json  => @map, :serializer => MapGeoSerializer, :adapter => :attributes
+      geo = ["bbox", "mask"].include?(params["geo"]) ? params["geo"] : "bbox"  
+      render :json  => @map,  geo: geo, :serializer => MapGeoSerializer, :adapter => :attributes
      return
    end
     render :json  => @map, :include => ['layers', 'owner']
@@ -269,7 +270,8 @@ class Api::V1::MapsController < Api::V1::ApiController
     @maps = Map.all.where(layer_conditions).where(warped_options).where(query_options).where(bbox_conditions).order(order_options).order(sort_geo).paginate(paginate_options)
     
     if request.format == "geojson"
-      render :json  => @maps, :each_serializer => MapGeoSerializer, :adapter => :attributes
+      geo = ["bbox", "mask"].include?(params["geo"]) ? params["geo"] : "bbox"  
+      render :json  => @maps, geo: geo, :each_serializer => MapGeoSerializer, :adapter => :attributes
       return
     end
     #ActiveSupport.escape_html_entities_in_json = false
@@ -289,7 +291,7 @@ class Api::V1::MapsController < Api::V1::ApiController
   end
   
   def index_params
-    params.permit(:page, :per_page, :query, :field, :sort_key, :sort_order,  :show_warped, :bbox, :operation, :format, :layer_id, :id)
+    params.permit(:page, :per_page, :query, :field, :sort_key, :sort_order,  :show_warped, :bbox, :operation, :format, :layer_id, :id, :geo)
   end
   
   def find_map

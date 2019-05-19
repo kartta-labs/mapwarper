@@ -13,9 +13,9 @@ class LayerGeoSerializer < ActiveModel::Serializer
   def geometry
     if object.bbox_geom
       polygon = GeoRuby::SimpleFeatures::Polygon.from_ewkt(object.bbox_geom.as_text)
-      coords = polygon.as_json[:coordinates].to_s
+      coords = polygon.as_json[:coordinates]
     else
-      coords = ""
+      coords = []
     end
     {type: "Polygon", coordinates: coords}
   end

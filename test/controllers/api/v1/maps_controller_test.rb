@@ -62,7 +62,51 @@ class MapsControllerTest < ActionController::TestCase
         assert_equal body["data"]["attributes"]["bbox"], @warped_map.bbox
       end
 
-      #  test "get map in geojson format" do skip end
+      test "get map with bbox in geojson format" do
+        get :show, :id => @warped_map.id, :format => :geojson
+        assert_response :success
+        assert_not_nil assigns(:map)
+        body = JSON.parse(response.body)
+        assert_not_nil body["properties"]["bbox"]
+        assert_equal body["properties"]["bbox"], @warped_map.bbox
+        assert_not_nil body["geometry"]["coordinates"]
+        geojson =  body["geometry"]["coordinates"]
+        assert_equal 5, geojson[0].size  #ring of coords
+       
+        assert_equal @warped_map.bbox.split(",")[0].to_f, geojson[0][0][0]
+      end
+
+      test "get map with bbox in geojson format with specific bbox geo param" do
+        get :show, :id => @warped_map.id, :format => :geojson, :geo => "bbox"
+        assert_response :success
+        assert_not_nil assigns(:map)
+        body = JSON.parse(response.body)
+        assert_not_nil body["properties"]["bbox"]
+        assert_equal body["properties"]["bbox"], @warped_map.bbox
+        assert_not_nil body["geometry"]["coordinates"]
+        geojson =  body["geometry"]["coordinates"]
+        assert_equal 5, geojson[0].size  #ring of coords
+       
+        assert_equal @warped_map.bbox.split(",")[0].to_f, geojson[0][0][0]
+      end
+
+      test "get map with bbox in geojson format with  mask geo param" do
+        masking = FactoryGirl.create(:masking, map: @warped_map)
+        get :show, :id => @warped_map.id, :format => :geojson, :geo => "mask"
+        assert_response :success
+        assert_not_nil assigns(:map)
+        body = JSON.parse(response.body)
+        assert_not_nil body["properties"]["bbox"]
+        assert_equal body["properties"]["bbox"], @warped_map.bbox
+        assert_not_nil body["geometry"]["coordinates"]
+        geojson =  body["geometry"]["coordinates"]
+        assert_equal 7, geojson[0].size  #see geojson coords in masking factory
+       
+        assert_equal 111263.560446206232882, geojson[0][0][0]
+      end
+
+
+
       test "get map gcps" do
         gcp_1 = FactoryGirl.create(:gcp_1, :map => @warped_map)
         FactoryGirl.create(:gcp_2, :map => @warped_map)
@@ -430,6 +474,34 @@ class MapsControllerTest < ActionController::TestCase
       body = JSON.parse(response.body)
       assert_equal [], body["data"]
       
+    end
+
+    test "geosearch with geojson bbox" do
+      get :index, :bbox => "26.849937539609, 58.328018921793, 26.779899697812, 58.421402710855", :query =>"title",:operation => "intersect", :format => :geojson
+      assert_response :success
+      assert_not_nil assigns(:maps)
+      body = JSON.parse(response.body)
+
+      assert_equal body[0]["properties"]["bbox"], @warped_map.bbox
+      assert_not_nil body[0]["geometry"]["coordinates"]
+      coords =  body[0]["geometry"]["coordinates"]
+      assert_equal 5, coords[0].size  #ring of coords
+      assert_equal @warped_map.bbox.split(",")[0].to_f,  coords[0][0][0]
+    end
+
+    test "geosearch with geojson mask" do
+      masking = FactoryGirl.create(:masking, map: @warped_map)
+      get :index, :bbox => "26.849937539609, 58.328018921793, 26.779899697812, 58.421402710855", :query =>"title",:operation => "intersect", :format => :geojson, :geo => "mask"
+      assert_response :success
+      assert_not_nil assigns(:maps)
+      body = JSON.parse(response.body)
+
+      assert_not_nil body[0]["properties"]["bbox"]
+      assert_equal body[0]["properties"]["bbox"], @warped_map.bbox
+      assert_not_nil body[0]["geometry"]["coordinates"]
+      geojson =  body[0]["geometry"]["coordinates"]
+      assert_equal 7, geojson[0].size  #see geojson coords in masking factory
+      assert_equal 111263.560446206232882, geojson[0][0][0]
     end
     
 
