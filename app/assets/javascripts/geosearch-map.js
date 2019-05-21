@@ -51,15 +51,31 @@ function insertMapTablePagination(total, per, current) {
 
 
 function addMapToMapLayer(mapitem) {
-  var bbox_array = mapitem.bbox.split(",").map(Number);
-  var bbox = ol.proj.transformExtent(bbox_array, 'EPSG:4326', 'EPSG:3857');
 
-  var feature = new ol.Feature({
-    geometry: new ol.geom.Polygon.fromExtent(bbox),
-    mapTitle: mapitem.title,
-    mapId:   mapitem.id
-  });
-  mapIndexLayer.getSource().addFeature(feature);
+  if (mapitem.mask_geojson){
+    ff = JSON.parse(mapitem.mask_geojson)
+    var features = new ol.format.GeoJSON().readFeatures(ff);
+    for (var a = 0; a < features.length; a++) {
+      features[a].set("mapTitle", mapitem.title);
+      features[a].set("mapId",  mapitem.id);
+    }
+    
+    mapIndexLayer.getSource().addFeatures(features)
+
+  }else{
+
+    var bbox_array = mapitem.bbox.split(",").map(Number);
+    var bbox = ol.proj.transformExtent(bbox_array, 'EPSG:4326', 'EPSG:3857');
+  
+    var feature = new ol.Feature({
+      geometry: new ol.geom.Polygon.fromExtent(bbox),
+      mapTitle: mapitem.title,
+      mapId:   mapitem.id
+    });
+
+    mapIndexLayer.getSource().addFeature(feature)
+  }
+ 
 }
 
 function getPopupHTML(feature){
