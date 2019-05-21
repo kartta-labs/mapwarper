@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <script type="text/javascript">
-    var gs_bounds = new OpenLayers.Bounds(<%=@bbox-%>);
+    var gs_bounds = [-165,-55,179,73];  //world
 
     var mapBaseURL = '<%= url_for layers_path %>';
     var mapThumbBaseURL = '<%= url_for(layer_thumb_base_path) %>/';
@@ -46,11 +46,15 @@
   <% @onload = "searchmapinit();" %> 
 <% end %>
 <h2><%= t('.title') %></h2>
-<div id="geosearch">
   <p><%= t('.description_html') %>
   </p>
   <div id="searchmap-container">
-    <div id="searchmap-list-block">
+
+  <div class="row">
+
+    <div id="left-geo-col" class="col-md-4">
+
+    <div class="searchmap-list-block">
 
       <div id="geosearch-year-filter-container">
         <div id="year-filter">
@@ -69,7 +73,9 @@
 
       </table>
     </div>
-    <div id="searchmap-block">
+  </div>
+  <div id="right-geo-col" class="col-md-8">
+    <div class="searchmap-block">
       <form id='placeSearchForm'  onsubmit='doPlaceSearch(this);
           return false;' class='geosearchform'>
         <input type="text" id="place" name="place" value="">
@@ -80,10 +86,15 @@
       <input type="hidden" id="from" value = "<%= @year_min %>"/>
       <input type="hidden" id="to" value = "<%= @year_max %>" />
       <div id="searchmap"></div>
+      <div id="popup" class="ol-popup" style="visibility:hidden;">
+        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+        <div id="popup-content"></div>
+      </div>
     </div>
+  </div>
   </div>
   <div id="under-searchmap-container">
   </div>
-</div>
+
 
 

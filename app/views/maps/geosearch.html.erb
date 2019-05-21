@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <script type="text/javascript">
-    var gs_bounds = new OpenLayers.Bounds(<%=@bbox-%>);
+    var gs_bounds = [-165,-55,179,73];  //world
     var mapBaseURL = '<%= url_for maps_path %>';
     var mapThumbBaseURL = '<%= url_for(map_thumb_base_path) %>/';
     var year_from = <%= @year_min.to_i %>;
@@ -48,8 +48,13 @@
 
 <h2><%= t('.title') %></h2>
 <p><%= t('.description') %></p>
-<div id="searchmap-container">
-  <div id="searchmap-list-block">
+
+
+<div class="searchmap-container">
+  <div class="row">
+
+    <div id="left-geo-col" class="col-md-4">
+      <div class="searchmap-list-block">
 
         <div id="geosearch-year-filter-container">
           <div id="year-filter">
@@ -59,14 +64,17 @@
             <div id="year-slider-container">
               <div id="year-slider"></div>
             </div>	
-          </div>
-        </div>
+          </div> <!-- year-filter -->
+        </div><!-- geosearch-year-filter-container -->
 
         <table id="searchmap-table" style="table-layout:fixed">
 
         </table>
-      </div>
-      <div id="searchmap-block">
+      </div><!--searchmap-list-block -->
+    </div><!--left-col -->
+
+    <div id="right-geo-col" class="col-md-8">
+      <div class="searchmap-block">
         <form id='placeSearchForm'  onsubmit='doPlaceSearch(this);
         return false;' class='geosearchform'>
           <input type="text" id="place" name="place" value="">
@@ -78,8 +86,15 @@
         <input type="hidden" id="from" value = "<%= @year_min %>"/>
         <input type="hidden" id="to" value="<%= @year_max %>"/>
         <div id="searchmap"></div>
-      </div>
-    </div>
-    <div id="under-searchmap-container">
-    </div>
-  </div>
+        <div id="popup" class="ol-popup" style="visibility:hidden;">
+          <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+          <div id="popup-content"></div>
+        </div>
+      </div> <!--searchmap-block -->
+    </div> <!-- right col -->
+
+  </div> <!-- row-->
+</div> <!-- searchmap-container -->
+
+<div id="under-searchmap-container">
+</div>

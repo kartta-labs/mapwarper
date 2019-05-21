@@ -51,45 +51,41 @@ function insertMapTablePagination(total, per, current) {
 
 
 function addMapToMapLayer(mapitem) {
-  var layer = mapIndexLayer;
-  var feature = new OpenLayers.Feature.Vector((
-          new OpenLayers.Bounds.fromString(mapitem.bbox).transform(layer.map.displayProjection, layer.map.projection)).toGeometry());
-  feature.mapTitle = mapitem.name;
-  feature.mapId = mapitem.id;
-  layer.addFeatures([feature]);
+  var bbox_array = mapitem.bbox.split(",").map(Number);
+  var bbox = ol.proj.transformExtent(bbox_array, 'EPSG:4326', 'EPSG:3857');
+
+  var feature = new ol.Feature({
+    geometry: new ol.geom.Polygon.fromExtent(bbox),
+    mapTitle: mapitem.title,
+    mapId:   mapitem.id
+  });
+  mapIndexLayer.getSource().addFeature(feature);
 }
 
-function onFeatureSelect(feature) {
-  selectedFeature = feature;
+function getPopupHTML(feature){
+  var mapId = feature.get('mapId');
 
   var img = new Image();
-  img.src = mapThumbBaseURL + feature.mapId;
+  img.src = mapThumbBaseURL + mapId;
   img.onload = function(){
     var width = img.width;
     var height = img.height;
     var thumbHeight = 80;
     var thumbWidth = (thumbHeight / height) * width;
     var thumbWidth = Math.round(thumbWidth);
-    jQuery(".searchmap-popup img").attr("height",thumbHeight)
-    jQuery(".searchmap-popup img").attr("width",thumbWidth)
+    jQuery(".searchmap-popup img").attr("height",thumbHeight);
+    jQuery(".searchmap-popup img").attr("width",thumbWidth);
   }
 
-  popup = new OpenLayers.Popup.FramedCloud("cheese",
-          feature.geometry.getBounds().getCenterLonLat(),
-          null,
-          "<div class='searchmap-popup'><a href='" + mapBaseURL + "/" +
-          feature.mapId + "' target='_blank'>" +
-          //feature.mapTitle+"</a><br />"+
-          "<a href='#a-map-row-" + feature.mapId + "' ><img title='" + feature.mapTitle + "' src='" + mapThumbBaseURL + "/" + feature.mapId + "' height='80'></a>" +
-          "<br /> <a href='" + mapBaseURL + "/" + feature.mapId + "' target='_blank'>"+I18n["geosearch"]["open_layer"]+"</a>" +
-          "</div>",
-          null, true, onPopupClose);
-  popup.panMapIfOutOfView = false;
-  popup.maxSize = new OpenLayers.Size(250, 350);
-  feature.popup = popup;
-  searchmap.addPopup(popup);
-  //jQuery("tr#map-row-"+feature.mapId).effect("highlight", {}, 4000);
-  jQuery("tr#map-row-" + feature.mapId).addClass('highlight');
+  popupHTML = "<div class='searchmap-popup'><a href='" + mapBaseURL + "/" +
+ mapId + "' target='_blank'>" +
+  //feature.mapTitle+"</a><br />"+
+  "<a href='#a-map-row-" + mapId + "' ><img title='" + feature.get('mapTitle') + "' src='" + mapThumbBaseURL + "/" + mapId + "' height='80'></a>" +
+  "<br /> <a href='" + mapBaseURL + "/" + mapId + "' target='_blank'>"+I18n["geosearch"]["open_layer"]+"</a>" +
+  "</div>"
+
+  return popupHTML;
 }
+
 
 

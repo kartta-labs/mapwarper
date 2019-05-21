@@ -169,18 +169,19 @@ function toggleMapIndexLayer(){
 // TODO This function use old OL library
 function loadMapFeatures(){
   var options = {'format': 'json'};
-  OpenLayers.loadURL(mapLayersURL,
-    options ,
-    this,
-    loadItems,
-    failMessage);
+
+  jQuery.ajax({url: mapLayersURL, data: options})
+  .done(function(resp) {
+    loadItems(resp);
+  })
+  .fail(function(resp) {
+    failMessage(resp);
+  })
 }
 
 // TODO This function use old OL library
 function loadItems(resp){
-  var g = new OpenLayers.Format.JSON();  
-  jobj = g.read(resp.responseText);
-  lmaps = jobj.items;
+  var lmaps = resp.items;
   for (var a=0;a<lmaps.length;a++){
     var lmap = lmaps[a];
     addMapToMapLayer(lmap);

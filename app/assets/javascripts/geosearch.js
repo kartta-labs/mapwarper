@@ -17,82 +17,125 @@ var mapIndexLayer;
 var mapIndexSelCtrl;
 var selectedFeature;
 var firstGo = true;
+var popup;
+var popupContent;
 function searchmapinit(){
   jQuery('#loadingDiv').hide();
+
+  var blayers = [ 
+    new ol.layer.Tile({ 
+      title: 'OpenStreetMap',
+      type: 'base',
+      visible: true,
+      source: new ol.source.OSM() 
+    }),
+    new ol.layer.Tile({
+      visible: false,
+      type: 'base',
+      title: 'Esri World Imagery',
+      source: new ol.source.XYZ({
+        attributions: 'Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community',
+        url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+      })
+    })
+  ]
+
+  var base_layers = [ new ol.layer.Group({
+    title: 'Base Layer',
+    layers: blayers
+    })
+  ] ;
+  var styles = [
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'blue',
+        width: 2
+      }),
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 0, 0, 0)'
+      })
+    })
+  ];
   
-  OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
-  OpenLayers.Util.onImageLoadErrorColor = "transparent";
-  var options_warped = {
-    projection: new OpenLayers.Projection("EPSG:900913"),
-    displayProjection: new OpenLayers.Projection("EPSG:4326"),
-    units: "m",
-    numZoomLevels:20,
-    maxResolution: 156543.0339,
-    maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
-      20037508, 20037508),
-    controls: [
-    new OpenLayers.Control.Attribution(),
-    new OpenLayers.Control.LayerSwitcher(),
-    new OpenLayers.Control.Navigation(),
-    new OpenLayers.Control.PanZoomBar()
-    ]
+  mapIndexLayer = new ol.layer.Vector({
+    title: I18n['layers']['map_outlines_label'],
+    visible: false,
+    source: new ol.source.Vector({  features: [] }),
+    style: styles
+  });
+
+  var overlay_layers = [
+    new ol.layer.Group({
+      title: 'Overlays',
+      layers:  [mapIndexLayer]
+    })
+  ];
+  
+  var layers = base_layers.concat(overlay_layers); 
+
+  searchmap = new ol.Map({
+    layers: layers,
+    target: 'searchmap',
+    view: new ol.View({
+      minZoom: 2,
+      maxZoom: 20,
+      center: ol.extent.getCenter(gs_bounds)
+    })
+  });
+
+  var layerSwitcher = new ol.control.LayerSwitcher({
+    tipLabel: 'Layers' 
+  });
+  searchmap.addControl(layerSwitcher);
+
+  var extent = ol.proj.transformExtent(gs_bounds, 'EPSG:4326', 'EPSG:3857');
+  searchmap.getView().fit(extent, searchmap.getSize()); 
+
+  searchmap.on('moveend', updateSearch);
+
+  //Add popup interaction on map bounding boxes
+  var container = document.getElementById('popup');
+  popupContent = document.getElementById('popup-content');
+  var closer = document.getElementById('popup-closer')
+  container.style.visibility = "visible";
+
+  popup = new ol.Overlay({
+    id: "popup-overlay",
+    element: container,
+    autoPan: true,
+    positioning: 'bottom-center',
+    autoPanAnimation: {
+      duration: 250
+    }
+  });
+
+  closer.onclick = function() {
+    popup.setPosition(undefined);
+    closer.blur();
+    return false;
   };
 
-  searchmap = new OpenLayers.Map('searchmap', options_warped);
-  // create OSM layer
-  mapnik_s = mapnik.clone();
-  searchmap.addLayer(mapnik_s);
+  searchmap.addOverlay(popup);
 
-  //set up the map index layer to help find individual maps
-    var mapIndexLayerStyle = OpenLayers.Util.extend({
-        strokeWidth: 3
-    }, OpenLayers.Feature.Vector.style['default']);
-    var mapIndexSelectStyle = OpenLayers.Util.extend({
-        fillColor: "#ee9900",
-        fillOpacity: 0.4
-    }, OpenLayers.Feature.Vector.style['select']);
+  searchmap.on('click', function(evt) {
+    var feature = searchmap.forEachFeatureAtPixel(evt.pixel,
+      function(feature) {
+        return feature;
+      });
+    if (feature) {
+      jQuery("tr.minimap-tr").removeClass('highlight');
+      var coordinates = evt.coordinate;
+      popup.setPosition(coordinates);
+      popupContent.innerHTML = getPopupHTML(feature);  
+      jQuery("tr#map-row-" + feature.get('mapId')).addClass('highlight');
+    } else {
+      popup.setPosition(undefined);
+      closer.blur();
+      
+    }
+  });
 
-    var no_style = {
-        fill: false,
-        fillOpacity: 0.0
-    };
-
-    var deactivated_style = {
-        fill: false,
-        strokeOpacity: 1,
-        strokeColor: "blue",
-        strokeWidth: 1.5
-    };
-
-    var style_blue = {
-        fill: true,
-        strokeOpacity: 1,
-        strokeColor: "#blue",
-        fillColor: "blue",
-        fillOpacity: 0.4,
-        strokeWidth: 2
-    };
-  
-    var styleMap = new OpenLayers.StyleMap({
-        'default': no_style,
-        'select': style_blue
-    });
-
-  mapIndexLayer = new OpenLayers.Layer.Vector(I18n["geosearch"]["outline_layer"], {styleMap: styleMap, visibility: false});
-  mapIndexSelCtrl = new OpenLayers.Control.SelectFeatureNoClick(mapIndexLayer, {hover:false, onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
-  searchmap.addControl(mapIndexSelCtrl);
-  mapIndexSelCtrl.deactivate(); 
-
-  searchmap.addLayer(mapIndexLayer);
-  searchmap.events.register("moveend", this, updateSearch); 
-
-  clipmap_bounds_merc  = new OpenLayers.Bounds();
-  clipmap_bounds_merc = gs_bounds.transform(searchmap.displayProjection, searchmap.projection);
-
-  searchmap.zoomToExtent(clipmap_bounds_merc, true);
-
- 
-  addClickToTable();
+  addClickToTable(); 
   do_search();
 }
 
@@ -118,22 +161,21 @@ function updateStuff(expectedTag){
 
 function addClickToTable(){
   jQuery("#searchmap-table tr").click(function(){
-      removeAllPopups(searchmap);
-      mapIndexSelCtrl.unselectAll();
-      var mapid = this.id.substring("map-row-".length);
-      var feat;
-      for (var a=0;a<mapIndexLayer.features.length;a++){
-        if (mapIndexLayer.features[a].mapId == mapid){
-         feat = mapIndexLayer.features[a];
-        }
+    removeAllPopups(searchmap);
+    jQuery("tr.minimap-tr").removeClass('highlight');
+    jQuery(this).addClass('highlight')
+    var mapid = this.id.substring("map-row-".length);
+    var feat;
+    for (var a=0;a<mapIndexLayer.getSource().getFeatures().length;a++){
+      if (mapIndexLayer.getSource().getFeatures()[a].get("mapId") == mapid){
+        feat = mapIndexLayer.getSource().getFeatures()[a];
       }
-      //highlight map polygon
-      mapIndexSelCtrl.select(feat);
     }
-  );
+
+    //highlight map polygon
+    selectFeature(feat);
+  });
 }
-
-
 
 function doPlaceSearch(frm){
   var place = frm.place.value;
@@ -142,83 +184,103 @@ function doPlaceSearch(frm){
     'format': 'json'
   };
 
-  OpenLayers.loadURL(mapBaseURL+'/geosearch',
-    options,
-    this,
-    doPlaceZoom,
-    failMessage);
+  jQuery.ajax({url: mapBaseURL+'/geosearch', data: options})
+  .done(function(resp) {
+    doPlaceZoom(resp);
+  })
+  .fail(function(resp) {
+    failMessage(resp);
+  })
+
+}
+ 
+
+
+function doPlaceZoom(extent){
+  var extent_a = extent.map(Number)
+  var mercExtent =  ol.proj.transformExtent(extent_a, 'EPSG:4326', 'EPSG:3857');
+  searchmap.getView().fit(mercExtent, searchmap.getSize());
 }
 
-function doPlaceZoom(resp){
-  var js = new OpenLayers.Format.JSON();
-  extent = js.read(resp.responseText);
-  var newext = new OpenLayers.Bounds(extent[0],extent[1],extent[2],extent[3]);
-  var mercExtent = newext.transform(searchmap.displayProjection, searchmap.projection);
-  searchmap.zoomToExtent(mercExtent);
-}
 
-  function do_search(pageNum){
+function do_search(pageNum){
   jQuery('#loadingDiv').show();
   
   if (typeof pageNum == "undefined"){
       pageNum = 1;
     }
-  var searchmapExtent =  searchmap.getExtent().transform(searchmap.projection, searchmap.displayProjection).toArray();
+    
+  var searchmapExtent =  ol.proj.transformExtent(searchmap.getView().calculateExtent(),'EPSG:3857', 'EPSG:4326' );
+
   var options = {'bbox': searchmapExtent,
     'format': 'json',
     'page': pageNum,
     'operation': 'intersect',
     'from': jQuery("#from").val(),
     'to': jQuery("#to").val()};
-  OpenLayers.loadURL(mapBaseURL+'/geosearch',
-    options,
-    this,
-    loadItems,
-    failMessage);
+
+  jQuery.ajax({url: mapBaseURL+'/geosearch', data: options})
+  .done(function(resp) {
+    loadItems(resp);
+  })
+  .fail(function(resp) {
+    failMessage(resp);
+  })
+
 }
+
 function clearMapTable(){
   jQuery("#searchmap-table").empty();
-  
 }
-function loadItems(resp){
-    clearMapTable();
-    removeAllPopups(searchmap);
- 
-    mapIndexLayer.destroyFeatures();
-    var j = new OpenLayers.Format.JSON();
-    jj = j.read(resp.responseText);
-    smaps = jj.items;
-    for (var a=0;a<smaps.length;a++){
-      var smap = smaps[a];
-      addMapToMapLayer(smap);
-    }
-    insertMapTablePagination(jj.total_entries, jj.per_page, jj.current_page);
-    replaceMapTable(smaps);
-    mapIndexLayer.setVisibility(true);
 
-    jQuery('#loadingDiv').hide();
-  }
+function loadItems(resp){
+   clearMapTable();
+   removeAllPopups(searchmap);
+
+   mapIndexLayer.getSource().clear(true);
+   jj = resp;
+   smaps = jj.items;
+   for (var a=0;a<smaps.length;a++){
+    var smap = smaps[a];
+     addMapToMapLayer(smap);
+   }
+
+  insertMapTablePagination(jj.total_entries, jj.per_page, jj.current_page);
+  replaceMapTable(smaps);
+
+  mapIndexLayer.setVisible(true)
+
+  jQuery('#loadingDiv').hide();
+}
 
 function failMessage(resp){
   alert(I18n["geosearch"]["search_fail"]);
   jQuery('#loadingDiv').hide();
 }
 
-function onPopupClose(evt) {
-  mapIndexSelCtrl.unselect(selectedFeature);
+function removeAllPopups(map){
+  searchmap.getOverlayById("popup-overlay").setPosition(undefined);
 }
 
-function onFeatureUnselect(feature) {
-  jQuery("tr#map-row-"+feature.mapId).removeClass('highlight');
-  searchmap.removePopup(feature.popup);
-  feature.popup.destroy();
-  feature.popup = null;
-} 
-
-function removeAllPopups(map){
-  for (var i=0; i<map.popups.length; i++) {
-    map.removePopup(map.popups[i]);
+var select;
+function selectFeature(feature){
+  if (select !== null) {
+    searchmap.removeInteraction(select);
   }
+
+  select = new ol.interaction.Select({});
+  searchmap.addInteraction(select);
+
+  var selected_collection = select.getFeatures();
+  selected_collection.push(feature);
+  select.dispatchEvent({
+    type: 'select',
+    selected: [feature],
+    deselected: []
+  });
+
+  popup.setPosition(ol.extent.getCenter(feature.getGeometry().getExtent()));
+  popupContent.innerHTML = getPopupHTML(feature);  
 }
 
 
