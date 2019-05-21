@@ -410,6 +410,14 @@ class Map < ActiveRecord::Base
   #INSTANCE METHODS
   #############################################
   
+  def mask_geojson
+    mask = nil
+    if self.masking && self.masking.transformed_geojson
+      mask = self.masking.transformed_geojson
+    end
+
+    mask
+  end
   
   def depicts_year
     issue_year ||  self.layers.with_year.collect(&:depicts_year).compact.first

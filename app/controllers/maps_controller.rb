@@ -372,7 +372,7 @@ class MapsController < ApplicationController
         :per_page => @maps.per_page,
         :total_entries => @maps.total_entries,
         :total_pages => @maps.total_pages,
-        :items => @maps.to_a}.to_json(:methods => :depicts_year) , :callback => params[:callback]}
+        :items => @maps.to_a}.to_json(:methods => [:depicts_year, :mask_geojson]) , :callback => params[:callback]}
     end
   end
   
