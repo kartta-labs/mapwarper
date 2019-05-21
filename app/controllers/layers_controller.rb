@@ -35,7 +35,11 @@ class LayersController < ApplicationController
 
 
   def thumb
-    redirect_to @layer.thumb
+    if @layer.thumb == "missing.png" || @layer.thumb == "private.png" 
+      redirect_to ActionController::Base.helpers.asset_url(@layer.thumb)
+    else
+      redirect_to @layer.thumb
+    end
   end
 
   
