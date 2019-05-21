@@ -145,7 +145,7 @@ function updateSearch(){
 
   currentState = {tag: currentTime};
   if (!firstGo){
-    setTimeout(function() {updateStuff(currentTime); }, 2000);
+    setTimeout(function() {updateStuff(currentTime); }, 1000);
   } else {
     firstGo = false;
   }
@@ -212,7 +212,7 @@ function do_search(pageNum){
     
   var searchmapExtent =  ol.proj.transformExtent(searchmap.getView().calculateExtent(),'EPSG:3857', 'EPSG:4326' );
 
-  var options = {'bbox': searchmapExtent,
+  var options = {'bbox': searchmapExtent.join(","),
     'format': 'json',
     'page': pageNum,
     'operation': 'intersect',
