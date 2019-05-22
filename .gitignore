@@ -29,6 +29,9 @@ nbproject
 #ignore uploaded files
 public/uploads/*
 
+#and test uploads
+public/test/*
+
 #ignore default map images
 public/mapimages/src/*
 public/mapimages/dst/*
