@@ -166,7 +166,6 @@ function toggleMapIndexLayer(){
   mapIndexLayer.setVisible(!vis);
 }
 
-// TODO This function use old OL library
 function loadMapFeatures(){
   var options = {'format': 'json'};
 
@@ -179,7 +178,6 @@ function loadMapFeatures(){
   })
 }
 
-// TODO This function use old OL library
 function loadItems(resp){
   var lmaps = resp.items;
   for (var a=0;a<lmaps.length;a++){
@@ -193,15 +191,29 @@ function failMessage(resp){
 }
 
 function addMapToMapLayer(mapitem){
-  var bbox_array = mapitem.bbox.split(",").map(Number);
-  var bbox = ol.proj.transformExtent(bbox_array, 'EPSG:4326', 'EPSG:3857');
+  if (mapitem.mask_geojson){
+    ff = JSON.parse(mapitem.mask_geojson)
+    var features = new ol.format.GeoJSON().readFeatures(ff);
+    for (var a = 0; a < features.length; a++) {
+      features[a].set("name", mapitem.title);
+      features[a].set("mapTitle", mapitem.title);
+      features[a].set("mapId",  mapitem.id);
+    }
+    
+    mapIndexLayer.getSource().addFeatures(features)
 
-  var feature = new ol.Feature({
-    geometry: new ol.geom.Polygon.fromExtent(bbox),
-    name: mapitem.title,
-    mapTitle: mapitem.title,
-    mapId:   mapitem.id
-  });
-  mapIndexLayer.getSource().addFeature(feature);
+  }else{
+    var bbox_array = mapitem.bbox.split(",").map(Number);
+    var bbox = ol.proj.transformExtent(bbox_array, 'EPSG:4326', 'EPSG:3857');
+
+    var feature = new ol.Feature({
+      geometry: new ol.geom.Polygon.fromExtent(bbox),
+      name: mapitem.title,
+      mapTitle: mapitem.title,
+      mapId:   mapitem.id
+    });
+
+    mapIndexLayer.getSource().addFeature(feature);
+  }
 }
 

@@ -257,13 +257,12 @@ class LayersController < ApplicationController
       lmaps = @layer.maps.order(:map_type).paginate(paginate_params)
     end
     respond_to do |format|
-      #format.json {render :json =>lmaps.to_json(:stat => "ok",:except => [:content_type, :size, :bbox_geom, :uuid, :parent_uuid, :filename, :parent_id,  :map, :thumbnail])}
       format.json {render :json =>{:stat => "ok",
           :current_page => lmaps.current_page,
           :per_page => lmaps.per_page,
           :total_entries => lmaps.total_entries,
           :total_pages => lmaps.total_pages,
-          :items => lmaps.to_a}.to_json(:except => [:content_type, :size, :bbox_geom, :uuid, :parent_uuid, :filename, :parent_id,  :map, :thumbnail]), :callback => params[:callback] }
+          :items => lmaps.to_a}.to_json(:methods => [:mask_geojson], :except => [:content_type, :size, :bbox_geom, :uuid, :parent_uuid, :filename, :parent_id,  :map, :thumbnail]), :callback => params[:callback] }
 
       format.xml {render :xml => lmaps.to_xml(:root => "maps",:except => [:content_type, :size, :bbox_geom, :uuid, :parent_uuid, :filename, :parent_id,  :map, :thumbnail])  {|xml|
           xml.tag!'total-entries', lmaps.total_entries
