@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190617171124) do
+ActiveRecord::Schema.define(version: 20190605103453) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -245,17 +245,6 @@ ActiveRecord::Schema.define(version: 20190617171124) do
   add_index "my_maps", ["map_id", "user_id"], name: "index_my_maps_on_map_id_and_user_id", unique: true, using: :btree
   add_index "my_maps", ["map_id"], name: "index_my_maps_on_map_id", using: :btree
 
-  create_table "notifications", force: :cascade do |t|
-    t.integer  "actor_id"
-    t.string   "kind"
-    t.integer  "notifiable_id"
-    t.string   "notifiable_type"
-    t.datetime "created_at"
-  end
-
-  add_index "notifications", ["actor_id"], name: "index_notifications_on_actor_id", using: :btree
-  add_index "notifications", ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable_type_and_notifiable_id", using: :btree
-
   create_table "oauth_nonces", force: :cascade do |t|
     t.string   "nonce"
     t.integer  "timestamp"
@@ -366,32 +355,5 @@ ActiveRecord::Schema.define(version: 20190617171124) do
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
-
-  create_table "version_associations", force: :cascade do |t|
-    t.integer "version_id"
-    t.string  "foreign_key_name", null: false
-    t.integer "foreign_key_id"
-    t.string  "foreign_type"
-  end
-
-  add_index "version_associations", ["foreign_key_name", "foreign_key_id"], name: "index_version_associations_on_foreign_key", using: :btree
-  add_index "version_associations", ["version_id"], name: "index_version_associations_on_version_id", using: :btree
-
-  create_table "versions", force: :cascade do |t|
-    t.string   "item_type",      null: false
-    t.integer  "item_id",        null: false
-    t.string   "event",          null: false
-    t.string   "whodunnit"
-    t.text     "object"
-    t.datetime "created_at"
-    t.string   "ip"
-    t.integer  "user_id"
-    t.string   "user_agent"
-    t.text     "object_changes"
-    t.integer  "transaction_id"
-  end
-
-  add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
-  add_index "versions", ["transaction_id"], name: "index_versions_on_transaction_id", using: :btree
 
 end

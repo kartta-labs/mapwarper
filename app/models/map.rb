@@ -231,6 +231,8 @@ class Map < ActiveRecord::Base
     self.map_type = :is_map
     self.rough_state = :step_1
     save!
+
+    self.run_ocr
   end
   
   #paperclip plugin deletes the images when model is destroyed
@@ -948,6 +950,13 @@ class Map < ActiveRecord::Base
 
   def has_metadata_location?
     !metadata_lat.blank? && !metadata_lon.blank?
+  end
+
+  # 
+  # Calls the maps ocr job 
+  #
+  def run_ocr
+    MapsOcrJob.perform_later(self)
   end
  
   ############

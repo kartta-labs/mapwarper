@@ -75,6 +75,8 @@ gem 'fog-google', '~> 1.8'
 
 gem 'sendgrid-actionmailer'
 gem 'nypl_repo'
+gem 'google-cloud-vision', "~> 0.33.0"
+
 
 gem 'rack-attack', '~> 6.0.0'
 gem 'paper_trail', '~> 9.2.0'
