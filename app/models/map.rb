@@ -623,8 +623,6 @@ class Map < ActiveRecord::Base
       return "no masking file matching specified format found."
     end
 
-    Masking.find_or_initialize_by(map_id: self.id).update(transformed_geojson: convert_mask_to_geojson)
-
     masked_src_filename = self.masked_src_filename
     if File.exists?(masked_src_filename)
       #deleting old masked image
@@ -682,7 +680,7 @@ class Map < ActiveRecord::Base
       mask_options_array = ["-srcnodata", "17 17 17"]
 
       map_mask = Masking.find_or_initialize_by(map_id: self.id)
-      map_mask.update(transformed_geojson: convert_mask_to_geojson) if map_mask.transformed_geojson.blank?
+      map_mask.update(transformed_geojson: convert_mask_to_geojson)
     else
       src_filename = self.unwarped_filename
     end
