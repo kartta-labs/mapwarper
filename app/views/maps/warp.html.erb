@@ -39,16 +39,27 @@
   <% end %>
     //set up jquery for the hidden tables
     jQuery(document).ready(function() {
+      if (readCookie('_gcp_table_visible') === 'true'){
+        jQuery('#gcp_table_div').show();
+      }else{
+        jQuery('#gcp_table_div').hide();
+      }
+
       jQuery('#popoverNotice').hide();
-      jQuery('#gcp_table_div').hide();
-      jQuery('#advanced_form_options').hide();
+      if (readCookie('_advanced_form_visible') === 'true'){
+        jQuery('#advanced_form_options').show();
+      }else{
+        jQuery('#advanced_form_options').hide();
+      }
 
       jQuery('#controlPointLink').click(function() {
-        jQuery('#gcp_table_div').toggle('slow');
+        jQuery('#gcp_table_div').toggle();
+        createCookie('_gcp_table_visible', jQuery('#gcp_table_div').is(':visible'), 360)  
         return false;
       });
       jQuery('#advancedLink').click(function() {
-        jQuery('#advanced_form_options').toggle('slow');
+        jQuery('#advanced_form_options').toggle();
+        createCookie('_advanced_form_visible', jQuery('#advanced_form_options').is(':visible'), 360)  
         return false;
       });
       jQuery('#to_map_notify_close>a').click(function() {
@@ -156,7 +167,7 @@
   <div id="rectifyNotice">
     <span id="spinner" style="display:none;"><%= image_tag 'spinner.gif' %></span><span id="gcp_notice"></span>
   </div>
-  <a href="#" id="controlPointLink"><%= t('.gcps_link') %></a>
+  <a href="#" id="controlPointLink" class="control-panel-link"><%= t('.gcps_link') %></a>
   <div id = "div_gcp_form">
     <%= form_for(:gcp, {:html => {:id => 'gcp_form'} ,  :url =>rectify_map_path(@map), :remote => true }) do |f| %>
       <div id="gcp_table_div" >
@@ -190,7 +201,7 @@
       </div>
 
       <input type="hidden" name="map" value ="<%= @map.id %>" />
-      <a href="#" id="advancedLink"><%= t('.advanced_options') %></a>
+      <a href="#" id="advancedLink" class="control-panel-link"><%= t('.advanced_options') %></a>
       <div id="advanced_form_options" >
         <%= t('.method_label') %>
         <select name="transform_options">

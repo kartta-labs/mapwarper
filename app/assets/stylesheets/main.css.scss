@@ -683,6 +683,13 @@ background-repeat:no-repeat;
 font-weight: strong;
 }
 
+.control-panel-link {
+  border-color: #0056b3 !important ;
+  border: 1px solid;
+  padding: 2px;
+  border-radius: 4px;
+}
+
 .headerDiv {
 	position: relative;
 	background: #e2dedb asset_url('header_bg.jpg') 0 -30px scroll; 
@@ -1414,6 +1421,9 @@ font-style:italic;
 
 }
 
+#div_gcp_form {
+  margin-top: 1px;
+}
 
 #div_gcp_form li input
 {
@@ -1449,6 +1459,7 @@ font-style:italic;
 	padding-bottom:0.2em;
 	padding-left:1em;
 	padding-right:1em;
+  margin-top: 1px;
 }
 
 #div_gcp_form input.button[warp_button]
