@@ -955,8 +955,8 @@ class Map < ActiveRecord::Base
   # 
   # Calls the maps ocr job 
   #
-  def run_ocr
-    MapsOcrJob.perform_later(self)
+  def run_ocr(force=false, geocode=true)
+    MapsOcrJob.perform_later(self, force, geocode)
   end
  
   ############

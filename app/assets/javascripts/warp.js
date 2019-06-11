@@ -967,6 +967,35 @@ function lonLatToMercatorBounds(llbounds) {
 
 }
 
+function showGeocodeResults(res){
+  zoom = 18;
+  if (res.results && res.results.length > 0){
+    var bounds = new OpenLayers.Bounds();
+    for(var a=0;a<res.results.length;a++){
+      var viewport = res.results[a].geometry.viewport;
+      bounds.extend(new OpenLayers.LonLat(viewport.northeast.lng, viewport.northeast.lat));
+      bounds.extend(new OpenLayers.LonLat(viewport.southwest.lng, viewport.southwest.lat));
+    }
+    var results_bounds_merc = lonLatToMercatorBounds(bounds);
+    to_map.zoomToExtent(results_bounds_merc);
+    zoom = to_map.getZoomForExtent(results_bounds_merc);
+  
+    var message = I18n["warp"]["best_guess_message"]+ " " + 
+      "<a href='#' onclick='centerToMap(" + res.results[0].geometry.location.lng + "," + res.results[0].geometry.location.lat + "," + zoom + ");return false;'>" + res.results[0].formatted_address + "</a><br />";
+    centerToMap(res.results[0].geometry.location.lng , res.results[0].geometry.location.lat);
+    if (res.results.length > 1){
+      message = message + I18n["warp"]["other_places"]+":<br />";
+      for(var a=1;a<res.results.length;a++){
+        message = message + "<a href='#' onclick='centerToMap(" + res.results[a].geometry.location.lng + "," + res.results[a].geometry.location.lat + "," + zoom + ");return false;'>" + res.results[a].formatted_address + "</a><br />"
+      }
+    }
+    jQuery("#to_map_notification_inner").html(message);
+    jQuery("#to_map_notification").show('slow'); 
+  }
+
+
+}
+
 //this function is called is a map has no gcps, and fuzzy best guess
 //locations are found. This uses Yahoo's Placemaker service.
 function bestGuess(guessObj) {

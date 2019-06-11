@@ -82,10 +82,11 @@
   <% end -%>
       update_row_numbers();
 
-  <% if @bestguess_places -%>
-        var bestGuessResult = <%= @bestguess_places.to_json.html_safe -%>;
-        bestGuess(bestGuessResult);
-  <% end -%>
+
+  <% if @map.geocode_result -%>
+    var geocode_result = <%= @map.geocode_result.html_safe -%>;
+    showGeocodeResults(geocode_result)
+  <% end %>
 
     }
     function csv_upload() {

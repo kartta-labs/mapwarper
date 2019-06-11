@@ -447,7 +447,7 @@ en:
       fail: Sorry, something went wrong with this action
     warp:
       add_gcp: Add Control Point (1,p)
-      best_guess_message: 'Map zoomed to best guess:'
+      best_guess_message: 'Map moved to best guess:'
       custom_custom_type: Custom
       custom_layer: Custom basemap
       custom_layer_add_layer_button: Add Layer

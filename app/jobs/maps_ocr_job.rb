@@ -26,27 +26,32 @@ class MapsOcrJob < ActiveJob::Base
       processed_rotate_img = filename + ".rot.ocr.jpg"
 
       #resize makes it smaller. -threshold black and whites it, -trim and +repage "auto crops it", -write saves the first image, -rotate rotates it and finally saves the file
-      command = "convert #{filename}[0] -resize 8500x6000 -threshold 50% -trim +repage -write #{processed_img} -rotate 90 #{processed_rotate_img}"
+      command = ["convert", "#{filename}[0]", "-resize", "8000x6000\>", "-threshold", "50%", "-trim", "+repage", "-write", processed_img, "-rotate", "90" ,processed_rotate_img  ]
       logger.debug command
 
-      stdout_str, stderr_str, status = Open3::capture3(command)
-      #puts "out #{stdout_str} err #{stderr_str.inspect} status #{status}"
+      stdout_str, stderr_str, status = Open3::capture3(*command)
+      ocr_result = nil
       if stderr_str.blank?
-      response = google_image_annotate(processed_img)
-      text = process_text(response)
-      response_rotate = google_image_annotate(processed_rotate_img)
-      text_rotate = process_text(response_rotate)
+        begin
+          response = google_image_annotate(processed_img)
+          text = process_text(response)
+          response_rotate = google_image_annotate(processed_rotate_img)
+          text_rotate = process_text(response_rotate)
 
-      ocr_result = text.map {|a| a.downcase}.join(" ") + text_rotate.map {|a| a.downcase}.join(" ") 
+          ocr_result = text.map {|a| a.downcase}.join(" ") + text_rotate.map {|a| a.downcase}.join(" ") 
 
-      logger.debug ocr_result
+          logger.debug "ocr result = #{ocr_result}"
 
-      map.ocr_result = ocr_result
-      map.save
+          map.ocr_result = ocr_result
+          map.save
+      rescue StandardError => e
+        logger.error "ERROR with Google Image Annotate StandardError " + e.to_s
+      end
   
-      geocode_map(map) if geocode
+    
+        geocode_map(map) if geocode && !ocr_result.blank?
       else
-        logger.error "ERROR out #{stdout_str} err #{stderr_str.inspect} status #{status}"
+        logger.error "ERROR with OCR command out #{stdout_str} err #{stderr_str.inspect} status #{status}"
       end
 
     end
@@ -69,7 +74,6 @@ class MapsOcrJob < ActiveJob::Base
     text.delete_if {|a| a.length <= 2 }  #remove the small hits 
     text.delete_if{|aa| aa.match(/\d/)}  #remove strings with numbers in them
 
-
     return text 
   end
 
@@ -81,20 +85,17 @@ class MapsOcrJob < ActiveJob::Base
       image_context: {:language_hints => ["en"]},
       max_results: 1 # optional, defaults to 10
     )
-      puts response
 
-    return response
+    response
   end
   
 
   def geocode_map(map)
     scantext = map.ocr_result + " " + map.description
 
-    map.geocode_result = call_google_geocode(scantext)
-
-    unless map.geocode_result.nil?
-      map.save
-    end 
+    geocode_result = call_google_geocode(scantext)
+    map.geocode_result = geocode_result unless geocode_result.nil? || geocode_result["status"] == "fail" 
+    map.save
   end
 
 
@@ -102,7 +103,8 @@ class MapsOcrJob < ActiveJob::Base
     region = "US"
     components= "country:US"
     key = APP_CONFIG["google_maps_key"]
-    uri = URI("https://maps.googleapis.com/maps/api/geocode/json?address=#{scantext}&region=#{region}&components=#{components}&key=#{key}")
+    #uri = URI("https://maps.googleapis.com/maps/api/geocode/json?address=#{scantext}&region=#{region}&components=#{components}&key=#{key}")
+    uri = URI("https://maps.googleapis.com/maps/api/geocode/json?address=#{scantext}&region=#{region}&key=#{key}")
     req = Net::HTTP::Get.new(uri)
 
     result = nil
@@ -114,93 +116,32 @@ class MapsOcrJob < ActiveJob::Base
 
       result = JSON.parse(res.body)
 
+      if result["status"] == "ZERO_RESULTS"
+        result = {"status" => "fail", "code" => "noResults"}
+      end
+
     rescue JSON::ParserError => e
       logger.error "JSON ParserError in find call_google_geocode places " + e.to_s
-      result = {:status => "fail", :code => "jsonError"}
+      result = {"status" => "fail", "code" => "jsonError"}
     rescue Net::ReadTimeout => e
       logger.error "timeout in find call_google_geocode places, probably throttled " + e.to_s
-      result = {:status => "fail", :code => "timeout"}
+      result = {"status" => "fail", "code" => "timeout"}
     rescue Net::HTTPBadResponse => e
       logger.error "http bad response in call_google_geocode places " + e.to_s
-      result = {:status => "fail", :code => "badResponse"}
+      result = {"status" => "fail", "code" => "badResponse"}
     rescue SocketError => e
       logger.error "Socket error in call_google_geocode " + e.to_s
-      result = {:status => "fail", :code => "socketError"}
+      result = {"status" => "fail", "code" => "socketError"}
     rescue StandardError => e
       logger.error "StandardError " + e.to_s
-      result = {:status => "fail", :code => "StandardError"}
+      result = {"status" => "fail", "code" => "StandardError"}
     end
 
-  
-    puts result.inspect
+    logger.debug "google geocode result = #{result}"
 
-    result
+    result.to_json
   end
 
-  
-  def call_geoparsexyz(scantext)
-
-    return nil if APP_CONFIG["geoparse_enable"] == false 
-      
-    uri = URI("https://geocode.xyz")
-    
-    begin
-      
-      form_data = {'scantext' => scantext, 'geojson' => '1'}
-      if !APP_CONFIG["geoparse_region"].blank?
-        form_data = form_data.merge({"region"=> APP_CONFIG["geoparse_region"]})
-      end
-      if !APP_CONFIG["geoparse_geocodexyz_key"].blank?
-        form_data = form_data.merge({"auth" => APP_CONFIG["geoparse_geocodexyz_key"]})
-      end
-            
-      req = Net::HTTP::Post.new(uri)
-      req.set_form_data(form_data)
-      
-      res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true, :read_timeout => 2) do |http|
-        http.request(req)
-      end
-      
-      results = JSON.parse(res.body)
-      
-      if results["properties"]["matches"].to_i > 0
-        places = Array.new
-        found_places  = results["features"]
-        max_lat, max_lon, min_lat, min_lon = -90.0, -180.0, -90.0, 180.0
-        found_places.each do | found_place |
-          place_hash = Hash.new
-          place_hash[:name] = found_place["properties"]["location"]
-          lon = place_hash[:lon] = found_place["geometry"]["coordinates"][0]
-          lat = place_hash[:lat] = found_place["geometry"]["coordinates"][1]
-          places << place_hash
-        end
-      
-        result = {:status => "ok", :map_id => map.id, :count => places.size, :places => places}
-          
-      else
-        result = {:status => "fail", :code => "no results"}
-      end
-    rescue JSON::ParserError => e
-      logger.error "JSON ParserError in call_geoparsexyz " + e.to_s
-      result = {:status => "fail", :code => "jsonError"}
-    rescue Net::ReadTimeout => e
-      logger.error "timeout in  call_geoparsexyz places, probably throttled " + e.to_s
-      result = {:status => "fail", :code => "timeout"}
-    rescue Net::HTTPBadResponse => e
-      logger.error "http bad response in  call_geoparsexyz places " + e.to_s
-      result = {:status => "fail", :code => "badResponse"}
-    rescue SocketError => e
-      logger.error "Socket error in  call_geoparsexyz places " + e.to_s
-      esult = {:status => "fail", :code => "socketError"}
-    rescue StandardError => e
-      logger.error "StandardError " + e.to_s
-      result = {:status => "fail", :code => "StandardError"}
-    end
-      
-    puts result
-
-    result
-  end
 
   def numeric?(str)
     return true if str =~ /\A\d+\z/
