@@ -26,7 +26,7 @@ class MapsOcrJob < ActiveJob::Base
       processed_rotate_img = filename + ".rot.ocr.jpg"
 
       #resize makes it smaller. -threshold black and whites it, -trim and +repage "auto crops it", -write saves the first image, -rotate rotates it and finally saves the file
-      command = ["convert", "#{filename}[0]", "-resize", "8000x6000\>", "-threshold", "50%", "-trim", "+repage", "-write", processed_img, "-rotate", "90" ,processed_rotate_img  ]
+      command = ["convert", "#{filename}[0]", "-resize", "7500x6000\>", "-threshold", "50%", "-trim", "+repage", "-write", processed_img, "-rotate", "90" ,processed_rotate_img  ]
       logger.debug command
 
       stdout_str, stderr_str, status = Open3::capture3(*command)
@@ -54,6 +54,9 @@ class MapsOcrJob < ActiveJob::Base
         logger.error "ERROR with OCR command out #{stdout_str} err #{stderr_str.inspect} status #{status}"
       end
 
+      #delete the ocr images
+      File.delete processed_img if File.exists? processed_img
+      File.delete processed_rotate_img if File.exists? processed_rotate_img
     end
 
 
