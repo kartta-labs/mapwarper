@@ -811,6 +811,8 @@ class Map < ActiveRecord::Base
     end
     
     self.mask_status = :unmasked
+    self.masking.destroy if self.masking
+    
     save!
     I18n.t('maps.model.delete_mask_success')
   end
