@@ -20,8 +20,8 @@ Rails.application.routes.draw do
     resources :roles
   end
   
-  get '/maps/activity' => 'audits#for_map_model', :as => "maps_activity"
-  
+  get '/maps/activity' => 'versions#for_map_model', :as => "maps_activity"
+
   resources :maps  do
     member do
       post 'map_type'
@@ -123,16 +123,18 @@ Rails.application.routes.draw do
   post '/users/:user_id/maps/create/:map_id' => 'my_maps#create', :as => 'add_my_map'
   post '/users/:user_id/maps/destroy/:map_id' => 'my_maps#destroy', :as => 'destroy_my_map'
 
-  get '/users/:id/activity' => 'audits#for_user', :as => 'user_activity'
+  get '/users/:id/activity' => 'versions#for_user', :as => 'user_activity'
   
   
-  get '/maps/acitvity.:format' => 'audits#for_map_model', :as => "formatted_maps_activity"
-  get '/maps/:id/activity' => 'audits#for_map', :as => "map_activity"
-  get '/maps/:id/activity.:format' => 'audits#for_map', :as => "formatted_map_activity"
+  get '/maps/activity.:format' => 'versions#for_map_model', :as => "formatted_maps_activity"
+  get '/maps/:id/activity' => 'versions#for_map', :as => "map_activity"
+  get '/maps/:id/activity.:format' => 'versions#for_map', :as => "formatted_map_activity"
+  put '/versions/:id/revert_map' => 'versions#revert_map', :as => "revert_map"
+  put '/versions/:id/revert_gcp' => 'versions#revert_gcp', :as => "revert_gcp"
 
-  get '/activity' => 'audits#index', :as => "activity"
-  get '/activity/:id' => 'audits#show', :as => "activity_details"
-  get '/activity.:format' => 'audits#index', :as => "formatted_activity"
+  get '/activity' => 'versions#index', :as => "activity"
+  get '/activity/:id' => 'versions#show', :as => "activity_details"
+  get '/activity.:format' => 'versions#index', :as => "formatted_activity"
 
   
   resources :comments

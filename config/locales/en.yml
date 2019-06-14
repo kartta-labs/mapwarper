@@ -66,50 +66,6 @@ en:
         invalid_fields: Invalid Fields
         message: Correct the following errors and try again.
     permission_denied: Sorry you do not have permission to view that.
-  audits:
-    audit:
-      further_details: Further details
-    for_map:
-      html_title: 'Activity for Map '
-      title: 'Recent Activity for Map '
-    for_map_model:
-      header: Changes for all Maps
-      html_title: Activity for All Maps
-      title: Recent Activity for All Maps
-    for_user:
-      header: Changes for user
-      html_title: 'Activity for '
-      html_title_nouser: 'Activity for not found user '
-      title: 'Recent Activity for User '
-      title_nouser: 'Recent Activity for not found user '
-    helper:
-      summary:
-        available: Map became available
-        loading: Map started loading from library
-        masked: Map successfully masked
-        masking: Map started masking process
-        published: Map successfully published
-        unloaded: Map was unloaded
-        unmasked: Map was unmasked
-        warped: Map successfully rectified
-        warping: Map started rectification process
-    index:
-      action: Action
-      changed: changed
-      feed_description: Feed for recent activity
-      html_title: Recent Activity
-      only_maps: Show Just Map Activity
-      rss_link: RSS Feed
-      title: Recent Activity For Everything
-    show:
-      details_header: Details
-      header: Activity Detail
-      item: Item
-      summary: Activity summary
-      time: Time
-      user: User
-      value: Value
-      version: Version
   comments:
     comment:
       confirm_delete: Really delete this comment?
@@ -756,13 +712,17 @@ en:
       view_map: View Map
       warp_map: Rectify Map
     map_detail:
+      also_helped: "also helped including:"
+      by: by
       last_modified: Last modified
       map_user_label: Uploaded by
+      no_users_yet: No other users have helped this map yet. Be the first!
       publish: Publish
       publish_confirm: Really publish this map? This will mean that no further editing can be done
       tags: Tags
       unpublish: UnPublish
       unpublish_confirm: Really un publish this map? This will mean that the map can be edited now
+      version_number: Version No. %{version}
     map_type:
       flash: 'Map has changed. Map type: %{map_type}'
     mask_map:
@@ -1009,6 +969,10 @@ en:
       activity: User Activity
       back_to_maps: "&lt; Browse Maps"
       joined: Joined on
+      last_day: Last Day
+      last_hour: Last Hour
+      last_week: Last Week
+      last_month: Last Month
       not_found: User not found
       profile: 'Profile Description:'
       provider_user_html: A %{provider_thumb} %{provider_name} User
@@ -1017,16 +981,22 @@ en:
       user: User
       user_maps: User Maps
     stats:
+      all_stats_html: "Showing stats from <span class='period'>all time</span>."
+      day: Day
       details: Further Details
       gcp_count: Total Points Changes
       gcp_create_count: Created Points
       gcp_destroy_count: Deleted Points
       gcp_update_count: Updated Points
       header: User Statistics
+      hour: Hour
       map_count: Total Map Changes
+      month: Month
+      period_stats_html: "Showing stats for <span class='period'>last %{period}.</span>"
       title: Users Stats
       total_count: Total
       unknown: Unknown
+      week: Week
     update:
       flash: User updated
     user:
@@ -1036,6 +1006,55 @@ en:
       enable: enable
       u_no: 'no'
       u_yes: 'yes'
+  versions:
+    for_map:
+      html_title: Activity for Map %{map}
+      title: Recent Activity for Map %{map}
+    for_map_model:
+      header: Changes for all Maps
+      html_title: Activity for All Maps
+      title: Recent Activity for All Maps
+    for_user:
+      header: Changes for user
+      html_title: Activity for %{user}
+      html_title_nouser: Activity for not found user 
+      title: Recent Activity for User %{user}
+      title_nouser: Recent Activity for not found user 
+    index:
+      action: Action
+      changed: changed
+      feed_description: Feed for recent activity
+      html_title: Recent Activity
+      only_maps: Show Just Map Activity
+      rss_link: RSS Feed
+      title: Recent Activity For Everything
+    revert_gcp:
+      not_gcp: Sorry this is not a GCP
+      reverted: GCP Reverted!
+      reverted_deleted: GCP Reverted and Deleted!
+    revert_map:
+      not_map: Sorry this is not a map
+      reverted: Map Reverted!
+    show:
+      details_header: Details
+      header: Activity Detail
+      item: Item
+      ip_address: IP Address
+      object: Object
+      summary: Activity summary
+      time: Time
+      user: User
+      user_agent: User Agent
+      value: Value
+      version: Version    
+    version:
+      further_details: Further details
+      revert_map: Revert map to version %{version}
+      revert_first_map: Revert this version
+      revert_all_gcps: Really revert all GCPS in the map?
+      revert_gcp: Revert GCP to version  %{version}
+      revert_first_gcp: Revert this version
+      revert_gcp_confirm: Really revert this GCP?
   will_paginate:
     entry:
       page_entries_info:

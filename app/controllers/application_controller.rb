@@ -8,7 +8,14 @@ class ApplicationController < ActionController::Base
   before_filter :set_locale
 
   before_filter :check_rack_attack
+  
+  before_action :set_paper_trail_whodunnit
     
+  def info_for_paper_trail
+    { :ip => IpAnonymizer.mask_ip( request.remote_ip), :user_agent => request.user_agent }
+  end
+    
+
   def check_super_user_role
     check_role('super user')
   end

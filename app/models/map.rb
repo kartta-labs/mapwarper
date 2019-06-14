@@ -39,7 +39,7 @@ class Map < ActiveRecord::Base
   acts_as_enum :status, [:unloaded, :loading, :available, :warping, :warped, :published]
   acts_as_enum :mask_status, [:unmasked, :masking, :masked]
   acts_as_enum :rough_state, [:step_1, :step_2, :step_3, :step_4]
-  audited :allow_mass_assignment => true
+  has_paper_trail :ignore => [:bbox, :bbox_geom]
   
   include PgSearch
   multisearchable :against => [:title, :description], :if => :warped_published_and_public?
@@ -303,13 +303,19 @@ class Map < ActiveRecord::Base
   #method to publish the map
   #sets status to published
   def publish
+    self.paper_trail_event = 'publishing'
     self.status = :published
+    self.paper_trail_event = nil
     self.save
   end
   
   #unpublishes a map, sets it's status to warped
   def unpublish
+    self.paper_trail_event = 'unpublished'
     self.status = :warped
+    self.save
+    self.paper_trail_event = nil
+
     self.save
   end
   
@@ -610,7 +616,7 @@ class Map < ActiveRecord::Base
 
   def mask!
     require 'fileutils'
-    
+    self.paper_trail_event = 'masking'
     self.mask_status = :masking
     save!
     format = self.mask_file_format
@@ -647,9 +653,11 @@ class Map < ActiveRecord::Base
     else
       r_out = "Success! Map was cropped!"
     end
-    
+    self.paper_trail_event = 'masked'
     self.mask_status = :masked
     save!
+    self.paper_trail_event = nil
+    
     r_out
   end
   
@@ -663,7 +671,8 @@ class Map < ActiveRecord::Base
   #Main warp method
   def warp!(resample_option, transform_option, use_mask="false")
     prior_status = self.status
-    #self.status = :warping
+    self.paper_trail_event = 'warping'
+    self.status = :warping
     save!
     
     gcp_array = self.gcps.hard
@@ -766,7 +775,10 @@ class Map < ActiveRecord::Base
     else
       self.status = :available
     end
+    self.paper_trail_event = 'warped'
     save!
+    self.paper_trail_event = nil
+
     update_layers
     update_bbox
     output = "Step 1: Translate: "+ trans_output + "<br />Step 2: Warp: " + warp_output + \
@@ -811,9 +823,11 @@ class Map < ActiveRecord::Base
     end
     
     self.mask_status = :unmasked
+    self.paper_trail_event = 'mask_deleted'
     self.masking.destroy if self.masking
     
     save!
+    self.paper_trail_event = nil
     I18n.t('maps.model.delete_mask_success')
   end
   

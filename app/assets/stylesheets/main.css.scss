@@ -812,6 +812,14 @@ border: dashed;
 width: 100%;
 }
 
+.usertable tr.total{
+  font-weight: bold;
+}
+div#user_stats .usertable th{
+  font-weight: bold;
+}
+
+
 div.period {
   text-transform:uppercase;
 }
@@ -1336,6 +1344,10 @@ font-style:italic;
 }
 .continue_link {
 	margin: 1em;
+}
+
+#other_users {
+  font-weight: bold;  
 }
 
 #opacity

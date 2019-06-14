@@ -16,23 +16,31 @@ class UsersController < ApplicationController
 
     @html_title = t('.title')
 
-    the_sql = "select user_id, username, COUNT(user_id) as total_count,
-      COUNT(case when auditable_type='Gcp' then 1 end) as gcp_count,
+    @period = params[:period]
+    period_where_clause = ""
 
-      COUNT(case when auditable_type='Map' or auditable_type='Mapscan' then 1 end) as map_count,
-
-      COUNT(case when action='update' and auditable_type='Gcp' then 1 end) as gcp_update_count,
-
-      COUNT(case when action='create' and auditable_type='Gcp' then 1 end) as gcp_create_count,
-
-      COUNT(case when action='destroy' and auditable_type='Gcp' then 1 end) as gcp_destroy_count
-
-      from audits group by user_id, username ORDER BY #{sort_clause}"
-
-
-    @users_activity = Audited::Adapters::ActiveRecord::Audit.paginate_by_sql(the_sql,
-                                               :page => params[:page],
-                                               :per_page => 30)
+    if @period == "hour"
+      period_where_clause = "where created_at > '#{1.hour.ago.to_s(:db)}'"
+    elsif @period == "day"
+      period_where_clause = "where created_at > '#{1.day.ago.to_s(:db)}'"
+    elsif @period == "week"
+      period_where_clause = "where created_at > '#{1.week.ago.to_s(:db)}'"
+    elsif @period == "month"
+      period_where_clause = "where created_at > '#{1.month.ago.to_s(:db)}'"
+    else
+      @period = "total"
+      period_where_clause = "" 
+    end
+    
+    the_sql = "select whodunnit, COUNT(whodunnit) as total_count,
+      COUNT(case when item_type='Gcp' then 1 end) as gcp_count,
+      COUNT(case when item_type='Map' or item_type='Mapscan' then 1 end) as map_count,
+      COUNT(case when event='update' and item_type='Gcp' then 1 end) as gcp_update_count,
+      COUNT(case when event='create' and item_type='Gcp' then 1 end) as gcp_create_count,
+      COUNT(case when event='destroy' and item_type='Gcp' then 1 end) as gcp_destroy_count 
+      from versions #{period_where_clause} group by whodunnit ORDER BY #{sort_clause}"
+    
+    @users_activity  = PaperTrail::Version.paginate_by_sql(the_sql,:page => params[:page], :per_page => 50)
   end
 
 
@@ -73,6 +81,15 @@ class UsersController < ApplicationController
     @html_title = t('.title', user_name: @user.login.capitalize)
     @mymaps = @user.maps.order("updated_at DESC").paginate(:page => params[:page],:per_page => 8)
     @current_user_maps = current_user.maps
+    
+    @user_activity_total  = PaperTrail::Version.paginate_by_sql(user_stat_sql(@user, "total"),:page => 1, :per_page => 100).first
+ 
+    @user_activity_hour   = PaperTrail::Version.paginate_by_sql(user_stat_sql(@user,"hour"),  :page => 1, :per_page => 100).first 
+    logger.debug @user_activity_hour.inspect
+    @user_activity_day    = PaperTrail::Version.paginate_by_sql(user_stat_sql(@user,"day"),   :page => 1, :per_page => 100).first
+    @user_activity_week   = PaperTrail::Version.paginate_by_sql(user_stat_sql(@user,"week"),  :page => 1, :per_page => 100).first
+    @user_activity_month  = PaperTrail::Version.paginate_by_sql(user_stat_sql(@user, "month"),:page => 1, :per_page => 100).first
+
     respond_to do | format |
       format.html {}
       format.js {}
@@ -184,6 +201,30 @@ class UsersController < ApplicationController
       format.json {render :json => {:stat => "not found", :items =>[]}.to_json, :status => 404}
     end
   end
-
+  
+  def user_stat_sql(user, period)
+   
+    if period == "hour"
+      period_where_clause = "and created_at > '#{1.hour.ago.to_s(:db)}'"
+    elsif period == "day"
+      period_where_clause = "and created_at > '#{1.day.ago.to_s(:db)}'"
+    elsif period == "week"
+      period_where_clause = "and created_at > '#{1.week.ago.to_s(:db)}'"
+    elsif period == "month"
+      period_where_clause = "and created_at > '#{1.month.ago.to_s(:db)}'"
+    else
+      period = "total"
+      period_where_clause = "" 
+    end
+    
+    the_sql = "select whodunnit, COUNT(whodunnit) as total_count,
+      COUNT(case when item_type='Gcp' then 1 end) as gcp_count,
+      COUNT(case when item_type='Map' then 1 end) as map_count,
+      COUNT(case when event='update' and item_type='Gcp' then 1 end) as gcp_update_count,
+      COUNT(case when event='create' and item_type='Gcp' then 1 end) as gcp_create_count,
+      COUNT(case when event='destroy' and item_type='Gcp' then 1 end) as gcp_destroy_count 
+      from versions where whodunnit='#{user.id}' #{period_where_clause} group by whodunnit"
+  
+  end
 
 end

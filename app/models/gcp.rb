@@ -1,7 +1,7 @@
 class Gcp < ActiveRecord::Base
   require 'csv'
   belongs_to :map
-  audited :allow_mass_assignment => true
+  has_paper_trail
   
   validates_numericality_of :x, :y, :lat, :lon
   validates_presence_of :x, :y, :lat, :lon, :map_id
@@ -12,8 +12,13 @@ class Gcp < ActiveRecord::Base
   
   attr_accessor :error
   
-  after_save :update_map_timestamp
-  after_destroy :update_map_timestamp
+  after_update  {|gcp| gcp.map.paper_trail_event = 'gcp_update'  }
+  after_create  {|gcp| gcp.map.paper_trail_event = 'gcp_create'  }
+  
+  after_save :touch_map
+
+  after_destroy {|gcp| gcp.map.paper_trail_event = 'gcp_delete' if gcp.map  }
+  after_destroy :touch_map
   
   def gdal_string
 	
@@ -117,9 +122,7 @@ class Gcp < ActiveRecord::Base
   
   private
   
-  def update_map_timestamp
-    self.map.update_gcp_touched_at
-  end
+
 
   #
   # Validation to check if a point does not have a duplicate x,y or lat,lon with the same map 
@@ -134,6 +137,10 @@ class Gcp < ActiveRecord::Base
         errors.add("coordinates", "Coordinates are not unique") 
       end
     end
+  end
+
+  def touch_map
+    self.map.paper_trail.touch_with_version(:gcp_touched_at) if self.map
   end
   
 end

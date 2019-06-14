@@ -8,7 +8,101 @@
 <p><%= t('.joined') %>: <%= @user.created_at.to_s(:long) %></p>
 <h3><%= t('.profile') %></h3>
 <p><%= (h @user.description).gsub("\n","<br/>") %></p>
+
+<div id="user_stats">
+
+  <table class="usertable">
+    <thead>
+      <tr>
+        <th></th>
+        <th><%= t('users.stats.total_count') %></th>
+        <th><%= t('users.stats.map_count') %></th>
+        <th><%= t('users.stats.gcp_count') %></th>
+        <th><%= t('users.stats.gcp_create_count') %></th>
+        <th><%= t('users.stats.gcp_update_count') %></th>
+        <th><%= t('users.stats.gcp_destroy_count') %></th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr class="<%= cycle('table0', 'table1') -%>">
+        <td><%= t('.last_hour')%></td>
+        <% if @user_activity_hour %>
+          <td><%=  @user_activity_hour.total_count %></td>
+          <td><%=  @user_activity_hour.map_count %></td>
+          <td><%=  @user_activity_hour.gcp_count %></td>
+          <td><%=  @user_activity_hour.gcp_create_count %></td>
+          <td><%=  @user_activity_hour.gcp_update_count %></td>
+          <td><%=  @user_activity_hour.gcp_destroy_count %></td>
+        <% else %>
+          <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+        <% end %>
+      </tr>
+
+      <tr class="<%= cycle('table0', 'table1') -%>">
+        <td><%= t('.last_day')%></td>
+        <% if @user_activity_day %>
+          <td><%=  @user_activity_day.total_count %></td>
+          <td><%=  @user_activity_day.map_count %></td>
+          <td><%=  @user_activity_day.gcp_count %></td>
+          <td><%=  @user_activity_day.gcp_create_count %></td>
+          <td><%=  @user_activity_day.gcp_update_count %></td>
+          <td><%=  @user_activity_day.gcp_destroy_count %></td>
+        <% else %>
+          <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+        <% end %>
+      </tr>
+      
+      <tr class="<%= cycle('table0', 'table1') -%>">
+        <td><%= t('.last_week')%></td>
+        <% if @user_activity_week %>
+          <td><%=  @user_activity_week.total_count %></td>
+          <td><%=  @user_activity_week.map_count %></td>
+          <td><%=  @user_activity_week.gcp_count %></td>
+          <td><%=  @user_activity_week.gcp_create_count %></td>
+          <td><%=  @user_activity_week.gcp_update_count %></td>
+          <td><%=  @user_activity_week.gcp_destroy_count %></td>
+        <% else %>
+          <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+        <% end %>
+      </tr>
+
+      <tr class="<%= cycle('table0', 'table1') -%>">
+        <td><%= t('.last_month')%></td>
+        <% if @user_activity_month %>
+          <td><%=  @user_activity_month.total_count %></td>
+          <td><%=  @user_activity_month.map_count %></td>
+          <td><%=  @user_activity_month.gcp_count %></td>
+          <td><%=  @user_activity_month.gcp_create_count %></td>
+          <td><%=  @user_activity_month.gcp_update_count %></td>
+          <td><%=  @user_activity_month.gcp_destroy_count %></td>
+        <% else %>
+          <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+        <% end %>
+      </tr>
+      
+      <tr class="total <%= cycle('table0', 'table1') -%>">
+        <td><%= t('users.stats.total_count')%></td>
+        <% if @user_activity_total %>
+          <td><%=  @user_activity_total.total_count %></td>
+          <td><%=  @user_activity_total.map_count %></td>
+          <td><%=  @user_activity_total.gcp_count %></td>
+          <td><%=  @user_activity_total.gcp_create_count %></td>
+          <td><%=  @user_activity_total.gcp_update_count %></td>
+          <td><%=  @user_activity_total.gcp_destroy_count %></td>
+        <% else %>
+          <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+        <% end %>
+      </tr>
+
+    </tbody>
+  </table>
+
+</div>
+<br />
+
 <p><%=link_to t('.activity'), user_activity_url(:id=>@user.id) %></p>
+
 <%= render :partial => 'users/admin_tools', :object => @user %>
 <h3><%= t('.user_maps') %></h3>
 

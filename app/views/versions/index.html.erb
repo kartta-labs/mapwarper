@@ -5,8 +5,8 @@
 <% if @linktomap %><%= link_to t('.only_maps') , maps_activity_path %><% end %>
 <br /><br />
 
-<%= will_paginate @audits %>
+<%= will_paginate @versions %>
 
-<%= render :partial => 'audit_table', :object => @audits %>
+<%= render :partial => 'version_table', :object => @versions %>
 
-<%= will_paginate @audits %>
+<%= will_paginate @versions %>

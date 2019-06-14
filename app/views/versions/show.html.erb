@@ -5,11 +5,15 @@
   <tr>
     <th><%= t('.time') %></th>
     <th><%= t('.user') %></th>
-    <th></th>
+    <% if admin_authorized? %>
+      <th><%= t('.ip_address') %></th>
+      <th><%= t('.user_agent') %></th>
+    <% end %>
+    <th><%= t('.object') %></th>
     <th><%= t('.summary') %></th>
     <th><%= t('.version') %></th>
 
-    <%= render :partial => 'audit', :object => @audit, :locals => {:page => 'detail'} %>
+    <%= render :partial => 'version', :object => @version, :locals => {:page => 'detail'} %>
     <th></th>
   </tr>
 </table>
@@ -20,7 +24,7 @@
   <th><%= t('.item') %>&nbsp;</th>
   <th><%= t('.value') %></th>
 </thead>
-<% @audit.audited_changes.each do |key, value| -%>
+<% @version.changeset.each do |key, value| -%>
   <tr>
     <td><%= key-%> </td>
     <% if value.class == Array %>
@@ -29,6 +33,6 @@
       <td><%= value -%> </td>
     <% end %>
   </tr>
-<% end if @audit.audited_changes -%>
+<% end if @version.changeset -%>
 
 </table>

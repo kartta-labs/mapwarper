@@ -53,10 +53,6 @@ gem 'acts_as_commentable'
 gem 'will_paginate', '~> 3.0'
 gem 'spawnling', '~>2.1'
 
-#Rails 4 support for the audited (acts_as_audited gem) is not quite rails4 worthy - see #https://github.com/collectiveidea/audited/pull/166
-#gem 'audited-activerecord', github: 'timwaters/audited', branch: 'rails4'
-gem 'audited-activerecord', '~> 4'
-
 gem 'georuby'
 
 gem 'actionpack-action_caching', git: 'https://github.com/timwaters/actionpack-action_caching', branch: 'feature/take_format_from_request'
@@ -81,6 +77,10 @@ gem 'sendgrid-actionmailer'
 gem 'nypl_repo'
 
 gem 'rack-attack', '~> 6.0.0'
+gem 'paper_trail', '~> 9.2.0'
+gem 'paper_trail-association_tracking'
+gem 'ip_anonymizer', '~> 0.1.1'
+
 
 group :development do
    gem 'web-console', '~> 2.0'

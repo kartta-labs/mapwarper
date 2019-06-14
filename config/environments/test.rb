@@ -39,4 +39,8 @@ Rails.application.configure do
   config.active_record.raise_in_transactional_callbacks = true
   config.cache_store = :null_store  
   config.active_support.test_order = :random
+
+  config.after_initialize do
+    PaperTrail.enabled = false
+  end
 end

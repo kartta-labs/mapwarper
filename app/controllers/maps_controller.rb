@@ -405,6 +405,22 @@ class MapsController < ApplicationController
     #
     # Not Logged in users
     #
+
+    if @map.versions.last 
+      @current_version_number = @map.versions.last.index
+      if User.exists?(@map.versions.last.whodunnit.to_i)
+        @current_version_user = User.find_by_id(@map.versions.last.whodunnit.to_i)
+      else
+        @current_version_user  = nil
+      end
+    else
+      @current_version_number = 1
+      @current_version_user = nil
+    end
+
+    version_users = PaperTrail::Version.where({:item_type => 'Map', :item_id => @map.id}).where.not(:whodunnit => nil).where.not(:whodunnit => @current_version_user).select(:whodunnit).distinct.limit(7)
+    @version_users = version_users.to_a.delete_if{|v| !User.exists?(v.whodunnit) }
+    
     if !user_signed_in?
       @disabled_tabs = ["warp", "edit", "clip", "align", "activity"]
       

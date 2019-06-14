@@ -43,6 +43,31 @@
       <br />
     <% end -%>
 
+    <% if user_signed_in? %>
+      <div class="users_version_info map_summary ">
+        <% if @current_version_number > 0  && @current_version_user %>
+          <%= t('.version_number', version: @current_version_number )%>
+          <% if @current_version_user %>
+           <%= t('.by') %> <%= link_to(@current_version_user.login, user_path(@current_version_user.id)) %>. 
+          <% end %>
+        <% end %>
+          <div id="other_users">        
+            <% if @version_users && @version_users.length > 0 %>
+              <%=  pluralize(@version_users.length, "User") -%> <%= t('.also_helped')%>
+              <% @version_users.each do | version_user |
+                if User.exists?(:id => version_user.whodunnit.to_i)
+                  user = User.select(:login, :id).find_by_id(version_user.whodunnit.to_i)
+              %>
+            <%= link_to(user.login, user_path(user.id)) %><%= ","  if(version_user != @version_users.last) -%>
+              <% end
+              end %>
+            <% else %>
+              <%= t('.no_users_yet')%>
+            <% end %>
+         </div>
+      </div>
+    <% end %>
+
     <span class="map_links">
       <% if user_signed_in? %>
         <% current_user_maps = current_user.maps %>

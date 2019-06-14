@@ -3410,25 +3410,34 @@ curl -H "Content-Type: application/json" -H 'Accept: application/json' -X GET  h
 
 ```
 {
-	"data": [
-		{
-			"id": 2158,
-			"auditable_id": 228,
-			"auditable_type": "Gcp",
-			"user_id": 4,
-			"action": "create",
-			"version": 1,
-			"created_at": "2016-06-11T16:29:32.951Z"
-		},
-		{
-			"id": 2156,
-			"auditable_id": 294,
-			"auditable_type": "Map",
-			"user_id": 2,
-			"action": "create",
-			"version": 1,
-			"created_at": "2016-06-10T17:20:31.175Z"
+
+"data": [
+	{
+		"id": "8",
+		"type": "paper_trail-versions",
+		"attributes": {
+			"item_type": "Map",
+			"index": 4,
+			"item_id": 89,
+			"event": "gcp_delete",
+			"whodunnit": "1",
+			"created_at": "2019-06-14T16:12:59.894Z",
+			"transaction_id": 7
 		}
+	},
+	{
+		"id": "7",
+		"type": "paper_trail-versions",
+		"attributes": {
+			"item_type": "Gcp",
+			"index": 1,
+			"item_id": 72,
+			"event": "destroy",
+			"whodunnit": "1",
+			"created_at": "2019-06-14T16:12:59.875Z",
+			"transaction_id": 7
+		}
+	},
 	],
 	"meta": {
 		"total_entries": 2140,
@@ -3445,11 +3454,11 @@ curl -H "Content-Type: application/json" -H 'Accept: application/json' -X GET  h
 | Name           | Type     | Description                                          | Notes                                                 |
 |----------------|----------|------------------------------------------------------|-------------------------------------------------------|
 | id             | integer  | unique identifier of the activity                    |                                                       |
-| auditable_id   | integer  | unique identifier of the item the activity refers to | e.g. Gcp or Map                                       |
-| auditable_type | string   | The type ofitem the activity refers to               | e.g. Gcp or Map                                       |
-| user_id        | integer  | unique identifier of the user doing the action       |                                                       |
-| action         | string   | the type of action                                   | one of: "create", "update", "destroy"                 |
-| version        | integer  | the version of the item                              | e.g. a created map will always be version 1 initially |
+| item_id        | integer  | unique identifier of the item the activity refers to | e.g. Gcp or Map                                       |
+| item_type      | string   | The type of item the activity refers to               | e.g. Gcp or Map                                       |
+| whodunnit      | integer  | unique identifier of the user doing the action       |                                                       |
+| event          | string   | the type of action                                   | one of: "create", "update", "destroy"                 |
+| index          | integer  | the version of the item                              | e.g. a created map will always be version 1 initially |
 | created_at     | datetime | the time of the action                               |                                                       |
 
 ***Meta***
@@ -3491,26 +3500,34 @@ curl -H "Content-Type: application/json" -H 'Accept: application/json' -X GET  h
 
 ```
 {
-	"data": [
-		{
-			"id": 2158,
-			"auditable_id": 294,
-			"auditable_type": "Map",
-			"user_id": 4,
-			"action": "update",
-			"version": 1,
-			"created_at": "2016-06-11T16:29:32.951Z"
-		},
-		{
-			"id": 2156,
-			"auditable_id": 294,
-			"auditable_type": "Map",
-			"user_id": 2,
-			"action": "create",
-			"version": 1,
-			"created_at": "2016-06-10T17:20:31.175Z"
+
+"data": [
+	{
+		"id": "8",
+		"type": "paper_trail-versions",
+		"attributes": {
+			"item_type": "Map",
+			"index": 4,
+			"item_id": 89,
+			"event": "gcp_delete",
+			"whodunnit": "1",
+			"created_at": "2019-06-14T16:12:59.894Z",
+			"transaction_id": 7
 		}
-	],
+	},
+	{
+		"id": "7",
+		"type": "paper_trail-versions",
+		"attributes": {
+			"item_type": "Map",
+			"index": 1,
+			"item_id": 72,
+			"event": "destroy",
+			"whodunnit": "1",
+			"created_at": "2019-06-14T16:12:59.875Z",
+			"transaction_id": 7
+		}
+	},
 	"meta": {
 		"total_entries": 2140,
 		"total_pages": 1070
@@ -3530,12 +3547,13 @@ curl -H "Content-Type: application/json" -X GET  http://mapwarper.net/api/v1/act
 | Name           | Type     | Description                                          | Notes                                                 |
 |----------------|----------|------------------------------------------------------|-------------------------------------------------------|
 | id             | integer  | unique identifier of the activity                    |                                                       |
-| auditable_id   | integer  | unique identifier of the item the activity refers to | e.g. Map                                       |
-| auditable_type | string   | The type ofitem the activity refers to               | e.g.  Map                                       |
-| user_id        | integer  | unique identifier of the user doing the action       |                                                       |
-| action         | string   | the type of action                                   | one of: "create", "update", "destroy"                 |
-| version        | integer  | the version of the item                              | e.g. a created map will always be version 1 initially |
+| item_id        | integer  | unique identifier of the item the activity refers to | e.g. Gcp or Map                                       |
+| item_type      | string   | The type of item the activity refers to              | e.g. Gcp or Map                                       |
+| whodunnit      | integer  | unique identifier of the user doing the action       |                                                       |
+| event          | string   | the type of action                                   | one of: "create", "update", "destroy"                 |
+| index          | integer  | the version of the item                              | e.g. a created map will always be version 1 initially |
 | created_at     | datetime | the time of the action                               |                                                       |
+
 
 ***Meta***
 
@@ -3575,26 +3593,34 @@ curl -H "Content-Type: application/json" -X GET  http://mapwarper.net/api/v1/act
 
 ```
 {
-	"data": [
-		{
-			"id": 2116,
-			"auditable_id": 260,
-			"auditable_type": "Map",
-			"user_id": 2,
-			"action": "update",
-			"version": 16,
-			"created_at": "2016-04-10T17:00:36.588Z"
+
+"data": [
+	{
+	"id": "8",
+	"type": "paper_trail-versions",
+	"attributes": {
+		"item_type": "Map",
+		"index": 4,
+		"item_id": 89,
+		"event": "gcp_delete",
+		"whodunnit": "1",
+		"created_at": "2019-06-14T16:12:59.894Z",
+		"transaction_id": 7
+	}
+	},
+	{
+	"id": "7",
+	"type": "paper_trail-versions",
+	"attributes": {
+		"item_type": "Gcp",
+		"index": 1,
+		"item_id": 72,
+		"event": "destroy",
+		"whodunnit": "1",
+		"created_at": "2019-06-14T16:12:59.875Z",
+		"transaction_id": 7
+	}
 		},
-		{
-			"id": 2115,
-			"auditable_id": 260,
-			"auditable_type": "Map",
-			"user_id": 2,
-			"action": "update",
-			"version": 15,
-			"created_at": "2016-04-10T17:00:31.684Z"
-		}
-	],
 	"meta": {
 		"total_entries": 16,
 		"total_pages": 8
@@ -3610,11 +3636,11 @@ curl -H "Content-Type: application/json" -X GET  http://mapwarper.net/api/v1/act
 | Name           | Type     | Description                                          | Notes                                                 |
 |----------------|----------|------------------------------------------------------|-------------------------------------------------------|
 | id             | integer  | unique identifier of the activity                    |                                                       |
-| auditable_id   | integer  | unique identifier of the item the activity refers to |                                                    |
-| auditable_type | string   | The type ofitem the activity refers to               | e.g.  Map                                       |
-| user_id        | integer  | unique identifier of the user doing the action       |                                                       |
-| action         | string   | the type of action                                   | one of: "create", "update", "destroy"                 |
-| version        | integer  | the version of the item                              | e.g. a created map will always be version 1 initially |
+| item_id        | integer  | unique identifier of the item the activity refers to | e.g. Gcp or Map                                       |
+| item_type      | string   | The type of item the activity refers to              | e.g. Gcp or Map                                       |
+| whodunnit      | integer  | unique identifier of the user doing the action       |                                                       |
+| event          | string   | the type of action                                   | one of: "create", "update", "destroy"                 |
+| index          | integer  | the version of the item                              | e.g. a created map will always be version 1 initially |
 | created_at     | datetime | the time of the action                               |                                                       |
 
 ***Meta***
@@ -3656,30 +3682,38 @@ curl -H "Content-Type: application/json" -H 'Accept: application/json' -X GET  h
 
 ```
 {
-	"data": [
-		{
-			"id": 2148,
-			"auditable_id": 287,
-			"auditable_type": "Map",
-			"user_id": 2,
-			"action": "update",
-			"version": 3,
-			"created_at": "2016-05-03T12:14:11.872Z"
-		},
-		{
-			"id": 2147,
-			"auditable_id": 287,
-			"auditable_type": "Map",
-			"user_id": 2,
-			"action": "update",
-			"version": 2,
-			"created_at": "2016-05-03T12:14:11.607Z"
+
+"data": [
+	{
+	"id": "8",
+	"type": "paper_trail-versions",
+	"attributes": {
+		"item_type": "Map",
+		"index": 4,
+		"item_id": 89,
+		"event": "gcp_delete",
+		"whodunnit": "1",
+		"created_at": "2019-06-14T16:12:59.894Z",
+		"transaction_id": 7
 		}
-	],
-	"meta": {
-		"total_entries": 1755,
-		"total_pages": 878
+	},
+	{
+	"id": "7",
+	"type": "paper_trail-versions",
+	"attributes": {
+		"item_type": "Gcp",
+		"index": 1,
+		"item_id": 72,
+		"event": "destroy",
+		"whodunnit": "1",
+		"created_at": "2019-06-14T16:12:59.875Z",
+		"transaction_id": 7
 	}
+	},
+"meta": {
+	"total_entries": 16,
+	"total_pages": 8
+}
 }
 ```
 
@@ -3691,12 +3725,13 @@ curl -H "Content-Type: application/json" -H 'Accept: application/json' -X GET  h
 | Name           | Type     | Description                                          | Notes                                                 |
 |----------------|----------|------------------------------------------------------|-------------------------------------------------------|
 | id             | integer  | unique identifier of the activity                    |                                                       |
-| auditable_id   | integer  | unique identifier of the item the activity refers to |                                                       |
-| auditable_type | string   | The type ofitem the activity refers to               |                                                       |
-| user_id        | integer  | unique identifier of the user doing the action       |                                                       |
-| action         | string   | the type of action                                   | one of: "create", "update", "destroy"                 |
-| version        | integer  | the version of the item                              | e.g. a created map will always be version 1 initially |
+| item_id        | integer  | unique identifier of the item the activity refers to | e.g. Gcp or Map                                       |
+| item_type      | string   | The type of item the activity refers to              | e.g. Gcp or Map                                       |
+| whodunnit      | integer  | unique identifier of the user doing the action       |                                                       |
+| event          | string   | the type of action                                   | one of: "create", "update", "destroy"                 |
+| index          | integer  | the version of the item                              | e.g. a created map will always be version 1 initially |
 | created_at     | datetime | the time of the action                               |                                                       |
+
 
 ***Meta***
 
@@ -3732,7 +3767,7 @@ Administrator role only authorized
 |            | gcp_update_count  |         | number of gcp update changes                                            |          |                        |
 |            | gcp_create_count  |         | number of gcp creations                                                 |          |                        |
 |            | gcp_destroy_count |         | number of gcp deletions                                                 |          |                        |
-|            | user_id           |         | user id                                                                 |          |                        |
+|            | whodunnit         |         | user id                                                                 |          |                        |
 | sort_order |                   | string  | the order in which the results should appear                            | optional | default is desc        |
 |            | asc               |         | ascending order                                                         | optional |                        |
 |            | desc              |         | descending order                                                        | optional | default                |
@@ -3749,33 +3784,27 @@ curl -H "Content-Type: application/json" -H 'Accept: application/json'  -X GET  
 
 ```
 {
-	"data": [
+	"paper_trail/versions": [
 		{
-			"user_id": 2,
-			"username": null,
-			"total_count": 646,
-			"gcp_count": 244,
-			"map_count": 402,
-			"gcp_update_count": 90,
-			"gcp_create_count": 94,
-			"gcp_destroy_count": 60,
-			"id": null
+			"whodunnit": "1",
+			"total_count": 8,
+			"map_count": 5,
+			"gcp_update_count": 0,
+			"gcp_create_count": 2,
+			"gcp_destroy_count": 1
 		},
 		{
-			"user_id": 11,
-			"username": null,
-			"total_count": 3,
-			"gcp_count": 0,
-			"map_count": 3,
+			"whodunnit": "2",
+			"total_count": 8,
+			"map_count": 5,
 			"gcp_update_count": 0,
-			"gcp_create_count": 0,
-			"gcp_destroy_count": 0,
-			"id": null
+			"gcp_create_count": 2,
+			"gcp_destroy_count": 1
 		}
 	],
 	"meta": {
-		"total_entries": 5,
-		"total_pages": 2
+		"total_entries": 1,
+		"total_pages": 1
 	}
 }
 ```
@@ -3793,7 +3822,7 @@ curl -H "Content-Type: application/json" -H 'Accept: application/json'  -X GET  
 | gcp_update_count  | integer | number of gcp update changes |       |
 | gcp_create_count  | integer | number of gcp creations      |       |
 | gcp_destroy_count | integer | number of gcp deletions      |       |
-| user_id           | integer | user id                      |       |
+| whodunnit          | integer | user id                      |       |
 
 note: ```username``` and ```id``` are not used.
 

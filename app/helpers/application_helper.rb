@@ -84,4 +84,8 @@ module ApplicationHelper
     APP_CONFIG["disabled_site"] == true
   end
   
+  def formatted_action(action)
+    action.gsub(/\W/, "").titleize
+  end
+  
 end

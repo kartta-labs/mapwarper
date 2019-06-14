@@ -1,10 +1,27 @@
 <h2><%= t('.header') %></h2>
 
+<div>
+  | <%=  link_to t('.total_count'), stats_users_url(:period=>"total"),    :class=>"buttonWarper" %> 
+  | <%=  link_to t('.hour'),  stats_users_url(:period=>"hour"),:class=>"buttonWarper" %> 
+  | <%=  link_to t('.day'),   stats_users_url(:period=>"day"), :class=>"buttonWarper" %> 
+  | <%=  link_to t('.week'),  stats_users_url(:period=>"week"),:class=>"buttonWarper" %> 
+  | <%=  link_to t('.month'),  stats_users_url(:period=>"month"),:class=>"buttonWarper" %> 
+  |
+</div>
+<div class="period">
+  <% if @period == "total" %>
+    <%= t('.all_stats_html')%>
+  <% else %>
+    <%= t('.period_stats_html', period: @period  )%>
+  <% end %>
+</div>
+
+
 <%= will_paginate @users_activity %>
 <table class="usertable">
   <thead>
     <tr>
-      <%= sort_header_tag('username', :title => t('users.show.user')) %>
+      <%= sort_header_tag('whodunnit', :title => t('users.show.user')) %>
       <%= sort_header_tag('total_count', :title => t('.total_count')) %>
       <%= sort_header_tag('map_count', :title => t('.map_count')) %>
       <%= sort_header_tag('gcp_count', :title => t('.gcp_count')) %>
@@ -18,14 +35,14 @@
 
     <% @users_activity.each do | user | %>
       <tr class="<%= cycle('table0', 'table1') -%>">
-        <td><% if user.user_id && User.exists?(user.user_id)
-            user_name = User.select(:login).find_by_id(user.user_id).login
-        %>
-            <%= link_to(user_name, user_path(user.user_id))%>
+        <td><% if user.whodunnit && User.exists?(:id => user.whodunnit.to_i)
+            user_name = User.select(:login).find_by_id(user.whodunnit).login
+          %>
+            <%= link_to("#{user.whodunnit} - #{user_name}", user_path(user.whodunnit))%>
           <% else %>
-            <%= t('.unknown') %>
+             <%= t('.unknown') %> <%="(User:#{user.whodunnit})" if user.whodunnit %>
           <% end %>
-          </td>
+        </td>
         <td><%=user.total_count %></td>
         <td><%=user.map_count %></td>
         <td><%=user.gcp_count %></td>
@@ -33,8 +50,8 @@
         <td><%=user.gcp_update_count %></td>
         <td><%=user.gcp_destroy_count %></td>
         <td>
-          <% if user.user_id %>
-            <%= link_to(t('users.show.activity'), user_activity_path(user.user_id)) %>
+          <% if user.whodunnit %>
+            <%= link_to(t('users.show.activity'), user_activity_path(user.whodunnit)) %>
           <% else %>
           <% end %>
         </td>

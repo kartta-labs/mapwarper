@@ -27,7 +27,6 @@ class LayerTest < ActiveSupport::TestCase
   
   test "can create a tileindex" do
     layer = FactoryGirl.create(:layer_with_warped_maps)
-    puts layer.tileindex_path
     assert_not File.exist?(layer.tileindex_path)
     layer.create_tileindex
     assert File.exist?(layer.tileindex_path)
