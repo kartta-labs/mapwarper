@@ -3,9 +3,11 @@
 <%=image_tag 'feed-icon-14x14.png' -%> <%= link_to t('versions.index.rss_link') , 'http://'+ request.host_with_port + request.path + '.rss' %>&nbsp;
 <% if @linktomap %><%= link_to t('versions.index.only_maps'), :controller=>"maps", :action=>"activity" %><% end %>
 <br /><br />
-
-<%= will_paginate @versions %>
-
+<div class="warper_pagination">
+  <%= will_paginate @versions %>
+</div>
 <%= render :partial => 'version_table', :object => @versions %>
 
-<%= will_paginate @versions %>
+<div class="warper_pagination">
+  <%= will_paginate @versions %>
+</div>
