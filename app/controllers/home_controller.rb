@@ -1,6 +1,7 @@
 class HomeController < ApplicationController
 
   layout 'application'
+  before_filter :check_administrator_role, only: [:throttle_test]
   
   def index
     @html_title =  t('.title')
@@ -35,6 +36,13 @@ class HomeController < ApplicationController
     per_page = params[:per_page] || 50
     logger.debug per_page
     @results = PgSearch.multisearch(params[:query].to_s).limit(per_page.to_i)
+  end
+
+  #
+  # Action used by Rack Attack for throttling behaviour testing
+  #
+  def throttle_test
+    render :text => "throttle test #{Time.now}"
   end
   
   private

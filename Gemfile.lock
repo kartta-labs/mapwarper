@@ -273,6 +273,8 @@ GEM
     public_suffix (3.0.3)
     puma (3.12.0)
     rack (1.6.11)
+    rack-attack (6.0.0)
+      rack (>= 1.0, < 3)
     rack-cors (1.0.2)
     rack-protection (1.5.5)
       rack
@@ -479,6 +481,7 @@ DEPENDENCIES
   pg (~> 0.21)
   pg_search
   puma
+  rack-attack (~> 6.0.0)
   rack-cors
   rails (~> 4.2)
   rails-api

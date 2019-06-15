@@ -29,5 +29,6 @@ module Rails4Mapwarper
     config.middleware.use Rack::MethodOverride
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Flash
+    config.middleware.use Rack::Attack
   end
 end

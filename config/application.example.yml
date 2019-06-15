@@ -48,6 +48,10 @@ defaults: &defaults
   google_maps_key: ""
   sendgrid_api_key: ""
   nypl_repo_token: ""
+  enable_throttling: false
+  throttle_limit: 30
+  throttle_period: 60
+  throttle_safelist_ips: #"127.0.0.1,192.168.0.1" #comma separated
 
 development:
   <<: *defaults

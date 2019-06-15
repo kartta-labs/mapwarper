@@ -80,6 +80,8 @@ gem 'fog-google', '~> 1.8'
 gem 'sendgrid-actionmailer'
 gem 'nypl_repo'
 
+gem 'rack-attack', '~> 6.0.0'
+
 group :development do
    gem 'web-console', '~> 2.0'
    gem 'spring'
