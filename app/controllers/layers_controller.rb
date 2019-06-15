@@ -279,11 +279,25 @@ class LayersController < ApplicationController
       @disabled_tabs = ["export"]
     end
 
+    sort_init('map_type', {:default_order => "desc"})
+    sort_update
+    if params[:sort_order] && params[:sort_order] == "desc"
+      sort_nulls = " NULLS LAST"
+    else
+      sort_nulls = " NULLS FIRST"
+    end
+    @per_page = params[:per_page] || 50
+    paginate_params = {
+      :page => params[:page],
+      :per_page => @per_page
+    }
+    order_options = sort_clause + sort_nulls
+
     if  user_signed_in? and (current_user.own_this_layer?(params[:id]) or current_user.has_role?("editor"))
-      @maps = @layer.maps.order(:map_type).paginate(:page => params[:page], :per_page => 30)
+      @maps = @layer.maps.order(order_options).paginate(:page => params[:page], :per_page => params[:per_page])
     else
       @disabled_tabs += ["edit"]
-      @maps = @layer.maps.are_public.order(:map_type).paginate(:page => params[:page], :per_page => 30)
+      @maps = @layer.maps.are_public.order(order_options).paginate(:page => params[:page], :per_page => params[:per_page])
     end
     @html_title = t('.title', :layer_id => @layer.id.to_s, :layer_name =>  @layer.name.to_s  )
 
