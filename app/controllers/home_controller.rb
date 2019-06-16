@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
 
   layout 'application'
-  before_filter :check_administrator_role, only: [:throttle_test]
+  before_filter :check_administrator_role, only: [:throttle_test, :delay_test]
   
   def index
     @html_title =  t('.title')
@@ -43,6 +43,13 @@ class HomeController < ApplicationController
   #
   def throttle_test
     render :text => "throttle test #{Time.now}"
+  end
+
+  #
+  # Action used by Rack Attack for tracking delay behaviour testing
+  #
+  def delay_test
+    render :text => "delay test #{Time.now}"
   end
   
   private

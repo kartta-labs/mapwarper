@@ -226,7 +226,8 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/throttle_test' => 'home#throttle_test', :as => 'admintest'
+  get '/throttle_test' => 'home#throttle_test'
+  get '/delay_test' => 'home#delay_test'
 
   
   # The priority is based upon order of creation: first created -> highest priority.

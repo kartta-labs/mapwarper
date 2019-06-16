@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
   before_filter :configure_permitted_parameters, if: :devise_controller?
 
   before_filter :set_locale
+
+  before_filter :check_rack_attack
     
   def check_super_user_role
     check_role('super user')
@@ -54,6 +56,13 @@ class ApplicationController < ActionController::Base
   def permission_denied
     flash[:error] = t('application.permission_denied')
     redirect_to root_path
+  end
+
+  def check_rack_attack
+    if request.env['rack.attack.delay_request'] == true
+      sleep(2)
+      request.env['rack.attack.delay_request'] = nil
+    end
   end
 
 

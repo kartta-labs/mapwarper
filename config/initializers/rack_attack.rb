@@ -57,26 +57,41 @@ class Rack::Attack
     #  Limiting requests, admin throttle test
     throttle('admin/throttletest', :limit => limit, :period => period.seconds) do |req|
       if req.path.include?('/throttle_test') && req.get?
-        req.ip + req.user_agent.to_s
+        req.ip
       end
     end
 
-    # Block suspicious requests for '/etc/password' or wordpress specific paths.
-    # After 3 blocked requests in 10 minutes, block all requests from that IP for 5 minutes.
-    Rack::Attack.blocklist('fail2ban pentesters') do |req|
-      # `filter` returns truthy value if request fails, or if it's from a previously banned IP
-      # so the request is blocked
-      Rack::Attack::Fail2Ban.filter("pentesters-#{req.ip}", maxretry: 3, findtime: 10.minutes, bantime: 5.minutes) do
-        # The count for the IP is incremented if the return value is truthy
-        CGI.unescape(req.query_string) =~ %r{/etc/passwd} ||
-        req.path.include?('/etc/passwd') ||
-        req.path.include?('wp-admin') ||
-        req.path.include?('wp-login') ||
-        req.path.include?('phpmyadmin')
+    # track this request - it wont get throttled but the application controller will delay the request
+    Rack::Attack.track('admin/delaytest', :limit => limit, :period => period.seconds) do |req|
+      if req.path.include?('/delay_test') && req.get?
+        req.ip
       end
     end
+
+    # # Block suspicious requests for '/etc/password' or wordpress specific paths.
+    # # After 3 blocked requests in 10 minutes, block all requests from that IP for 5 minutes.
+    # Rack::Attack.blocklist('fail2ban pentesters') do |req|
+    #   # `filter` returns truthy value if request fails, or if it's from a previously banned IP
+    #   # so the request is blocked
+    #   Rack::Attack::Fail2Ban.filter("pentesters-#{req.ip}", maxretry: 3, findtime: 10.minutes, bantime: 5.minutes) do
+    #     # The count for the IP is incremented if the return value is truthy
+    #     CGI.unescape(req.query_string) =~ %r{/etc/passwd} ||
+    #     req.path.include?('/etc/passwd') ||
+    #     req.path.include?('wp-admin') ||
+    #     req.path.include?('wp-login') ||
+    #     req.path.include?('phpmyadmin')
+    #   end
+    # end
 
 
   end
 
+end
+
+ActiveSupport::Notifications.subscribe("track.rack_attack") do |name, start, finish, request_id, payload|
+  req = payload[:request]
+  if req.env['rack.attack.matched'] == "admin/delaytest"
+    Rails.logger.debug "delay test, delay"
+    req.env['rack.attack.delay_request'] = true
+  end
 end
