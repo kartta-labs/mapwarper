@@ -139,6 +139,9 @@ class Gcp < ActiveRecord::Base
     end
   end
 
+  #We want to be able to ensure the map has a version when a gcp is changed
+  # NOTE "my_model.paper_trail.touch_with_version is deprecated, please use my_model.paper_trail.save_with_version, which is slightly different. It's a save, not a touch, so make sure you understand the difference by reading the ActiveRecord documentation for both."
+  # However save_with_version does not accept args... so we will ignore this warning for the moment
   def touch_map
     self.map.paper_trail.touch_with_version(:gcp_touched_at) if self.map
   end

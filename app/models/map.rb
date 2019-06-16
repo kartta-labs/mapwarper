@@ -617,8 +617,8 @@ class Map < ActiveRecord::Base
   def mask!
     require 'fileutils'
     self.paper_trail_event = 'masking'
-    self.mask_status = :masking
-    save!
+    self.update(mask_status: :masking)
+    self.paper_trail_event = nil
     format = self.mask_file_format
     
     if format == "gml"
@@ -654,8 +654,7 @@ class Map < ActiveRecord::Base
       r_out = "Success! Map was cropped!"
     end
     self.paper_trail_event = 'masked'
-    self.mask_status = :masked
-    save!
+    self.update(mask_status: :masked)
     self.paper_trail_event = nil
     
     r_out
@@ -672,9 +671,8 @@ class Map < ActiveRecord::Base
   def warp!(resample_option, transform_option, use_mask="false")
     prior_status = self.status
     self.paper_trail_event = 'warping'
-    self.status = :warping
-    save!
-    
+    self.update(status: :warping)
+    self.paper_trail_event = nil
     gcp_array = self.gcps.hard
     
     gdal_gcp_array = []
@@ -771,7 +769,7 @@ class Map < ActiveRecord::Base
       Spawnling.new do
         convert_to_png
       end
-      self.touch(:rectified_at)
+      self.rectified_at  = Time.now
     else
       self.status = :available
     end
