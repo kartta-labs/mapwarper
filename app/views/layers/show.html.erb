@@ -1,6 +1,6 @@
 <%=render :partial => 'layers/layermap', :object => @layer unless @layer.rectified_maps_count  < 1 || !@layer.is_visible?%>
 <h3><%= t('.maps') %> <span id="view-maps-index-link"></span></h3>
-sss
+
 <div class="warper_pagination">
   <div id="search-pagination-top">
     <%= will_paginate @maps %>
