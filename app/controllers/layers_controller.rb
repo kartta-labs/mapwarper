@@ -356,7 +356,7 @@ class LayersController < ApplicationController
     @selected_tab = 1
     @current_tab = "edit"
     @html_title = t('.title', :layer_id => @layer.id)
-    if (!current_user.own_this_layer?(params[:id]) and current_user.has_role?("editor"))
+    if (!current_user.own_this_layer?(params[:id]) && current_user.has_role?("editor") && @layer.user)
       @maps = @layer.user.maps
     else
       @maps = current_user.maps  #current_user.maps.warped
