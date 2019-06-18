@@ -3,6 +3,7 @@ require "error_calculator"
 require 'csv'
 include ErrorCalculator
 class Map < ActiveRecord::Base
+  include Tilestache
   
   has_many :gcps,  :dependent => :destroy
   has_many :layers_maps,  :dependent => :destroy
