@@ -435,6 +435,14 @@ en:
       map_outlines_toggle: Toggle map outlines on map above
       mbox_satellite_attribution: <a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox</a> <a href="https://openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap</a> <a class="mapbox-improve-map" href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a> <a href="https://www.digitalglobe.com/" target="_blank">&copy; DigitalGlobe</a>
       osm_attribution: '&copy <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    notifications:
+      ago: ago
+      gcp_added: added a control point to this map
+      gcp_updated: updated a control point to this map
+      gcp_deleted: deleted a control point to this map
+      map_changed_title: Map recently changed
+      map_masked: cropped this map
+      map_warped: warped this map
     warp:
       add_gcp: Add Control Point (1,p)
       best_guess_message: 'Map zoomed to best guess:'

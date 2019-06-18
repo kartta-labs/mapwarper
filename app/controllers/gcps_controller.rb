@@ -33,6 +33,8 @@ class GcpsController < ApplicationController
         @map = @gcp.map
         @gcps = @map.gcps_with_error(params[:soft])
 
+        create_notification("gcp_updated")
+
         format.js if request.xhr?
         format.html { redirect_to_index }
         format.json { render :json => {:stat => "ok", :items => @gcps.to_a}.to_json(:methods => :error) , :callback => params[:callback]}
@@ -58,6 +60,8 @@ class GcpsController < ApplicationController
         @map = @gcp.map
         @gcps = @map.gcps_with_error(params[:soft])
 
+        create_notification("gcp_updated")
+
         if request.xhr?
           format.js {render :action => 'update'}
         end
@@ -82,6 +86,7 @@ class GcpsController < ApplicationController
       if @gcp.destroy
         @map.reload
         @gcps = @map.gcps_with_error
+        create_notification("gcp_deleted")
         format.js
         format.html { redirect_to_index }
         format.json { render :json => {:stat => "ok", :items => @gcps.to_a}.to_json(:methods => :error), :callback => params[:callback] }
@@ -116,7 +121,9 @@ class GcpsController < ApplicationController
       if @gcp.save
         @map = @gcp.map
         @gcps = @map.gcps_with_error(params[:soft])
-
+        
+        create_notification("gcp_added")
+        
         format.js if request.xhr?
         format.html { redirect_to_index }
         format.json { render :json => {:stat => "ok", :items => @gcps.to_a}.to_json(:methods => :error), :callback => params[:callback]}
@@ -218,4 +225,9 @@ class GcpsController < ApplicationController
       format.json {render :json => {:stat => "not found", :items =>[]}.to_json, :status => 404}
     end
   end
+
+  def create_notification(kind)
+    Notification.create(actor: current_user, kind: kind, notifiable: @gcp.map)
+  end
+
 end

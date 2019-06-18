@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190615115055) do
+ActiveRecord::Schema.define(version: 20190617171124) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -244,6 +244,17 @@ ActiveRecord::Schema.define(version: 20190615115055) do
 
   add_index "my_maps", ["map_id", "user_id"], name: "index_my_maps_on_map_id_and_user_id", unique: true, using: :btree
   add_index "my_maps", ["map_id"], name: "index_my_maps_on_map_id", using: :btree
+
+  create_table "notifications", force: :cascade do |t|
+    t.integer  "actor_id"
+    t.string   "kind"
+    t.integer  "notifiable_id"
+    t.string   "notifiable_type"
+    t.datetime "created_at"
+  end
+
+  add_index "notifications", ["actor_id"], name: "index_notifications_on_actor_id", using: :btree
+  add_index "notifications", ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable_type_and_notifiable_id", using: :btree
 
   create_table "oauth_nonces", force: :cascade do |t|
     t.string   "nonce"

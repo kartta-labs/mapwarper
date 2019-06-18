@@ -725,12 +725,14 @@ class MapsController < ApplicationController
     unless @map.status == :warping
       @map.mask!
       stat = "ok"
+      create_notification("map_masked")
       if @map.gcps.hard.size.nil? || @map.gcps.hard.size < 3
         msg = t('.masked_needs_more_points')
         stat = "fail"
       else
         params[:use_mask] = "true"
         rectify_main
+        create_notification("map_warped")
         msg = t('.masked_warped')
       end
     else
@@ -775,7 +777,8 @@ class MapsController < ApplicationController
 
   def rectify
     rectify_main
-
+    create_notification("map_warped")
+    
     respond_to do |format|
       unless @too_few || @fail
         format.js 
@@ -1088,4 +1091,8 @@ class MapsController < ApplicationController
     request.format = "png"
   end  
   
+  def create_notification(kind)
+    Notification.create(actor: current_user, kind: kind, notifiable: @map)
+  end
+
 end

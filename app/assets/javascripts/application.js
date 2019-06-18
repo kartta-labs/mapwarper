@@ -26,6 +26,8 @@
 //= require cookies_helper
 //= require openlayers/5.3/ol
 //= require ol-layerswitcher
+//= require toastr.min
+//= require notifications
 
 var querystring = require('querystring-component');
 

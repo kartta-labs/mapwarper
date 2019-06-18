@@ -17,7 +17,8 @@ type="text/javascript"></script>
     <script type="text/javascript">
       var addthis_share = {templates: {twitter: '{{url}} (from @<%=APP_CONFIG['addthis_twitter_user']%>)'}};
       var addthis_config = {ui_click: true};
-
+      var current_map_id = '<%=@map.id%>';
+      var current_time = '<%= Time.now.to_i %>';
 
       jQuery(function() {
         jQuery("#wooTabs").tabs({selected:<%=@selected_tab||0 %>});

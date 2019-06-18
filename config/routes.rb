@@ -231,6 +231,8 @@ Rails.application.routes.draw do
   get '/throttle_test' => 'home#throttle_test'
   get '/delay_test' => 'home#delay_test'
 
+  resources :notifications
+
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
