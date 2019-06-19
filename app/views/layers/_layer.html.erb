@@ -44,7 +44,7 @@
       <% end -%>
       <% if admin_authorized? -%>
         <%= link_to(t('.merge'), :controller => "layers", :action=> "merge", :id => layer) %> |
-       <!-- <%= link_to(t('.publish'), :controller => "layers", :action=> "publish", :id=>layer)%> | -->
+       <%= link_to(t('.publish'), :controller => "layers", :action=> "publish", :id=>layer)%> | 
       <%end -%>
 
       <% if layer.is_visible && layer.rectified_maps_count > 0 %>

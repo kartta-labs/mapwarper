@@ -3,10 +3,7 @@ module Tilestache
   extend ActiveSupport::Concern
 
   def tilestache_seed
-    secret = ENV['s3_tiles_secret_access_key'] || APP_CONFIG['s3_tiles_secret_access_key']
-    key_id = ENV['s3_tiles_access_key_id'] || APP_CONFIG['s3_tiles_access_key_id']
-    bucket_name = ENV['s3_tiles_bucket_name'] || APP_CONFIG['s3_tiles_bucket_name']
-    bucket_path = ENV['s3_tiles_bucket_path'] || APP_CONFIG['s3_tiles_bucket_path']
+    bucket_name = ENV['google_tiles_bucket'] || APP_CONFIG['google_tiles_bucket']
     max_zoom = ENV['s3_tiles_max_zoom'] || APP_CONFIG['s3_tiles_max_zoom'] #i.e. 21
 
     if max_zoom == "" || max_zoom.to_i > 25
@@ -26,13 +23,10 @@ module Tilestache
 
     if warped_filename
       tile_width = 256.0
-    #  im = Magick::Image.read(warped_filename).first
       bbox = RGeo::Cartesian::BoundingBox.create_from_geometry(self.bbox_geom)
 
-      #pixel_width = im.columns
       degree_width = bbox.x_span
 
-      # TODO: OR FLOOR?!
       max_tiles_x = (pixel_width / tile_width).ceil # 39
 
       max_zoom = compute_max_zoom(max_tiles_x, degree_width)
@@ -47,11 +41,8 @@ module Tilestache
     options = {
       :item_type => item_type,
       :item_id => item_id,
-      :secret => secret,
-      :access => key_id,
       :bucket => bucket_name,
-      :max_zoom => max_zoom,
-      :path => bucket_path
+      :max_zoom => max_zoom
     }
 
     config_json = tilestache_config_json(options)
@@ -68,7 +59,7 @@ module Tilestache
     layer_name = self.id.to_s
     layer_name = "map-"+ layer_name if options[:item_type] == "map"
 
-    command = "cd #{APP_CONFIG['tilestache_path']}; python scripts/tilestache-seed.py -c #{config_file}" +
+    command = "export GOOGLE_APPLICATION_CREDENTIALS='#{APP_CONFIG["google_json_key_location"]}'; export PYTHONPATH=$PYTHONPATH:#{APP_CONFIG['tilestache_path']}/TileStache; cd #{APP_CONFIG['tilestache_path']}; ./scripts/tilestache-seed.py -c #{config_file}" +
       " -l #{layer_name} -b #{tile_bbox_str} --enable-retries -x #{(1..max_zoom.to_i).to_a.join(' ')}"
 
     puts command
@@ -82,7 +73,7 @@ module Tilestache
       return nil
     else
 
-  #    send_tile_config(options)
+      send_tile_config(options)
 
       return true
     end
@@ -110,29 +101,23 @@ module Tilestache
     n = max_tiles_x / (degree_width / 360.0)
     zoom = Math.log(n, 2).ceil
 
-    # n = 39 / (0.009768375864808831 / 360)
-    # n == 1437291.1315359962
-    # n = 2.0 ** zoom
-    # zoom = ln(n) / ln(2)
-
-    # TODO: do for both lat and long? and then take minimum?
-
     return zoom
   end
 
   def tilestache_config_json(options)
 
-    url = "http://#{APP_CONFIG['host']}#{ActionController::Base.relative_url_root.to_s}/#{options[:item_type]}s/tile/#{options[:item_id]}/{Z}/{X}/{Y}.png"
+    url = "#{APP_CONFIG['host_with_scheme']}/#{options[:item_type]}s/tile/#{options[:item_id]}/{Z}/{X}/{Y}.png"
 
     layer_name = options[:item_id].to_s
     layer_name = "map-"+ layer_name if options[:item_type] == "map"
 
     config = {
       "cache" => {
-        "name" => "GoogleCloudNative",
-        "bucket" => "mapwarper-tiles-dev1", #options[:bucket],
-        "use_locks" => "false" 
-
+        "class" => "TileStache.Goodies.Caches.GoogleCloudNative:Cache",
+        "kwargs" => {
+          "bucket" => options[:bucket],
+          "use_locks" => "false" 
+        }
       },
       "layers" => {
         layer_name => {
@@ -149,45 +134,43 @@ module Tilestache
 
   def send_tile_config(options)
     bucket_name = options[:bucket]
-    access = options[:access]
-    secret = options[:secret]
-    path = options[:path]
 
-    service = S3::Service.new(:access_key_id =>access, :secret_access_key => secret)
-    bucket = service.buckets.find(bucket_name)
+    connection = Fog::Storage::Google.new(
+      google_project: APP_CONFIG["google_storage_project"],
+      google_json_key_location:  APP_CONFIG["google_json_key_location"]
+    )
+    bucket = connection.directories.get(APP_CONFIG["google_tiles_bucket"])
 
     layer_name = options[:item_id].to_s
     layer_name = "map-"+ layer_name if options[:item_type] == "map"
 
     tile_config_filename = "#{layer_name}spec.json"
     tile_config_file = layer_name + "/" + tile_config_filename
-    tile_config_file = path + "/"+ tile_config_file unless path.blank?
 
     the_json = tile_config_json(options)
 
-    config_file = File.join(Rails.root, 'tmp', tile_config_filename)
-    File.open(config_file, "w+") do |f|
-      f.write(the_json)
-    end
-
-    new_object = bucket.objects.build(tile_config_file)
-    new_object.content = open("tmp/#{tile_config_filename}")
-    new_object.save
-
+    file = bucket.files.create(
+      :key    => tile_config_file,
+      :body   => the_json,
+      :public => true
+    )
+      
   end
 
   #config file to be sent to s3 as well
   def tile_config_json(options)
     layer_name = options[:item_id].to_s
     layer_name = "map-"+ layer_name if options[:item_type] == "map"
+    tiles_host = APP_CONFIG['cdn_tiles_host'] 
 
     name = self.title if options[:item_type] == "map"
     name = self.name if options[:item_type] == "layer"
     max_zoom = options[:max_zoom].to_i || 21
 
     description  = self.description
-
-    attribution ="From: <a href='http://digitalcollections.nypl.org/items/#{self.uuid}'>NYPL Digital Collections</a> | <a href='http://maps.nypl.org/warper/#{self.class.to_s.downcase}s/#{self.id}/'>Warper</a> "
+    site_url = APP_CONFIG['host_with_scheme']
+    site_name  =  APP_CONFIG['site_name']
+    attribution ="From: <a href='#{site_url}/#{self.class.to_s.downcase}s/#{self.id}/'>#{site_name}</a>" 
 
     bbox = self.bbox.split(",")
 
@@ -204,7 +187,7 @@ module Tilestache
       "version"     => "1.5.0",
       "attribution" => "#{attribution}",
       "scheme"      => "xyz",
-      "tiles"       => ["http://maptiles.nypl.org/#{layer_name}/{z}/{x}/{y}.png"],
+      "tiles"       => ["#{tiles_host}/#{layer_name}/{z}/{x}/{y}.png"],
       "minzoom"     => 1,
       "maxzoom"     => max_zoom,
       "bounds"      => tile_bbox,

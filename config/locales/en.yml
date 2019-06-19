@@ -543,8 +543,11 @@ en:
       help_html: 'Note: All Mosaics are public, you can add unlisted maps to them they won''t be listed<br /> but they would be seen on the final map image.'
       title: Make new mosaic -
     publish:
-      flash: Mosaic will be published
-      not_all_maps_ready: Mosaic has less than 100% of its maps rectified
+      currently_publishing: Map currently publishing. Please try again later.
+      flash: Mosaic will be published and tiles transfered to bucket via tilestache. Please wait.
+      not_all_maps_ready: Mosaic has less than 100% of its maps rectified and cannot be published
+      publishing: 'Map publishing. Please wait as the map will be published and tiles transfered via tilestache. Status: %{status} '
+      unpublish: 'Map unpublished. Status:  %{status}'
     remove_map:
       flash: Map removed from this mosaic
     show:
@@ -751,10 +754,14 @@ en:
       permission_notice: By uploading images to the website, you agree that you have permission to do so, and accept that anyone else can potentially view and use them, including changing control points.
       title: 'Upload a new map to '
     publish:
-      flash: 'Map changed. New Status: '
+      currently_publishing: Map currently publishing. Please try again later.
+      flash: Map will be published and tiles transfered to bucket via tilestache. Please wait.
+      publishing: 'Map publishing. Please wait as the map will be published and tiles transfered via tilestache. Status: %{status}'
+      unpubish: 'Map unpublished. Status:  %{status}'
     rectify_main:
       being_rectified_error: Sorry, the map is currently being rectified somewhere else, please try again later.
       not_enough_points: Sorry, the map needs at least three control points to be able to rectify it
+      published: Sorry, this map is published, and cannot be rectified.
       rectified_success: Map rectified.
       transform_not_solveable: There was an error rectifying the map. Please change some points and try again.
     save_mask_and_warp:

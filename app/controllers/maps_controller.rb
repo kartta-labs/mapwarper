@@ -456,19 +456,22 @@ class MapsController < ApplicationController
     #
     unless user_signed_in? and (current_user.own_this_map?(params[:id])  or current_user.has_role?("editor"))
       @disabled_tabs += ["edit"]  #don't allow anyone else to edit it, unless you are an editor
-      if @map.published?
+    end
+
+   unless user_signed_in? and current_user.has_role?("administrator")
+      if @map.status == :publishing or @map.status == :published
         @disabled_tabs += ["warp", "clip", "align"]  #dont show any others unless you're an editor
       end
     end
+  
 
     
     choose_layout_if_ajax
 
     respond_to do |format|
       format.html
-       format.kml {render :action => "show_kml", :layout => false}
-      # format.xml {render :xml => @map.to_xml(:except => [:content_type, :size, :bbox_geom, :uuid, :parent_uuid, :filename, :parent_id,  :map, :thumbnail, :rough_centroid])  }
-        format.json {render :json =>{:stat => "ok", :items => @map}.to_json(:except => [:content_type, :size, :bbox_geom, :uuid, :parent_uuid, :filename, :parent_id,  :map, :thumbnail, :rough_centroid]), :callback => params[:callback] }
+      format.kml {render :action => "show_kml", :layout => false}
+      format.json {render :json =>{:stat => "ok", :items => @map}.to_json(:except => [:content_type, :size, :bbox_geom, :uuid, :parent_uuid, :filename, :parent_id,  :map, :thumbnail, :rough_centroid]), :callback => params[:callback] }
     end
     
     
@@ -519,7 +522,7 @@ class MapsController < ApplicationController
     @current_tab = "warped"
     @selected_tab = 5
     @html_title = t('.title')+ @map.id.to_s
-    if @map.warped_or_published? && @map.gcps.hard.size > 2
+    if (@map.warped_or_published? || @map.status == :publishing) && @map.gcps.hard.size > 2
       @other_layers = Array.new
       @map.layers.visible.each do |layer|
         @other_layers.push(layer.id)
@@ -675,13 +678,19 @@ class MapsController < ApplicationController
   
   #should check for admin only
   def publish
-    if params[:to] == "publish" && @map.status == :warped
-      @map.publish
-    elsif params[:to] == "unpublish" && @map.status == :published
-      @map.unpublish
+    if @map.status == :publishing
+      flash[:notice] =  t('.currently_publishing') 
+      return redirect_to @map
     end
 
-    flash[:notice] = t('.flash') + @map.status.to_s
+    if params[:to] == "publish" && @map.status == :warped
+      @map.publish
+      flash[:notice] =  t('.publishing', status: @map.status.to_s )
+    elsif params[:to] == "unpublish" && @map.status == :published
+      @map.unpublish
+      flash[:notice] = t('.unpublish', status: @map.status.to_s )
+    end
+
     redirect_to @map
   end
 
@@ -722,7 +731,7 @@ class MapsController < ApplicationController
   def save_mask_and_warp
     logger.debug "save mask and warp"
     @map.save_mask(params[:output])
-    unless @map.status == :warping
+    unless @map.status == :warping || @map.status == :publishing || @map.status == :published
       @map.mask!
       stat = "ok"
       create_notification("map_masked")
@@ -947,6 +956,10 @@ class MapsController < ApplicationController
     elsif @map.status == :warping
       @fail = true
       @notice_text = t('maps.rectify_main.being_rectified_error')
+      return @notice_text
+    elsif  @map.status == :publishing or @map.status == :published
+      @fail = true
+      @notice_text = t('maps.rectify_main.published')
       return @notice_text
     end
 

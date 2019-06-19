@@ -15,6 +15,7 @@ defaults: &defaults
   geoparse_enable: false
   host: "localhost:3000"
   site_name: "MapWarper"
+  host_with_scheme: "http://localhost:3000"
   full_site_name: "MapWarper.net"
   reply_to: "example@example.com"
   omniauth_osm_key: "ABC"
@@ -52,7 +53,8 @@ defaults: &defaults
   throttle_limit: 30
   throttle_period: 60
   throttle_safelist_ips: #"127.0.0.1,192.168.0.1" #comma separated
-  tilestache_path: ""
+  google_tiles_bucket: ""
+  cdn_tiles_host:  ""  #e.g. https://tiles.example.com
 
 development:
   <<: *defaults

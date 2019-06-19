@@ -1,5 +1,5 @@
 
-<%unless @map.warped_or_published? && @map.gcps.hard.size > 2 %>
+<%unless (@map.warped_or_published? || @map.status == :publishing) && @map.gcps.hard.size > 2 %>
   <%= t('.unwarped_notice') %>
 <% else %>
   <% content_for :head do %>

@@ -37,7 +37,7 @@ class Map < ActiveRecord::Base
   acts_as_taggable
   acts_as_commentable
   acts_as_enum :map_type, [:index, :is_map, :not_map ]
-  acts_as_enum :status, [:unloaded, :loading, :available, :warping, :warped, :published]
+  acts_as_enum :status, [:unloaded, :loading, :available, :warping, :warped, :published, :publishing]
   acts_as_enum :mask_status, [:unmasked, :masking, :masked]
   acts_as_enum :rough_state, [:step_1, :step_2, :step_3, :step_4]
   has_paper_trail :ignore => [:bbox, :bbox_geom]
@@ -305,9 +305,30 @@ class Map < ActiveRecord::Base
   #sets status to published
   def publish
     self.paper_trail_event = 'publishing'
-    self.status = :published
-    self.paper_trail_event = nil
+    self.status = :publishing
     self.save
+    
+    Spawnling.new(:nice => 7) do
+      begin
+        if self.tilestache_seed  #in tilestache concern
+          self.paper_trail_event = 'published'
+          self.status = :published
+          self.save
+        else
+          self.paper_trail_event = 'fail_publish'
+          self.status = :warped
+          self.save
+        end
+      rescue Exception => e
+        logger.error e.inspect
+        self.paper_trail_event = 'fail_publish'
+        self.status = :warped
+        self.save
+      end
+      self.paper_trail_event = nil
+      
+    end #spawnling fork
+    
   end
   
   #unpublishes a map, sets it's status to warped
