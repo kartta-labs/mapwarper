@@ -81,25 +81,26 @@
       <% end -%>
 
       <%- if !map.source_uri.blank? -%>
-        <%= t('maps.map.links') %>: <%= link_to t('maps.map.source'),map.source_uri  %>
+        <%= t('maps.map.links') %>: <%= link_to t('maps.map.source'),map.source_uri  %> |
       <%- end -%>
-      <% if !admin_authorized? && map.published? %>
-        | <strong><%= t('maps.map.published') %> [<a href="#" title="<%= t('maps.map.published_warn') %>">?</a>]</strong>
+      <% if !admin_authorized? && map.published? %> 
+        <strong><%= t('maps.map.published') %> [<a href="#" title="<%= t('maps.map.published_warn') %>">?</a>]</strong> |
       <% end %>
-      <% if admin_authorized? %>
+      <% if admin_authorized? %> 
         <% if map.status == :warped  %>
-          | <%= link_to(t('.publish'),publish_map_path(:id => map, :to => "publish"), :data => {:confirm => t('.publish_confirm')} ) -%>
+           <%= link_to(t('.publish'),publish_map_path(:id => map, :to => "publish"), :data => {:confirm => t('.publish_confirm')} ) -%>
         <% elsif map.published? %>
-          | <%= link_to(t('.unpublish'),publish_map_path(:id => map, :to => "unpublish"), :data => {:confirm => t('.unpublish_confirm')} ) -%>
-        <% end %>
+           <%= link_to(t('.unpublish'),publish_map_path(:id => map, :to => "unpublish"), :data => {:confirm => t('.unpublish_confirm')} ) -%>
+        <% end %> 
+        |
       <% end -%>
 
-      <%if map.warped_or_published? %> |
-        <%= link_to(t('maps.map.kml'), map_url(:id => map, :format=>:kml)) %>
+      <%if map.warped_or_published? %> 
+        <%= link_to(t('maps.map.kml'), map_url(:id => map, :format=>:kml)) %> |
       <% end %>
 
       <% if admin_authorized? %>
-        | <%= render :partial  => 'maps/map_type', :object => @map %>
+        <%= render :partial  => 'maps/map_type', :object => @map %> |
       <% end %>
 
       <div style="clear:both;"></div>
