@@ -27,6 +27,8 @@ class LayerTest < ActiveSupport::TestCase
   
   test "can create a tileindex" do
     layer = FactoryGirl.create(:layer_with_warped_maps)
+    Map.any_instance.stubs(:warped_filename).returns(File.join(Rails.root, "/test/fixtures/data/", "100x70map_warped.tif"))
+
     assert_not File.exist?(layer.tileindex_path)
     layer.create_tileindex
     assert File.exist?(layer.tileindex_path)

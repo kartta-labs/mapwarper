@@ -1,7 +1,7 @@
 require 'test_helper'
 
 #note auditing is disabled for tests, so we just test basics
-class ActivityControllerTest < ActionController::TestCase
+class Api::V1::ActivityControllerTest < ActionController::TestCase
   include Devise::Test::ControllerHelpers
   tests  Api::V1::ActivityController
   setup do

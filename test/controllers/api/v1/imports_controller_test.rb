@@ -1,7 +1,7 @@
 require 'test_helper'
 
-class ApiImportsControllerTest < ActionController::TestCase
-  include Devise::TestHelpers
+class Api::V1::ApiImportsControllerTest < ActionController::TestCase
+  include Devise::Test::ControllerHelpers
   tests  Api::V1::ImportsController
     
   setup do

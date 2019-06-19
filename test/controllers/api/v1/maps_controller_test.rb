@@ -1,9 +1,8 @@
 require 'test_helper'
 
-class MapsControllerTest < ActionController::TestCase
+class Api::V1::MapsControllerTest < ActionController::TestCase
   include Devise::Test::ControllerHelpers
-  tests  Api::V1::MapsController
-
+  tests Api::V1::MapsController
   Paperclip::DataUriAdapter.register #enable this in the test environment as we use that to mock tests
   
   setup do
@@ -13,7 +12,7 @@ class MapsControllerTest < ActionController::TestCase
 
 
   
-  class SingleMapTest < MapsControllerTest
+  class SingleMapTest < Api::V1::MapsControllerTest
     
     def cleanup_images(map)
       if File.exists?(map.temp_filename)
@@ -149,6 +148,15 @@ class MapsControllerTest < ActionController::TestCase
         patch 'update', params
         body = JSON.parse(response.body)
         assert_response :unauthorized
+        assert body["errors"][0]["title"].include?("Unauthorized")
+      end
+
+      test "not authorized to publish" do
+        Map.any_instance.stubs(:tilestache_seed).returns(true)
+        assert_equal :warped, @warped_map.status
+        patch "publish", :id => @warped_map.id, :format => :json
+        assert_response :unauthorized
+        body = JSON.parse(response.body)
         assert body["errors"][0]["title"].include?("Unauthorized")
       end
       
@@ -331,11 +339,12 @@ class MapsControllerTest < ActionController::TestCase
       end
           
       test "publish" do
+        Map.any_instance.stubs(:tilestache_seed).returns(true)
         assert_equal :warped, @warped_map.status
         patch "publish", :id => @warped_map.id, :format => :json
         assert_response :ok
         body = JSON.parse(response.body)
-        assert_equal "published", body["data"]["attributes"]["status"] 
+        assert_equal "publishing", body["data"]["attributes"]["status"] 
       end
     
       test "unpublish" do
@@ -351,7 +360,7 @@ class MapsControllerTest < ActionController::TestCase
   
   end
 
-  class CollectionMapTest < MapsControllerTest  
+  class CollectionMapTest < Api::V1::MapsControllerTest
     setup do
       @index_maps = FactoryGirl.create_list(:index_map, 5)
     end

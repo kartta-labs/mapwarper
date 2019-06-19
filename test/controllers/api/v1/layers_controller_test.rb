@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class LayersControllerTest < ActionController::TestCase
+class Api::V1::LayersControllerTest < ActionController::TestCase
   include Devise::Test::ControllerHelpers
   tests  Api::V1::LayersController
   
@@ -14,7 +14,7 @@ class LayersControllerTest < ActionController::TestCase
     @layer.send(:delete_tileindex)
   end
   
-  class CollectionTest < LayersControllerTest 
+  class CollectionTest < Api::V1::LayersControllerTest 
     setup do
       @warped_layer = FactoryGirl.create(:layer_with_warped_maps)
       @index_layers = FactoryGirl.create_list(:index_layer, 5)
@@ -118,7 +118,7 @@ class LayersControllerTest < ActionController::TestCase
   
   end
 
-  class NormalUserTest < LayersControllerTest
+  class NormalUserTest < Api::V1::LayersControllerTest
     setup do
       sign_in @layer_user
     end
@@ -173,7 +173,7 @@ class LayersControllerTest < ActionController::TestCase
   
   end
   
-  class EditorTest < LayersControllerTest
+  class EditorTest < Api::V1::LayersControllerTest
     setup do
       editor_user_sign_in
     end
@@ -215,7 +215,7 @@ class LayersControllerTest < ActionController::TestCase
   end
 
 
-  class MemberTest < LayersControllerTest
+  class MemberTest < Api::V1::LayersControllerTest
     
     setup do 
       admin_sign_in

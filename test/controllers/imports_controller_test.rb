@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class ImportsControllerTest < ActionController::TestCase
-  include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
   tests  ImportsController
     
   setup do
@@ -13,7 +13,6 @@ class ImportsControllerTest < ActionController::TestCase
   end
  
   test "create import" do
-  
     assert_difference('Import.count', 1) do
       import_one_file = fixture_file_upload("data/imports/import_one.csv", "text/csv")
       post :create, import:{name: "new import", metadata: import_one_file}

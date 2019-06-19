@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class GcpsControllerTest < ActionController::TestCase
+class Api::V1::GcpsControllerTest < ActionController::TestCase
   include Devise::Test::ControllerHelpers
   tests  Api::V1::GcpsController
   
@@ -15,7 +15,7 @@ class GcpsControllerTest < ActionController::TestCase
     sign_in @user 
   end
   
-  test "show"do
+  test "show" do
     get 'show', :id  => @gcp.id
     assert_response :ok
     assert_not_nil assigns(:gcp)
