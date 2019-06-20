@@ -83,7 +83,7 @@
       <%- if !map.source_uri.blank? -%>
         <%= t('maps.map.links') %>: <%= link_to t('maps.map.source'),map.source_uri  %> |
       <%- end -%>
-      <% if !admin_authorized? && map.published? %> 
+      <% if map.published? || map.publishing? %> 
         <strong><%= t('maps.map.published') %> [<a href="#" title="<%= t('maps.map.published_warn') %>">?</a>]</strong> |
       <% end %>
       <% if admin_authorized? %> 
@@ -91,6 +91,8 @@
            <%= link_to(t('.publish'),publish_map_path(:id => map, :to => "publish"), :data => {:confirm => t('.publish_confirm')} ) -%>
         <% elsif map.published? %>
            <%= link_to(t('.unpublish'),publish_map_path(:id => map, :to => "unpublish"), :data => {:confirm => t('.unpublish_confirm')} ) -%>
+        <% elsif map.publishing? %>
+          <%= t('.publishing') %>
         <% end %> 
         |
       <% end -%>

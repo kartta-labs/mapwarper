@@ -20,7 +20,7 @@
     <div class="map_links_bigger">
       <%= link_to(t('.view_map'),map) -%>
       |
-      <% if !admin_authorized? && map.published? %>
+      <% if map.published? || map.publishing? %>
         <strong title ="<%= t('.published_warn') %>"><%= t('.published') %></strong>
       <%  else %>
         <%= link_to(t('.warp_map'), map_path(:id=> map.id,:anchor=>"#{t('layouts.tabs.rectify')}_tab")) -%>
