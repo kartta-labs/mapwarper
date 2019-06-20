@@ -757,7 +757,7 @@ en:
       currently_publishing: Map currently publishing. Please try again later.
       flash: Map will be published and tiles transfered to bucket via tilestache. Please wait.
       publishing: 'Map publishing. Please wait as the map will be published and tiles transfered via tilestache. Status: %{status}'
-      unpubish: 'Map unpublished. Status:  %{status}'
+      unpublish: 'Map unpublished. Status:  %{status}'
     rectify_main:
       being_rectified_error: Sorry, the map is currently being rectified somewhere else, please try again later.
       not_enough_points: Sorry, the map needs at least three control points to be able to rectify it

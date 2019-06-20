@@ -58,8 +58,10 @@ module Tilestache
 
     layer_name = self.id.to_s
     layer_name = "map-"+ layer_name if options[:item_type] == "map"
+    tilestache_path = File.join(Rails.root, 'lib/tilestache/TileStache-1.51.5')
 
-    command = "export GOOGLE_APPLICATION_CREDENTIALS='#{APP_CONFIG["google_json_key_location"]}'; export PYTHONPATH=$PYTHONPATH:#{APP_CONFIG['tilestache_path']}/TileStache; cd #{APP_CONFIG['tilestache_path']}; ./scripts/tilestache-seed.py -c #{config_file}" +
+    #make sure both GOOGLE_APPLICATION_CREDENTIALS and PYTHONPATH  environment variables are set for this to work (see application_config.rb)
+    command = "cd #{tilestache_path}; ./scripts/tilestache-seed.py -c #{config_file}" +
       " -l #{layer_name} -b #{tile_bbox_str} --enable-retries -x #{(1..max_zoom.to_i).to_a.join(' ')}"
 
     puts command

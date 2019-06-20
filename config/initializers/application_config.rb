@@ -21,6 +21,11 @@ MAP_MASK_DIR =  APP_CONFIG['map_mask_dir'].blank? ? File.join(Rails.root, '/publ
 #if gdal is not on the normal path
 GDAL_PATH = APP_CONFIG['gdal_path'] || ""
 
+#set env variables for python tilestache script
+tilestache_path =  File.join(Rails.root, 'lib/tilestache/TileStache-1.51.5') 
+ENV["PYTHONPATH"] = ":#{tilestache_path}/TileStache"
+ENV["GOOGLE_APPLICATION_CREDENTIALS"] = APP_CONFIG['google_json_key_location']
+
 #
 # Uncomment and populate the config file if you want to enable:
 # MAX_DIMENSION = will reduce the dimensions of the image when uploaded

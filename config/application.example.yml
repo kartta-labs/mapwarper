@@ -55,6 +55,7 @@ defaults: &defaults
   throttle_safelist_ips: #"127.0.0.1,192.168.0.1" #comma separated
   google_tiles_bucket: ""
   cdn_tiles_host:  ""  #e.g. https://tiles.example.com
+  
 
 development:
   <<: *defaults
