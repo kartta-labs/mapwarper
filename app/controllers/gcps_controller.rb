@@ -2,7 +2,7 @@ class GcpsController < ApplicationController
   layout 'application'
   #skip_before_filter :verify_authenticity_token, :only => [:update, :update_field, :add, :destroy, :show, :add_many, :add_many_to_map]
 
-  before_filter :authenticate_user!, :only => [:update, :update_field, :add, :destroy, :add_many, :add_many_to_map, :csv]
+  before_filter :authenticate_user!, :only => [:update, :update_field, :add, :destroy, :add_many, :add_many_to_map, :csv, :corner_coords]
   before_filter :check_editor_role, :only => [:add_many, :bulk_import]
   before_filter :check_administrator_role, :only => [:csv]
   before_filter :find_gcp, :only => [:show, :update,:update_field, :destroy ]
@@ -200,6 +200,21 @@ class GcpsController < ApplicationController
   
   def csv
     send_data(Gcp.all_to_csv, {:filename => "gcps.csv", :type => 'text/csv'})
+  end
+
+  def corner_coords 
+    map = Map.find params[:mapid]
+    coords = JSON.parse(params[:coords])
+    gcps = nil
+    if coords && request.format == "json"
+      PaperTrail.request(enabled: false) do
+        gcps = Gcp.new_from_corner_coords(coords, map)
+      end
+    end
+
+    respond_to do | format |
+      format.json { render :json => {:stat => "ok", :items => gcps.to_a}.to_json, :callback => params[:callback]}
+    end
   end
 
   private

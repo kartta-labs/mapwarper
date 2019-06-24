@@ -526,6 +526,30 @@ class Map < ActiveRecord::Base
       bbox
     end
   end
+
+  #bounds set by "soft" control points
+  def soft_bounds
+    return nil unless self.gcps.soft.size >= 3 
+    x_array = []
+    y_array = []
+    self.gcps.soft.each do |gcp|
+      next unless gcp[:lat].is_a? Numeric and gcp[:lon].is_a? Numeric
+      x_array << gcp[:lat]
+      y_array << gcp[:lon]
+    end
+    #south, west, north, east
+    our_bounds = [y_array.min ,x_array.min ,y_array.max, x_array.max].join ','
+    
+    our_bounds
+  end
+
+  #is the map okay for quick placement. No gcps, hard or soft, and should be available. Can be masked though.
+  def quick_eligible?
+    return false unless gcps.empty?
+    return false unless status == :available
+
+    true
+  end
   
   
   #returns a GeoRuby polygon object representing the bounds
@@ -1050,6 +1074,26 @@ class Map < ActiveRecord::Base
 
       return o_out
     end
+  end
+
+
+  def calc_rezize_image(max_dimension)
+    img_width = width
+    img_height = height
+
+    if width > max_dimension || height  > max_dimension
+      if width > height
+        dest_width = max_dimension
+        dest_height = (dest_width.to_f / width.to_f) * height.to_f
+      else
+        dest_height = max_dimension
+        dest_width = (dest_height.to_f /  height.to_f) * width.to_f
+      end
+      img_width  = dest_width
+      img_height = dest_height
+    end
+
+    return img_width, img_height
   end
   
   class TransformNotSolveableError < StandardError

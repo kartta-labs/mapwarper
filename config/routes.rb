@@ -49,6 +49,7 @@ Rails.application.routes.draw do
       get 'trace'
       get 'idland'
       get 'masking'
+      get 'quick'
     end
     collection do
         get 'geosearch'
@@ -79,6 +80,7 @@ Rails.application.routes.draw do
   
   post '/gcps/add_many' => 'gcps#add_many', :as => 'add_many_gcps'
   post '/gcps/add_many/:mapid' => 'gcps#add_many_to_map', :as => 'add_many_gcps_to_map'
+  post '/gcps/corner_coords/:mapid' => 'gcps#corner_coords', :as => 'add_corner_coords'
 
   get '/maps/wms/:id' => "maps#wms", :as => 'wms_map'
   get '/maps/tile/:id/:z/:x/:y' => "maps#tile", :as => 'tile_map'

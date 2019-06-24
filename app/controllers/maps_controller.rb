@@ -4,7 +4,7 @@ class MapsController < ApplicationController
   
   before_filter :store_location, :only => [:warp, :align, :clip, :export, :edit, :comments ]
   
-  before_filter :authenticate_user!, :only => [:new, :create, :edit, :update, :destroy, :delete, :warp, :rectify, :clip, :align, :warp_align, :mask_map, :delete_mask, :save_mask, :save_mask_and_warp, :set_rough_state, :set_rough_centroid, :publish, :trace, :id, :map_type]
+  before_filter :authenticate_user!, :only => [:new, :create, :edit, :update, :destroy, :delete, :warp, :rectify, :clip, :align, :warp_align, :mask_map, :delete_mask, :save_mask, :save_mask_and_warp, :set_rough_state, :set_rough_centroid, :publish, :trace, :id, :map_type, :quick]
  
   before_filter :check_administrator_role, :only => [:publish, :csv]
  
@@ -136,6 +136,7 @@ class MapsController < ApplicationController
   #
   ###############
   def index
+    flash.now[:notice] = t('maps.show.thanks_quick_place')  if params.delete(:origin) == "quick"
     sort_init('updated_at', {:default_order => "desc"})
     
     sort_update
@@ -389,7 +390,6 @@ class MapsController < ApplicationController
   ###############
   
   def show
-
     @current_tab = "show"
     @selected_tab = 0
     @disabled_tabs =["align"]
@@ -906,6 +906,17 @@ class MapsController < ApplicationController
     else
       render :json => {:stat => "not found", :items =>[]}.to_json, :status => 404
     end
+  end
+
+  #/maps/90/quick
+  def quick
+
+    #don't allow this if there are some "hard" gcps
+    unless @map.gcps.hard.empty?
+      flash[:notice] = t('.map_has_gcps')
+      return redirect_to @map
+    end
+    
   end
   
   

@@ -15,10 +15,10 @@ class Gcp < ActiveRecord::Base
   after_update  {|gcp| gcp.map.paper_trail_event = 'gcp_update'  }
   after_create  {|gcp| gcp.map.paper_trail_event = 'gcp_create'  }
   
-  after_save :touch_map
+  after_save :touch_map, unless: Proc.new {|gcp|gcp.soft}
 
   after_destroy {|gcp| gcp.map.paper_trail_event = 'gcp_delete' if gcp.map  }
-  after_destroy :touch_map
+  after_destroy :touch_map, unless:  Proc.new {|gcp|gcp.soft}
   
   def gdal_string
 	
@@ -118,6 +118,48 @@ class Gcp < ActiveRecord::Base
         csv << [g.id, g.map_id, g.created_at, g.updated_at, g.x, g.y, g.lon, g.lat] ##Row values of CSV
       end
     end
+  end
+
+
+  # given an array of object like [{corner: "tr", x: 23, y:55 },{corner: "tr", x: 23, y:55 }]
+  # it will delete existing soft gcps and create new points around the size of a map image.
+  # and save them as "soft" gcps
+  def self.new_from_corner_coords(coords, map)
+
+    gcps = []
+    Gcp.transaction do
+
+      Gcp.where({map_id: map.id, soft: true}).destroy_all
+
+      coords.each do | coord |
+       
+        coord.symbolize_keys!
+        if coord[:corner] == "tl"
+          map_id,x,y,lat,lon,name  = map.id, 0, 0, coord[:lat], coord[:lon], coord[:corner]
+        end
+        if coord[:corner] == "tr"
+          map_id,x,y,lat,lon,name  = map.id, map.width, 0, coord[:lat], coord[:lon], coord[:corner]
+        end
+    
+        if coord[:corner] == "bl"
+          map_id,x,y,lat,lon,name  = map.id, 0, map.height, coord[:lat], coord[:lon], coord[:corner]
+        end
+        if coord[:corner] == "br"
+          map_id,x,y,lat,lon,name  = map.id, map.width, map.height, coord[:lat], coord[:lon], coord[:corner]
+        end
+    
+        gcp_conditions = {:map_id=>map.id, :x=>x, :y=>y, :lat=>lat, :lon=>lon, :soft =>true}
+        
+        #don't save exactly the same point
+        unless Gcp.exists?(gcp_conditions)
+          gcp = Gcp.new(gcp_conditions.merge({:name => name}))
+          gcp.save
+          gcps << gcp
+        end
+      end
+
+    end
+    return gcps
   end
   
   private

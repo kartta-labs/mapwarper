@@ -1,5 +1,4 @@
 <% map = @map %>
-
 <tr>
   <% cl = cycle('table0', 'table1') %>
   <td class="<%= cl %>">
@@ -43,7 +42,7 @@
       <br />
     <% end -%>
 
-    <% if user_signed_in? %>
+    <% if user_signed_in? && variety != "quick"%>
       <div class="users_version_info map_summary ">
         <% if @current_version_number > 0  && @current_version_user %>
           <%= t('.version_number', version: @current_version_number )%>

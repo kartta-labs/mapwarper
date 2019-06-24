@@ -45,6 +45,8 @@ module ApplicationHelper
     end
 
     html << link_to(t('application.helper.breadcrumbs.layer', layer_id: @layer.id), layer_path(@layer)) if @layer && @layer.id
+
+    return if html.size == 1
     html.join(' &gt; '  ).html_safe
   end
   

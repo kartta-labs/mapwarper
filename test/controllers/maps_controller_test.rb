@@ -95,5 +95,34 @@ class MapsControllerTest < ActionController::TestCase
     assert index_maps.include? @warped_map
   end
 
+  test "quick only for logged in users" do
+    get :quick, :id => @available_map
+    assert_response :redirect
+    assert_redirected_to :new_user_session
+
+    normal_user_sign_in
+    get :quick, :id => @available_map
+    assert_response :success
+  end
+
+  test "quick redirect if has gcps" do
+    normal_user_sign_in
+    FactoryGirl.create(:gcp_1, :map => @available_map)
+    FactoryGirl.create(:gcp_2, :map => @available_map)
+    FactoryGirl.create(:gcp_3, :map => @available_map)
+
+    get :quick, :id => @available_map
+    assert_response :redirect
+    assert_redirected_to @available_map
+    assert flash[:notice].include?("Sorry")
+  end
+
+  test "quick for maps with no gcps" do
+    normal_user_sign_in
+    assert 0, @available_map.gcps.size
+
+    get :quick, :id => @available_map
+    assert_response :success
+  end
 
 end

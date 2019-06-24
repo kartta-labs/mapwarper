@@ -443,6 +443,8 @@ en:
       map_changed_title: Map recently changed
       map_masked: cropped this map
       map_warped: warped this map
+    quick:
+      fail: Sorry, something went wrong with this action
     warp:
       add_gcp: Add Control Point (1,p)
       best_guess_message: 'Map zoomed to best guess:'
@@ -715,6 +717,7 @@ en:
       private: Not listed
       published: Published
       published_warn: This map has been published by an admin and no further editing is possible
+      quick_map: Quick Place
       remove_from_layer: remove map from this mosaic
       remove_my: Unfavourite
       save_my: Add Favourite
@@ -759,6 +762,13 @@ en:
       flash: Map will be published and tiles transfered to bucket via tilestache. Please wait.
       publishing: 'Map publishing. Please wait as the map will be published and tiles transfered via tilestache. Status: %{status}'
       unpublish: 'Map unpublished. Status:  %{status}'
+    quick:
+      find: Find
+      heading: Quick Place
+      intro: Find a place and then move the map around to fit. Quick and rough alignments are what we are after as we'll be able to fix it properly in the main interface
+      map_has_gcps: Sorry the map already has some control points
+      skip_button: Skip Map, Try another
+      submit_button: Looks Good! 
     rectify_main:
       being_rectified_error: Sorry, the map is currently being rectified somewhere else, please try again later.
       not_enough_points: Sorry, the map needs at least three control points to be able to rectify it
@@ -776,6 +786,7 @@ en:
       login_notice_link: log in
       not_found: Map not found
       requesting: requesting
+      thanks_quick_place: Thanks for quick placing the map!
       title: Viewing Map %{map_id}
       unloaded: The map did not load properly, please refresh the page and try again. If it does not load properly a second time, please choose another map, and try again another day.
     tag:
