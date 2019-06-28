@@ -38,8 +38,10 @@ class MapsOcrJob < ActiveJob::Base
           response_rotate = google_image_annotate(processed_rotate_img)
           text_rotate = process_text(response_rotate)
 
-          ocr_result = text.map {|a| a.downcase}.join(" ") + text_rotate.map {|a| a.downcase}.join(" ") 
+          combined_rotate  = text + text_rotate
+          combined_rotate.uniq!
 
+          ocr_result = combined_rotate.map {|a| a.downcase}.join(" ") 
           logger.debug "ocr result = #{ocr_result}"
 
           map.ocr_result = ocr_result
@@ -74,9 +76,12 @@ class MapsOcrJob < ActiveJob::Base
 
     text = tt.map { |a | a.gsub(/[^0-9A-Za-z]/, '')}  #remove special characters
     text.keep_if {|a| a == a.upcase}     # keep the UPPERCASE strings as these are road names
-    text.delete_if {|a| a.length <= 2 }  #remove the small hits 
-    text.delete_if{|aa| aa.match(/\d/)}  #remove strings with numbers in them
-
+    keep_suffixes = %w(CP CT CV CY DL DR DV FT GN HL IS LF LN ML MT PL PT RD SQ ST UN VW YU AVE JCT PKY PLZ STA VIA VLY WAY BTM BLF ARC ALY FWY THE AND ICE PUB PAN END WAY)
+    text.delete_if {|a| a.length <= 3 unless keep_suffixes.include? a }  #remove the small hits except for the useful ones
+    text.delete_if {|a| a.match(/\d/)}  #remove strings with numbers in them
+    exclude_words = %w(division map zone zones height restriction restrictions property plate section part building garage)
+    text.delete_if {|a| exclude_words.include? a.downcase }
+    
     return text 
   end
 
