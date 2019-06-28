@@ -70,7 +70,7 @@ class Map < ActiveRecord::Base
   ###################
   
   def default_values
-    self.status  ||= :unloaded  
+    self.status  ||= :available
     self.mask_status  ||= :unmasked  
     self.map_type  ||= :is_map  
     self.rough_state ||= :step_1  

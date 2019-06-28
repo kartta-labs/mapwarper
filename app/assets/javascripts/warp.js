@@ -108,6 +108,8 @@ function init() {
     var gformat = new OpenLayers.Format.GeoJSON();
     vector.addFeatures(gformat.read(mask_geojson));
     to_map.zoomToExtent(vector.getDataExtent());
+  } else if (geocode_result && geocode_result.results && geocode_result.results.length > 0){
+    showGeocodeResults(geocode_result)
   } else {
     //set to the world
     to_map.setCenter(lonLatToMercator(new OpenLayers.LonLat(0.0, 0.0)), 3);
