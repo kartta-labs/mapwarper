@@ -8,6 +8,7 @@
   var map_center = null;
   var mask_geojson = null;
   var mapBaseURL = '<%= url_for maps_path %>';
+  var mapbox_access_token = '<%= APP_CONFIG['mapbox_access_token'] %>';
 
   <% if @map.geocode_result -%>
     geocode_result = <%= @map.geocode_result.html_safe -%>;
@@ -21,29 +22,52 @@
   <% end %>
 
   $(function () {
+
+    var blayers = [ 
+      new ol.layer.Tile({
+        visible: false,
+        type: 'base',
+        title: 'Esri World Imagery',
+        source: new ol.source.XYZ({
+          attributions: 'Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community',
+          url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+        })
+      }),
+      new ol.layer.Tile({ 
+        title: 'OpenStreetMap',
+        type: 'base',
+        visible: true,
+        source: new ol.source.OSM() 
+      })
+    ]
+
+    if (mapbox_access_token.length > 1) {  //only add it if theres a token for it.
+      blayers.unshift(
+        new ol.layer.Tile({
+          visible: false,
+          type: 'base',
+          title: 'Mapbox Satellite',
+          source: new ol.source.XYZ({
+            attributions: I18n['layers']['mbox_satellite_attribution'],
+            url: "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token="+ mapbox_access_token
+          })
+        })
+      )
+    } 
+
+    var base_layers = [ new ol.layer.Group({
+        title: 'Base Layer',
+        layers: blayers
+        })
+      ] ;
+
+
     map = new ol.Map({
       target: 'map',
       view: new ol.View({
         zoom: 16
       }),
-      layers: [ 
-        new ol.layer.Tile({
-          visible: false,
-          type: 'base',
-          title: 'Esri World Imagery',
-          source: new ol.source.XYZ({
-            attributions: 'Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community',
-            url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-          })
-        }),
-        new ol.layer.Tile({ 
-          title: 'OpenStreetMap',
-          type: 'base',
-          visible: true,
-          source: new ol.source.OSM() 
-        })
- 
-      ]
+      layers: base_layers
     });
 
     var layerSwitcher = new ol.control.LayerSwitcher({

@@ -48,12 +48,6 @@ function warpedinit() {
   warped_wmslayer.setOpacity(opacity);
 
   var blayers = [ 
-    new ol.layer.Tile({ 
-      title: 'OpenStreetMap',
-      type: 'base',
-      visible: true,
-      source: new ol.source.OSM() 
-    }),
     new ol.layer.Tile({
       visible: false,
       type: 'base',
@@ -62,11 +56,17 @@ function warpedinit() {
         attributions: 'Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community',
         url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
       })
+    }),
+    new ol.layer.Tile({ 
+      title: 'OpenStreetMap',
+      type: 'base',
+      visible: true,
+      source: new ol.source.OSM() 
     })
   ]
 
   if (mapbox_access_token.length > 1) {  //only add it if theres a token for it.
-    blayers.push(
+    blayers.unshift(
       new ol.layer.Tile({
         visible: false,
         type: 'base',
