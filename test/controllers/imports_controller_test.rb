@@ -10,6 +10,8 @@ class ImportsControllerTest < ActionController::TestCase
     sign_in @user 
     @import = FactoryGirl.create(:import, :user => @user)
     @import.save
+    MapsOcrJob.any_instance.stubs(:google_image_annotate).returns( JSON.parse({responses: [ text_annotations: [ description: "FOOBAR"]]}.to_json, object_class: OpenStruct) )
+    MapsOcrJob.any_instance.stubs(:call_google_geocode).returns("dummy text")
   end
  
   test "create import" do

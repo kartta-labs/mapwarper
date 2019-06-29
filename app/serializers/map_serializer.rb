@@ -2,6 +2,13 @@ class MapSerializer < ActiveModel::Serializer
   has_many :layers
   belongs_to :owner, :class_name => "User",  :key => :added_by
   attributes  :id, :title, :description, :width, :height, :status,:mask_status, :created_at, :updated_at, :bbox, :map_type, :source_uri, :unique_id, :date_depicted
+
+  attribute :ocr_result, if: :current_user_is_admin?
+  attribute :geocode_result, if: :current_user_is_admin?
+  
+  def current_user_is_admin?
+    current_user && current_user.has_role?("administrator")
+  end
   
   link(:self) {     api_v1_map_url(object) }
   

@@ -8,6 +8,8 @@ class Api::V1::MapsControllerTest < ActionController::TestCase
   setup do
     @map = FactoryGirl.create(:available_map)
     @warped_map = FactoryGirl.create(:warped_map, :upload_file_name => "different.png")
+    MapsOcrJob.any_instance.stubs(:google_image_annotate).returns( JSON.parse({responses: [ text_annotations: [ description: "FOOBAR"]]}.to_json, object_class: OpenStruct) )
+    MapsOcrJob.any_instance.stubs(:call_google_geocode).returns("dummy text")
   end
 
 
@@ -124,6 +126,16 @@ class Api::V1::MapsControllerTest < ActionController::TestCase
         get "status", :id =>@map.id, :format => :json
         assert_response :ok   
         assert_equal @map.status.to_s, response.body
+      end
+
+      test "cannot see ocr_result and geocode result" do
+        Map.any_instance.stubs(:ocr_result).returns("foo")
+        Map.any_instance.stubs(:geocode_result).returns("bar")
+        get :show, :id => @map.id, :format => :json
+        assert_response :ok
+        body = JSON.parse(response.body)
+        assert_nil body["data"]["attributes"]["ocr_result"]
+        assert_nil body["data"]["attributes"]["geocode_result"]
       end
     end
     
@@ -336,6 +348,17 @@ class Api::V1::MapsControllerTest < ActionController::TestCase
     class LoggedInAdmin < SingleMapTest
       setup do
         admin_sign_in
+      end
+
+      test "can see ocr_result and geocode result" do
+        Map.any_instance.stubs(:ocr_result).returns("foo")
+        Map.any_instance.stubs(:geocode_result).returns("bar")
+        get :show, :id => @map.id, :format => :json
+        assert_response :ok
+        body = JSON.parse(response.body)
+        
+        assert_equal "foo", body["data"]["attributes"]["ocr_result"]
+        assert_equal "bar", body["data"]["attributes"]["geocode_result"]
       end
           
       test "publish" do
