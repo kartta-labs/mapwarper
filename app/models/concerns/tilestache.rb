@@ -163,7 +163,7 @@ module Tilestache
   def tile_config_json(options)
     layer_name = options[:item_id].to_s
     layer_name = "map-"+ layer_name if options[:item_type] == "map"
-    tiles_host = APP_CONFIG['cdn_tiles_host'] 
+    tiles_host = APP_CONFIG['cdn_tiles_host'].blank? ? "https://storage.googleapis.com/#{APP_CONFIG['google_tiles_bucket']}" : APP_CONFIG['cdn_tiles_host']
 
     name = self.title if options[:item_type] == "map"
     name = self.name if options[:item_type] == "layer"

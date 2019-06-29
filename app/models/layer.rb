@@ -66,6 +66,7 @@ class Layer < ActiveRecord::Base
     Spawnling.new(:nice => 7) do
       if self.tilestache_seed  #in tilestache concern
         logger.debug "Layer Tilestache process finished"
+        self.update(published: :true)
       else
         logger.error "Layer Tilestache process failed!!"
       end

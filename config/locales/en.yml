@@ -492,6 +492,7 @@ en:
     export:
       header: Export Mosaic
       title: Export Mosaic %{mosaic_id}
+      faster_tiles_explanation: This mosaic has been published and benefits from faster tiles
     form:
       depicts_hint: "(year in numbers, YYYY, optional)"
       depicts_hint_2: Used to display layers by year.
@@ -638,6 +639,10 @@ en:
     export:
       bibliographic: Biliographic
       bibliographic_header: 'Biliographic Links:'
+      faster_tiles_bold: Faster Tiles.
+      faster_tiles_explanation: This map has been published and benefits from faster tiles
+      faster_tiles_link: Faster Tiles Template
+      faster_tiles_json: Faster Tiles TileJSON
       gcp_csv: CSV
       gcp_csv_link: Download control points as CSV
       gcp_header: Ground Control Points

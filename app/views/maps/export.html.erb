@@ -20,6 +20,16 @@
     <%= t('.wms') %>: <%= link_to(t('.wms_link'), url_for(wms_map_url(:id=>@map, :request => "GetCapabilities", :service => "WMS", :version => "1.1.1")) )%>
     (<%= link_to t('.josm_link'), josm_url %>    )
   </li>
+  <% if @map.published? 
+    tiles_host = APP_CONFIG['cdn_tiles_host'].blank? ? "https://storage.googleapis.com/#{APP_CONFIG['google_tiles_bucket']}" : APP_CONFIG['cdn_tiles_host']
+    fast_tile_url = "#{tiles_host}/map-#{@map.id}/{z}/{x}/{y}.png" 
+    tile_json = "#{tiles_host}/map-#{@map.id}/map-#{@map.id}spec.json" %>
+  <li>
+    <span class="fast-tiles"><%= t('maps.export.faster_tiles_bold') %> </span><%= t('.faster_tiles_explanation') %>  <br />
+    <%= t('maps.export.faster_tiles_link') %>: <%= fast_tile_url %> <br />
+    <%= t('maps.export.faster_tiles_json') %>: <%= tile_json %>
+  </li>
+  <% end %>
   <li>
     <% tile_url = "#{tile_map_base_url(:id => @map.id)}/{z}/{x}/{y}.png" %>
     <%= t('.tiles') %>: <%= tile_url %>
