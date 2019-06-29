@@ -32,7 +32,6 @@
   <% if @map.gcps.hard.size > 0 %>
       map_bounds = new OpenLayers.Bounds(<%=@map.bounds-%>);
       map_has_bounds = true;
-      //map_center = map_bounds.getCenterLonLat();
   <% elsif @map.soft_bounds   %>
      map_bounds = new OpenLayers.Bounds.fromString('<%=@map.soft_bounds-%>');
      map_has_bounds = true;
