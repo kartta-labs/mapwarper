@@ -29,7 +29,7 @@
   <%= t('.social_sign_in', :action => sign_action) %> <br /> 
 
   <span class="google">
-    <%= link_to "#{image_tag("google_logo.png", width: '25', height: '25', class: 'google-logo')} #{t('.google')}".html_safe, omniauth_authorize_path(resource_name, "google_oauth2"), :class=>"osm" %>
+    <%= link_to "#{image_tag("google_logo.png", width: '25', height: '25', class: 'google-logo')} #{t('.google')}".html_safe, omniauth_authorize_path(resource_name, "google_oauth2"), :class=>"osm", method: :post %>
   </span>
 
 </div>
