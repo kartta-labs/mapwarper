@@ -46,8 +46,21 @@ if !APP_CONFIG['sendgrid_api_key'].blank?
       api_key: APP_CONFIG['sendgrid_api_key'],
       raise_delivery_errors: true
   }
+elsif !APP_CONFIG['smtp_address'].blank?
+  ActionMailer::Base.delivery_method = :smtp
+  ActionMailer::Base.smtp_settings = {
+    :address => APP_CONFIG['smtp_address'],
+    :port => APP_CONFIG['smtp_port'], 
+    :user_name => APP_CONFIG['smtp_username'], 
+    :password => APP_CONFIG['smtp_password'], 
+    :authentication => :login,
+    :enable_starttls_auto => true
+  }
 else
   ActionMailer::Base.delivery_method = :sendmail
 end
 ActionMailer::Base.raise_delivery_errors = true
+
+
+
 
