@@ -23,40 +23,38 @@ spec:
         # e.g. IMAGE=localhost:32000/mapwarper_web:latest envsubst < file.yaml 
         image: ${IMAGE}
         command: ["bundle", "exec", "rake", "db:migrate"]
-        # set variables form config map, app non secrets
+        # set variables from config map from mapwarper-app-config.yml
         envFrom:
           - configMapRef:
               name: mapwarper-app-config
-        # Set env variables
+        # Set env variables explicity and secrets from mapwarper-secrets.yml
         env:
           - name: DB_USER
             valueFrom:
               secretKeyRef:
-                name: cloudsql-db-credentials
-                key: username
+                name: mapwarper-secrets
+                key: dbusername
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: cloudsql-db-credentials
-                key: password
+                name: mapwarper-secrets
+                key: dbpassword
           - name: DB_NAME
             valueFrom:
               secretKeyRef:
-                name: cloudsql-db-credentials
+                name: mapwarper-secrets
                 key: dbname
-          # set env manually
-          - name: RAILS_ENV
-            value: "production"
-          #- name: DB_HOST
-          #  value: "127.0.0.1"
-          - name: RAILS_SERVE_STATIC_FILES
-            value: "true"
-          # app secrets -for api keys etc
           - name: SECRET_KEY_BASE
             valueFrom:
               secretKeyRef:
-                name: mapwarper-config
+                name: mapwarper-secrets
                 key: secret-key-base
+          # set env manually
+          - name: RAILS_ENV
+            value: "production"
+          - name: RAILS_SERVE_STATIC_FILES
+            value: "true"
+
 
       # - name: cloudsql-proxy
       #   image: gcr.io/cloudsql-docker/gce-proxy:1.11
@@ -64,16 +62,16 @@ spec:
       #     - name: DB_INSTANCE
       #       valueFrom:
       #         secretKeyRef:
-      #           name: cloudsql-db-credentials
+      #           name: mapwarper-secrets
       #           key:  dbinstance
       #   command: ["/cloud_sql_proxy"]
       #   args: ["-instances=$(DB_INSTANCE)=tcp:5432", "-credential_file=/secrets/cloudsql/secret_cloud_sql.json"]
       #   volumeMounts:
-      #     - name: my-secrets-volume
+      #     - name: sql-secrets-volume
       #       mountPath: /secrets/cloudsql
       #       readOnly: true
 
-      # volumes:
-      #   - name: my-secrets-volume
-      #     secret:
-      #       secretName: cloudsql-instance-credentials
+      volumes:
+        - name: sql-secrets-volume
+          secret:
+            secretName: cloudsql-instance-credentials

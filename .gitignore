@@ -63,4 +63,5 @@ public/shared
 
 #ignore k8s app config
 k8s/mapwarper-app-config.yaml
+k8s/mapwarper-secrets.yaml
 
