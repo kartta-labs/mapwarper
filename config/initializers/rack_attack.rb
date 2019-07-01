@@ -3,8 +3,8 @@ class Rack::Attack
 
   if APP_CONFIG["enable_throttling"] == true
     
-    limit =  APP_CONFIG["throttle_limit"]  || 5  #5 requests
-    period = APP_CONFIG["throttle_period"] || 20 #20 seconds
+    limit =  APP_CONFIG["throttle_limit"].to_i  || 5  #5 requests
+    period = APP_CONFIG["throttle_period"].to_i  || 20 #20 seconds
 
     #general rate limiting 300 requests in 5 minutes
     #uncomment to enable
