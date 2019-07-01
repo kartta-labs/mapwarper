@@ -16,7 +16,7 @@ test:
   timeout: 5000
 
 production:
-  # adapter: postgis
+  adapter: postgis
   # database: mapwarper_production
   # host: localhost
   # pool: 5 
