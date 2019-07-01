@@ -1,8 +1,10 @@
+#SHORT_SHA e.g. :2d3e1sa is available only in triggered builds. Calling it manually you need to do the following:
+#gcloud builds submit --substitutions=SHORT_SHA="$(git rev-parse --short HEAD)" --config cloudbuild.yaml .
 steps:
 - name: 'ubuntu'
   args: ['bash', './lib/cloudbuild/copy_configs.sh']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/mapwarper-cloudbuild-test', '.']
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/mapwarper-cloudbuild:$SHORT_SHA', '.']
 images:
-- 'gcr.io/$PROJECT_ID/mapwarper-cloudbuild-test'
+- 'gcr.io/$PROJECT_ID/mapwarper-cloudbuild:$SHORT_SHA
 logsBucket: 'gs://mapwarper-cloudbuild-logs'
