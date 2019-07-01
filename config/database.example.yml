@@ -16,18 +16,18 @@ test:
   timeout: 5000
 
 production:
-  adapter: postgis
-  database: mapwarper_production
-  host: localhost
-  pool: 5 
-  timeout: 5000
-  # #
-  # # Uncomment for K8s etc
-  # #
-  # host: <%# ENV["DB_HOST"] %>
-  # username: <%# ENV["DB_USER"] %>
-  # password: <%# ENV["DB_PASSWORD"] %>
-  # database: <%# ENV["DB_NAME"] %>
+  # adapter: postgis
+  # database: mapwarper_production
+  # host: localhost
   # pool: 5 
   # timeout: 5000
+  # #
+  # # below for K8s etc
+  # #
+  host: <%= ENV["DB_HOST"] %>
+  username: <%= ENV["DB_USER"] %>
+  password: <%= ENV["DB_PASSWORD"] %>
+  database: <%= ENV["DB_NAME"] %>
+  pool: 5 
+  timeout: 5000
 
