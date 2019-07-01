@@ -9,7 +9,7 @@
   var mask_geojson = null;
   var mapBaseURL = '<%= url_for maps_path %>';
   var mapbox_access_token = '<%= APP_CONFIG['mapbox_access_token'] %>';
-
+  var geocode_result = null;
   <% if @map.geocode_result -%>
     geocode_result = <%= @map.geocode_result.html_safe -%>;
   <% end %>
