@@ -1,0 +1,8 @@
+steps:
+- name: 'ubuntu'
+  args: ['bash', './lib/cloudbuild/copy_configs.sh']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/mapwarper-cloudbuild-test', '.']
+images:
+- 'gcr.io/$PROJECT_ID/mapwarper-cloudbuild-test'
+logsBucket: 'gs://mapwarper-cloudbuild-logs'
