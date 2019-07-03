@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "mapwarper-np"
+  namespace: default
+  labels:
+    app: "web"
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: "web"
+  type: NodePort
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mapwarper-ingress
+  labels:
+    app: "web"
+spec:
+  backend:
+    serviceName: mapwarper-np
+    servicePort: 3000
