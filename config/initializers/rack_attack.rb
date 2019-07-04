@@ -1,8 +1,7 @@
 class Rack::Attack
 
 
-  if APP_CONFIG["enable_throttling"] == true
-    
+  if APP_CONFIG["enable_throttling"] == "true"
     limit =  APP_CONFIG["throttle_limit"].to_i  || 5  #5 requests
     period = APP_CONFIG["throttle_period"].to_i  || 20 #20 seconds
 
