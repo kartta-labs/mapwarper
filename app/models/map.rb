@@ -232,7 +232,8 @@ class Map < ActiveRecord::Base
     self.rough_state = :step_1
     save!
 
-    self.run_ocr
+  
+    self.run_ocr if APP_CONFIG["enable_ocr_job"] != "false"
   end
   
   #paperclip plugin deletes the images when model is destroyed
