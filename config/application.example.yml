@@ -59,7 +59,7 @@ defaults: &defaults
   smtp_port:
   smtp_username:
   smtp_password:
-  enable_ocr_job: "true"  #set to "false" to disable the OCR and geocoding job upon map creation
+  enable_ocr_job: "false"  #set to "true" to enable the OCR and geocoding job upon map creation
   
 
 development:

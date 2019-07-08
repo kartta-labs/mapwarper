@@ -1,6 +1,6 @@
 development:
   adapter: postgis
-  database: hms_mapwarper_development
+  database: mapwarper_development
   host: localhost
   username: postgres
   password:
