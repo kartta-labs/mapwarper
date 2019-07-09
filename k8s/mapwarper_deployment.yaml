@@ -120,9 +120,10 @@ spec:
           persistentVolumeClaim:
             claimName: mapwarper-fileserver-claim
             readOnly: false
-        - name: sql-secrets-volume
-          secret:
-            secretName: cloudsql-instance-credentials
+        #uncomment for use with the sql proxy    
+        # - name: sql-secrets-volume
+        #   secret:
+        #     secretName: cloudsql-instance-credentials
         - name: bucket-secrets-volume
           secret:
             secretName: bucket-credentials
