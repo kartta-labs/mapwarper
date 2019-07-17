@@ -19,6 +19,7 @@ var selectedFeature;
 var firstGo = true;
 var popup;
 var popupContent;
+var selectInteract;
 function searchmapinit(){
   jQuery('#loadingDiv').hide();
 
@@ -135,6 +136,9 @@ function searchmapinit(){
     }
   });
 
+  selectInteract = new ol.interaction.Select({});
+  searchmap.addInteraction(selectInteract);
+
   addClickToTable(); 
   do_search();
 }
@@ -215,7 +219,7 @@ function do_search(pageNum){
   var options = {'bbox': searchmapExtent.join(","),
     'format': 'json',
     'page': pageNum,
-    'operation': 'intersect',
+    'operation': 'within',
     'from': jQuery("#from").val(),
     'to': jQuery("#to").val()};
 
@@ -262,18 +266,13 @@ function removeAllPopups(map){
   searchmap.getOverlayById("popup-overlay").setPosition(undefined);
 }
 
-var select;
+
 function selectFeature(feature){
-  if (select !== null) {
-    searchmap.removeInteraction(select);
-  }
 
-  select = new ol.interaction.Select({});
-  searchmap.addInteraction(select);
-
-  var selected_collection = select.getFeatures();
+  var selected_collection = selectInteract.getFeatures();
+  selected_collection.clear();
   selected_collection.push(feature);
-  select.dispatchEvent({
+  selectInteract.dispatchEvent({
     type: 'select',
     selected: [feature],
     deselected: []
