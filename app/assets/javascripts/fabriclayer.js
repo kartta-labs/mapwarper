@@ -17,15 +17,17 @@ FabricLayer = (function (superClass) {
   FabricLayer.prototype.image = null;
   FabricLayer.prototype.mapimage = null;
 
-  FabricLayer.prototype.angle = 0;
 
   function FabricLayer(options) {
     FabricLayer.__super__.constructor.call(this, options);
     this.on('postcompose', this.postcompose_, this);
     this.setSource(new ol.source.Vector());
     this.image = options.image;
-    this.centre = options.centre;
     this.opacity = options.opacity;
+    this.angle = options.angle;
+    this.center = options.center;
+    this.scaleX = options.scale;
+    this.scaleY = options.scale;
   }
 
   // FabricLayer.prototype.setAngle = function(rotation) {
@@ -115,6 +117,7 @@ FabricLayer = (function (superClass) {
     fabric.Object.prototype.transparentCorners = false;
     fabric.Object.prototype.cornerColor = "#061a2a";
     fabric.Object.prototype.borderColor = "#061a2a";
+    fabric.Object.prototype.lockUniScaling = true;
 
     fabric.Object.prototype.borderOpacityWhenMoving = 0.8;
     fabric.Object.prototype.cornerSize = 14;
@@ -137,12 +140,21 @@ FabricLayer = (function (superClass) {
     var imgc = this.map.getPixelFromCoordinate(this.map.getView().getCenter());
 
     var imgElement = document.getElementById(this.image);
-    
+
+    if (this.center){
+      imgc = this.map.getPixelFromCoordinate(this.center)
+    }
+
+    var left = imgc[0];
+    var top = imgc[1];
     mapImage = new fabric.Image(imgElement, {
-      left: imgc[0] ,
-      top: imgc[1],
+      left: left,
+      top: top,
       originX: "center",
-      originY: "center"
+      originY: "center",
+      angle: this.angle || 0,
+      scaleX: this.scaleX || 1,
+      scaleY: this.scaleY || 1
     });
 
     this.mapimage = mapImage;

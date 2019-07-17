@@ -134,17 +134,17 @@ class Gcp < ActiveRecord::Base
       coords.each do | coord |
        
         coord.symbolize_keys!
-        if coord[:corner] == "tl"
+        if coord[:corner].starts_with? "tl"
           map_id,x,y,lat,lon,name  = map.id, 0, 0, coord[:lat], coord[:lon], coord[:corner]
         end
-        if coord[:corner] == "tr"
+        if coord[:corner].starts_with? "tr"
           map_id,x,y,lat,lon,name  = map.id, map.width, 0, coord[:lat], coord[:lon], coord[:corner]
         end
     
-        if coord[:corner] == "bl"
+        if coord[:corner].starts_with? "bl"
           map_id,x,y,lat,lon,name  = map.id, 0, map.height, coord[:lat], coord[:lon], coord[:corner]
         end
-        if coord[:corner] == "br"
+        if coord[:corner].starts_with? "br"
           map_id,x,y,lat,lon,name  = map.id, map.width, map.height, coord[:lat], coord[:lon], coord[:corner]
         end
     
