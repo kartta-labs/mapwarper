@@ -973,22 +973,29 @@ function showGeocodeResults(res){
   zoom = 18;
   if (res.results && res.results.length > 0){
     var bounds = new OpenLayers.Bounds();
-    for(var a=0;a<res.results.length;a++){
-      var viewport = res.results[a].geometry.viewport;
-      bounds.extend(new OpenLayers.LonLat(viewport.northeast.lng, viewport.northeast.lat));
-      bounds.extend(new OpenLayers.LonLat(viewport.southwest.lng, viewport.southwest.lat));
-    }
+    var viewport = res.results[0].geometry.viewport;
+    bounds.extend(new OpenLayers.LonLat(viewport.northeast.lng, viewport.northeast.lat));
+    bounds.extend(new OpenLayers.LonLat(viewport.southwest.lng, viewport.southwest.lat));
+  
     var results_bounds_merc = lonLatToMercatorBounds(bounds);
     to_map.zoomToExtent(results_bounds_merc);
+
     zoom = to_map.getZoomForExtent(results_bounds_merc);
   
     var message = I18n["warp"]["best_guess_message"]+ " " + 
       "<a href='#' onclick='centerToMap(" + res.results[0].geometry.location.lng + "," + res.results[0].geometry.location.lat + "," + zoom + ");return false;'>" + res.results[0].formatted_address + "</a><br />";
-    centerToMap(res.results[0].geometry.location.lng , res.results[0].geometry.location.lat);
+    //centerToMap(res.results[0].geometry.location.lng , res.results[0].geometry.location.lat, zoom);
     if (res.results.length > 1){
       message = message + I18n["warp"]["other_places"]+":<br />";
+      var bounds_other = new OpenLayers.Bounds();
+      var viewport_other;
+      var zoom_other;
       for(var a=1;a<res.results.length;a++){
-        message = message + "<a href='#' onclick='centerToMap(" + res.results[a].geometry.location.lng + "," + res.results[a].geometry.location.lat + "," + zoom + ");return false;'>" + res.results[a].formatted_address + "</a><br />"
+        viewport_other = res.results[a].geometry.viewport;
+        bounds_other.extend(new OpenLayers.LonLat(viewport_other.northeast.lng, viewport_other.northeast.lat));
+        bounds_other.extend(new OpenLayers.LonLat(viewport_other.southwest.lng, viewport_other.southwest.lat));
+        zoom_other = to_map.getZoomForExtent(lonLatToMercatorBounds(bounds_other));
+        message = message + "<a href='#' onclick='centerToMap(" + res.results[a].geometry.location.lng + "," + res.results[a].geometry.location.lat + "," + zoom_other + ");return false;'>" + res.results[a].formatted_address + "</a><br />"
       }
     }
     jQuery("#to_map_notification_inner").html(message);
