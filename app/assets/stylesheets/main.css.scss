@@ -618,7 +618,7 @@ select {
 }
 
 .buttonWarper:hover, .buttonWarperBlue:hover, input[type="submit"]:hover,  .user_status a:hover, /*KAREN ADDED*/
-.selective-locale:hover {
+.selective-locale:hover, .greenButton:hover {
   box-shadow:1px 2px 4px 2px rgba(0,0,0,0.2), inset 1px 2px 4px rgba(255,255,255,0.4);;
 	background: #e3e3d4;
 	background:rgba(255,255,255,0.7); 
@@ -2023,10 +2023,14 @@ div.layer-maps-col {
 .quickButton, .skipButton {
   font-size: 100%;
   margin-left: 0px;
+  margin-right: 1em;
   padding: 10px 10px 6px 10px;
   cursor: pointer;
 }
-
+.quickButton {
+  padding-left: 15px;
+  padding-right: 15px;
+}
 .skipButton {
   background: grey !important;
   margin-right: 1em;
@@ -2050,5 +2054,48 @@ div.layer-maps-col {
 }
 
 .fast-tiles {
+  font-weight: bold;
+}
+
+.quick-map-card {
+  width: 250px;
+
+  background-color: rgb(248, 248, 248);
+  box-shadow: 1px 2px 4px 2px rgba(0, 0, 0, 0.2), inset 1px 2px 4px rgba(255, 255, 255, 0.4);
+  margin-top: 10px;
+  margin-right: 10px;
+  padding-top: 8px;
+  padding-left: 10px;
+  padding-right: 8px;
+  border-radius: 5px;
+  padding-bottom: 5px;
+}
+
+.quick-map-card img {
+  vertical-align: top;
+  float: left;
+  margin-right: 0.5em;
+}
+
+.map-title {
+  font-weight: bold;
+}
+.map-description {
+  font-size: smaller;
+}
+
+.list-quick {
+  font-size: larger;
+}
+
+.greenButton {
+  background: #B1EDB8;
+  padding: 6px 6px 3px 6px; 
+	border-radius:4px;
+	text-transform:uppercase;
+	font-size:80%;
+	display:inline-block;
+	margin-left:4px;
+  border:none;
   font-weight: bold;
 }

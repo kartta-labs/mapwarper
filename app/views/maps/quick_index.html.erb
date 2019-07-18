@@ -1,0 +1,53 @@
+<h2>Quick Place Maps</h2>
+<% content_for :head do %>
+
+  <%= javascript_include_tag "masonry.pkgd.min.js" %>
+  <%= javascript_include_tag "imagesloaded.pkgd.min.js" %>
+  <script type="text/javascript">
+    $(function () {
+      if (document.location.href.indexOf("origin") >= 0){
+        window.history.replaceState({}, document.title, "<%= quick_maps_path %>");
+      }
+      
+      var $grid = $('.grid').imagesLoaded( function() {
+        $grid.masonry({
+          itemSelector: '.grid-item',
+          columnWidth: 10,
+          transitionDuration: 0
+        });
+      });
+    })
+  </script>
+
+  <% end %> 
+<% if @maps.empty? %>
+  <%= t('.no_maps')%>
+<% else %>
+
+<%= link_to(t('.choose_random'), quick_maps_url(:rand => true ), :class => "buttonWarper quickButton") %> <%= t('.choose_list') %>
+
+  <div class="grid">
+    <% @maps.each do | map |  %>
+      <div class="quick-map-card grid-item">
+      
+        <%= link_to image_tag(map.upload.url(:thumb),  width: 100), quick_map_url(map)%>
+        
+        <span class="map-title"> <%= link_to(strip_brackets(snippet(map.title, 15)), quick_map_url(map))  %> </span>
+        <span class="map-description"><%= strip_brackets(snippet(map.description,10)) -%></span>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="warper_pagination">
+  <div id="search-pagination-bottom">
+    <%= will_paginate @maps %>
+    <div class="per_page_select">
+    <% if @maps.total_entries > 50 %>
+      <%= page_entries_info @maps %>.&nbsp;<%= select_tag :per_page, options_for_select([50,100,200], @per_page.to_i), :onchange => "if(this.value){reload_with_page(this.value)};" %> <%= t('common.per_page') %>
+    <% end %>
+  </div>
+  </div>
+</div>
+
+
+<% end %>

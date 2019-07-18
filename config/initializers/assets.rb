@@ -17,3 +17,4 @@ Rails.application.config.assets.precompile += %w( select2/select2.min.js select2
 Rails.application.config.assets.precompile += %w( helmerttransform.js )
 Rails.application.config.assets.precompile += %w( bootstrap-native-v4.min.js  )
 Rails.application.config.assets.precompile += %w( fabric.min.js fabriclayer.js  )
+Rails.application.config.assets.precompile += %w( masonry.pkgd.min.js imagesloaded.pkgd.min.js  )

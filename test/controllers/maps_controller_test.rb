@@ -125,4 +125,15 @@ class MapsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "can show list of all quick maps" do
+    normal_user_sign_in
+    get :quick_index
+
+    maps = assigns(:maps)
+
+    assert maps.include? @available_map
+    assert_equal false, maps.include?(@warped_map)
+    assert_response :success
+  end
+
 end

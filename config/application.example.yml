@@ -68,6 +68,8 @@ development:
 test:
   <<: *defaults
   email: test_user@example.com
+  public_shared_dir: "test"
+  import_maps_sftp_path: "test/fixtures/data/imports/images"
 
 production:
   <<: *defaults

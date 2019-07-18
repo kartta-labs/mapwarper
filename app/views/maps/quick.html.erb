@@ -128,7 +128,7 @@
       });
       extent = vectorSource.getExtent();
       map.getView().fit(extent, map.getSize()); 
-    } else if (geocode_result){
+    } else if (geocode_result && geocode_result.results && geocode_result.results.length > 0){
       zoomToGeocode(geocode_result)
     } else {
       map.getView().setCenter(ol.proj.transform([0,0],'EPSG:4326', 'EPSG:3857' ));
@@ -189,7 +189,7 @@
       data: { coords : JSON.stringify(coords) },
       dataType: 'json'
       }).done(function(resp) {
-        window.location.href = '<%= maps_path(origin: 'quick') %>';
+        window.location.href = '<%= quick_maps_path(origin: 'quick') %>';
       }).fail(function(resp) {
         failMessage(resp);
       });
@@ -266,7 +266,27 @@
 <% end %> 
 
 <table id="map_table" class="">
-  <%= render :partial => 'maps/map_detail', :object => @map, :locals => {:variety => "quick"} %>
+<tr>
+<% cl = cycle('table0', 'table1') %>
+  <td class="<%= cl %>">
+    <%=  image_tag(@map.upload.url(:thumb), width: 100) %>
+  </td>
+  <td class="<%= cl %>">
+    <span class="maplist_title">
+      <%= link_to(strip_brackets(@map.title), @map) %>
+    </span>
+    <br />
+    <span class="map_description">
+      <%=strip_brackets(@map.description) -%>
+    </span>
+    <span class="map_year">
+      <% if @map.depicts_year -%>
+        <%= t('maps.map.depicts') %>: <%= @map.depicts_year -%>
+      <% end -%>
+  </span>
+    </td>
+  </tr>
+
 </table>
 
 <h2><%= t('.heading')%></h2>
@@ -274,13 +294,14 @@
 
 <div id="map" class="quick-map">
   <div id="address-search" class="">
-    <label><input type="search" name="placesearch" size="35" placeholder="e.g. Driggs Avenue Williamsburg" onchange="doPlaceSearch(this.value);">&nbsp;<%= t('.find')%></label>
+    <label><input type="search" name="placesearch" size="35" placeholder="<%=t('.geocode_placeholder') %>" onchange="doPlaceSearch(this.value);">&nbsp;<%= t('.find')%></label>
   </div>
 </div>
 <div id="slider"></div>
 <div class="quickButtons">
- <!-- <a class="buttonWarper skipButton" id="skipQuickButton"><%= t('.skip_button')%></a> -->
   <a class="buttonWarper quickButton" id="submitQuickButton"><%= t('.submit_button')%></a>
+  <%= link_to(t('.skip_button'), quick_maps_url(:rand => @map.id ), :class => "buttonWarper skipButton") %>
+  <%= link_to t('.list_others'), quick_maps_url, :class => "list-quick" %>
 </div>
 
 

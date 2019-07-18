@@ -55,6 +55,7 @@ Rails.application.routes.draw do
         get 'geosearch'
         get 'tag'
         get 'csv'
+        get 'quick' => 'maps#quick_index'
     end
     resources :layers
   end

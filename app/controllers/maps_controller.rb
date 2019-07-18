@@ -4,12 +4,12 @@ class MapsController < ApplicationController
   
   before_filter :store_location, :only => [:warp, :align, :clip, :export, :edit, :comments ]
   
-  before_filter :authenticate_user!, :only => [:new, :create, :edit, :update, :destroy, :delete, :warp, :rectify, :clip, :align, :warp_align, :mask_map, :delete_mask, :save_mask, :save_mask_and_warp, :set_rough_state, :set_rough_centroid, :publish, :trace, :id, :map_type, :quick]
+  before_filter :authenticate_user!, :only => [:new, :create, :edit, :update, :destroy, :delete, :warp, :rectify, :clip, :align, :warp_align, :mask_map, :delete_mask, :save_mask, :save_mask_and_warp, :set_rough_state, :set_rough_centroid, :publish, :trace, :id, :map_type, :quick, :quick_index]
  
   before_filter :check_administrator_role, :only => [:publish, :csv]
  
   before_filter :find_map_if_available,
-    :except => [:show, :index, :wms, :tile, :mapserver_wms, :warp_aligned, :status, :new, :create, :update, :edit, :tag, :geosearch, :csv]
+    :except => [:show, :index, :wms, :tile, :mapserver_wms, :warp_aligned, :status, :new, :create, :update, :edit, :tag, :geosearch, :csv, :quick_index]
 
   before_filter :check_link_back, :only => [:show, :warp, :clip, :align, :warped, :export, :activity]
   before_filter :check_if_map_is_editable, :only => [:edit, :update, :map_type]
@@ -136,7 +136,6 @@ class MapsController < ApplicationController
   #
   ###############
   def index
-    flash.now[:notice] = t('maps.show.thanks_quick_place')  if params.delete(:origin) == "quick"
     sort_init('updated_at', {:default_order => "desc"})
     
     sort_update
@@ -917,6 +916,23 @@ class MapsController < ApplicationController
       return redirect_to @map
     end
     
+  end
+
+  # maps/quick
+  def quick_index
+    flash.now[:notice] = t('maps.show.thanks_quick_place')  if params.delete(:origin) == "quick"
+    @per_page = params[:per_page] || 50
+    paginate_params = {
+      :page => params[:page],
+      :per_page => @per_page
+    }
+    @maps = Map.includes(:gcps).where('gcps.id is null and status = 2').references(:gcps).paginate(paginate_params)
+    
+    if params[:rand] 
+      map = Map.includes(:gcps).where('gcps.id is null and status = 2').where('maps.id != ?', params[:rand].to_i).references(:gcps).order('RANDOM()').first
+      return redirect_to quick_map_url(map)
+    end
+
   end
   
   

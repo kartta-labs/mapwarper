@@ -321,6 +321,7 @@ en:
       overview_p1: Find maps and other imagery, upload, and rectify against a real map.
       overview_p2: You can then download and use the rectified map in your mapping applications.
       overview_p3: Just sign up and you can start uploading and get warping!
+      quick_place: Quick Place Maps
       recent_layers: Recent Mosaics
       rect_maps: Last Rectified Maps
       see_maps: See all maps
@@ -770,10 +771,17 @@ en:
     quick:
       find: Find
       heading: Quick Place
-      intro: Find a place and then move the map around to fit. Quick and rough alignments are what we are after as we'll be able to fix it properly in the main interface
+      intro: Find a place and move the map around to fit. Quick & rough alignments are great as we'll be able to fix it properly in the main site. Click the "Looks Good" button when done!
+      list_others: List other maps that need help
       map_has_gcps: Sorry the map already has some control points
-      skip_button: Skip Map, Try another
+      geocode_placeholder: e.g. Driggs Avenue Williamsburg
+      skip_button: Skip map, do another
       submit_button: Looks Good! 
+    quick_index:
+      choose_random: choose a random map
+      choose_list: or choose a map from the list below.
+      no_maps: No maps currently available to be quick placed. Have a visit later and there might be more available. 
+
     rectify_main:
       being_rectified_error: Sorry, the map is currently being rectified somewhere else, please try again later.
       not_enough_points: Sorry, the map needs at least three control points to be able to rectify it
