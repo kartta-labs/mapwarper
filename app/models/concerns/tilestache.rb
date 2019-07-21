@@ -141,7 +141,6 @@ module Tilestache
       google_project: APP_CONFIG["google_storage_project"],
       google_json_key_location:  APP_CONFIG["google_json_key_location"]
     )
-    bucket = connection.directories.get(APP_CONFIG["google_tiles_bucket"])
 
     layer_name = options[:item_id].to_s
     layer_name = "map-"+ layer_name if options[:item_type] == "map"
@@ -151,12 +150,7 @@ module Tilestache
 
     the_json = tile_config_json(options)
 
-    file = bucket.files.create(
-      :key    => tile_config_file,
-      :body   => the_json,
-      :public => true
-    )
-      
+    file =  connection.put_object(APP_CONFIG["google_tiles_bucket"],  tile_config_file, the_json,  predefined_acl: 'publicRead')
   end
 
   #config file to be sent to s3 as well
