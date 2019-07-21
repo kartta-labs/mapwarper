@@ -23,15 +23,14 @@ class MapsOcrJob < ActiveJob::Base
     else
 
       processed_img = filename + ".ocr.jpg"
-      processed_rotate_img = filename + ".rot.ocr.jpg"
 
       #we can have larger images if saving to the bucket
       resize = "7500x6000\>"
       if !APP_CONFIG["ocr_bucket"].blank?
         resize = "11000x11000\>"
       end
-      #resize makes it smaller. -threshold black and whites it, -trim and +repage "auto crops it", -write saves the first image, -rotate rotates it and finally saves the file
-      command = ["convert", "#{filename}[0]", "-resize", resize, "-threshold", "50%", "-trim", "+repage", "-write", processed_img, "-rotate", "90" ,processed_rotate_img  ]
+      #resize makes it smaller. -threshold black and whites it, -trim and +repage "auto crops it"
+      command = ["convert", "#{filename}[0]", "-resize", resize, "-threshold", "50%", "-trim", "+repage",  processed_img ]
       logger.debug command
 
       stdout_str, stderr_str, status = Open3::capture3(*command)
@@ -40,13 +39,10 @@ class MapsOcrJob < ActiveJob::Base
         begin
           response = google_image_annotate(processed_img)
           text = process_text(response)
-          response_rotate = google_image_annotate(processed_rotate_img)
-          text_rotate = process_text(response_rotate)
 
-          combined_rotate  = text + text_rotate
-          combined_rotate.uniq!
+          text.uniq!
 
-          ocr_result = combined_rotate.map {|a| a.downcase}.join(" ") 
+          ocr_result = text.map {|a| a.downcase}.join(" ") 
           logger.debug "ocr result = #{ocr_result}"
 
           map.ocr_result = ocr_result
@@ -63,7 +59,6 @@ class MapsOcrJob < ActiveJob::Base
 
       #delete the ocr images
       File.delete processed_img if File.exists? processed_img
-      File.delete processed_rotate_img if File.exists? processed_rotate_img
     end
 
 
