@@ -25,8 +25,13 @@ class MapsOcrJob < ActiveJob::Base
       processed_img = filename + ".ocr.jpg"
       processed_rotate_img = filename + ".rot.ocr.jpg"
 
+      #we can have larger images if saving to the bucket
+      resize = "7500x6000\>"
+      if !APP_CONFIG["ocr_bucket"].blank?
+        resize = "11000x11000\>"
+      end
       #resize makes it smaller. -threshold black and whites it, -trim and +repage "auto crops it", -write saves the first image, -rotate rotates it and finally saves the file
-      command = ["convert", "#{filename}[0]", "-resize", "7500x6000\>", "-threshold", "50%", "-trim", "+repage", "-write", processed_img, "-rotate", "90" ,processed_rotate_img  ]
+      command = ["convert", "#{filename}[0]", "-resize", resize, "-threshold", "50%", "-trim", "+repage", "-write", processed_img, "-rotate", "90" ,processed_rotate_img  ]
       logger.debug command
 
       stdout_str, stderr_str, status = Open3::capture3(*command)
@@ -87,6 +92,17 @@ class MapsOcrJob < ActiveJob::Base
 
   def google_image_annotate(image)
     image_annotator = Google::Cloud::Vision::ImageAnnotator.new(credentials: APP_CONFIG["google_json_key_location"])
+  
+    if !APP_CONFIG["ocr_bucket"].blank?
+      connection = Fog::Storage::Google.new(
+        google_project: APP_CONFIG["google_storage_project"],
+        google_json_key_location:  APP_CONFIG["google_json_key_location"]
+      )
+
+     connection.put_object(APP_CONFIG["ocr_bucket"],  File.basename(image), File.open(image))
+
+     image = "gs://#{APP_CONFIG["ocr_bucket"]}/#{File.basename(image)}"
+    end
 
     response = image_annotator.text_detection(
       image: image,

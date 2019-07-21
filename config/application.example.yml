@@ -60,6 +60,7 @@ defaults: &defaults
   smtp_username:
   smtp_password:
   enable_ocr_job: "false"  #set to "true" to enable the OCR and geocoding job upon map creation
+  ocr_bucket: "" # name of the bucket to store images for OCR processing, should be globablly unique
   
 
 development:
