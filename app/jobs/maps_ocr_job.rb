@@ -66,20 +66,31 @@ class MapsOcrJob < ActiveJob::Base
 
 
   def process_text(response)
-    tt = []
+    words = []
     response.responses.each do |res|
-      res.text_annotations.each do |text|
-        tt << text.description
-      end
-    end
-    tt.shift unless Rails.env == "test" #remove the first item as this contains everything
+      res.full_text_annotation.pages[0].blocks.each do | block |
+        block.paragraphs.each do | para |
+          next unless para.confidence > 0.90
+          para.words.each do | word |
+            symbols = []
+            word.symbols.each do | sym |
+              symbols << sym.text
+              if sym.property && sym.property.detected_break  #add a break to the word
+                symbols << " "
+              end
+            end #symbols
+            words << symbols.join("")
+          end #word
+        end #para
+      end 
+    end 
 
-    text = tt.map { |a | a.gsub(/[^0-9A-Za-z]/, '')}  #remove special characters
+    text = words.map { |a | a.gsub(/[^0-9A-Za-z]/, '')}  #remove special characters from strings
     text.keep_if {|a| a == a.upcase}     # keep the UPPERCASE strings as these are road names
     keep_suffixes = %w(CP CT CV CY DL DR DV FT GN HL IS LF LN ML MT PL PT RD SQ ST UN VW YU AVE JCT PKY PLZ STA VIA VLY WAY BTM BLF ARC ALY FWY THE AND ICE PUB PAN END WAY)
     text.delete_if {|a| a.length <= 3 unless keep_suffixes.include? a }  #remove the small hits except for the useful ones
     text.delete_if {|a| a.match(/\d/)}  #remove strings with numbers in them
-    exclude_words = %w(division map zone zones height restriction restrictions property plate section part building garage)
+    exclude_words = %w(division map zone zones height restriction restrictions property plate section part building parking garage discontinued closed)
     text.delete_if {|a| exclude_words.include? a.downcase }
     
     return text 
@@ -99,10 +110,10 @@ class MapsOcrJob < ActiveJob::Base
      image = "gs://#{APP_CONFIG["ocr_bucket"]}/#{File.basename(image)}"
     end
 
-    response = image_annotator.text_detection(
+    response = image_annotator.document_text_detection(
       image: image,
       image_context: {:language_hints => ["en"]},
-      max_results: 1 # optional, defaults to 10
+      max_results: 1
     )
 
     response
