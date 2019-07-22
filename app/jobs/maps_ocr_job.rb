@@ -22,12 +22,12 @@ class MapsOcrJob < ActiveJob::Base
       geocode_map(map)
     else
 
-      processed_img = filename + ".ocr.jpg"
+      processed_img = filename + ".ocr.png"
 
       #we can have larger images if saving to the bucket
       resize = "7500x6000\>"
       if !APP_CONFIG["ocr_bucket"].blank?
-        resize = "11000x11000\>"
+        resize = "10000x10000\>"
       end
       #resize makes it smaller. -threshold black and whites it, -trim and +repage "auto crops it"
       command = ["convert", "#{filename}[0]", "-resize", resize, "-threshold", "50%", "-trim", "+repage",  processed_img ]

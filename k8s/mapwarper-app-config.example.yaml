@@ -38,5 +38,8 @@ data:
   MW_ENABLE_THROTTLING: "false"
   MW_THROTTLE_LIMIT: "30"
   MW_THROTTLE_PERIOD: "60"
+  MW_ENABLE_OCR_JOB: "false"
+  MW_OCR_BUCKET: ""
+
 
 
