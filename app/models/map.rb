@@ -1054,8 +1054,10 @@ class Map < ActiveRecord::Base
   end
   
   def clear_cache
-    Rails.cache.delete_matched ".*/maps/wms/#{self.id}.png\?status=warped.*"
-    Rails.cache.delete_matched "*/maps/tile/#{self.id}/*"
+    if Rails.application.config.action_controller.perform_caching
+      Rails.cache.delete_matched ".*/maps/wms/#{self.id}.png\?status=warped.*"
+      Rails.cache.delete_matched "*/maps/tile/#{self.id}/*"
+    end
   end
 
   #takes in the clipping mask file, transforms it to geo and converts to geojson, returning the geojson
