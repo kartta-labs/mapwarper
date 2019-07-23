@@ -69,19 +69,10 @@ Groups of maps can be made into "mosaics" that will stictch together the composi
 
 ## Installation Dependencies
 
-Check out the Vagrant section lower down in the readme if you want to get started quickly. Also view the lib/vagrant/provision.sh file to see what needs to get installed.
+It's probably better to install everything locally but you can look at the Dockerfile to get an idea of what to install. Alternatively you can use docker compose to get it running 
 
-on Ubuntu 14.04 LTS
 
-```apt-get install -y ruby ruby-dev postgresql-9.3-postgis-2.1 postgresql-server-dev-all postgresql-contrib build-essential git-core libxml2-dev libxslt1-dev imagemagick libmapserver1 gdal-bin libgdal-dev ruby-mapscript bundler nodejs```
-
-Due to a bug with the gdal gem, you _may_ need to disable a few flags from your ruby rbconfig.rb see https://github.com/zhm/gdal-ruby/issues/4 for more information
-
-Then install the gem files using bundler
-
-```bundle install```
-
-### Ubuntu 16.04 LTS
+### Ubuntu 16.04  18.04 & 
 
 Mapwarper should work on Ubuntu 16.04 - however there are issues with the Ubuntu package of GDAL and potentially with Mapserver (if not using package Ruby, e.g. RVM)
 
@@ -89,7 +80,9 @@ GDAL needs to be compiled from source to ensure the gdal_rasterize bug is fixed.
 
 If rvm is being used, ruby mapscript for mapserver should be compiled from source, and then linked or installed into the path.  You can use the ubuntu package rubymapscript along with the system rub (2.3.1) without worrying about this.
 
-See ubuntu16_installnotes for some hints as to what to do. The vagrant file and provisioning scripts should be altered, ideally.
+See ubuntu16_18_installnotes for some hints as to what to do. The vagrant file and provisioning scripts should be altered, ideally.
+
+Ubuntu 18 by default has changed the imagemagick policies, so you can open up some of the limits. See config/imagemagick-policy.xml 
 
 ## Configuration
 
@@ -109,7 +102,15 @@ Create a postgis database
 
 ## Database initialization
 
-Creating a new user
+Creating a new super user
+
+Run the rake task
+
+    rake warper:create_superuser
+
+and make a note of the generated password. 
+
+Alternatively in the Rails console to do it by hand:
 
     user = User.new
     user.login = "super"
@@ -142,31 +143,7 @@ For example turning off saving to disk and setting a memory value for LRU  "maxm
 
 ## Development
 
-Via Vagrant - There is a vagrantfile you can use this uses a provision script in lib/vagrant. Type
-
-    vagrant up
-
-to get and install the virtual machine - this will also install the libraries and depencies and ruby gems for mapwarper into the virtual machine. See the file in lib/vagrant/provision.sh for more details about this process
-
-After that runs, type vagrant ssh to login and then you can
-
-    cd /srv/mapwarper
-    rails c
-
-Create a user in the console, as shown above and then exit
-
-    rails s -b 0.0.0.0 -p 3000
-
-to start the server, running on port 3000
-
-Note that there may be some hoops to jump through if you choose to use the ubuntu 16 vagrant option.
-
-##I18n Locales / Translations
-
-You might want to use LocaleApp to assist with translations.
-
-See the [mapwarper](http://www.localeapp.com/projects/public?search=mapwarper) project.
-
+Probably better to install and run things locally but you can get things going with Docker with a Dockerfile and a docker-compose yaml file which will set up a database and redis images too. 
 
 ## API
 
