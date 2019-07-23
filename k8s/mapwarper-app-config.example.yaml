@@ -13,6 +13,7 @@ data:
   MW_SRC_MAPS_DIR: /mnt/mapwarper/maps/src/
   MW_DST_MAPS_DIR: /mnt/mapwarper/maps/dst/
   MW_MAP_MASK_DIR: /mnt/mapwarper/maps/masks
+  MW_TILEINDEX_DIR: /mnt/mapwarper/maps/tileindex
   MW_GDAL_PATH: "" 
   MW_PUBLIC_SHARED_DIR: shared
   MW_DEBUG_K8S: "true"
