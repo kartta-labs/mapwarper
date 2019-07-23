@@ -80,7 +80,7 @@ GDAL needs to be compiled from source to ensure the gdal_rasterize bug is fixed.
 
 If rvm is being used, ruby mapscript for mapserver should be compiled from source, and then linked or installed into the path.  You can use the ubuntu package rubymapscript along with the system rub (2.3.1) without worrying about this.
 
-See ubuntu16_18_installnotes for some hints as to what to do. The vagrant file and provisioning scripts should be altered, ideally.
+See ubuntu16_18_installnotes for some hints as to what to do. 
 
 Ubuntu 18 by default has changed the imagemagick policies, so you can open up some of the limits. See config/imagemagick-policy.xml 
 
