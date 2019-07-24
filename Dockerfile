@@ -7,6 +7,7 @@ RUN apt-get update -qq && apt-get install -y build-essential ruby-dev nodejs git
 
 RUN pip install -U pillow modestmaps google-cloud-storage
 
+## install gcsfuse for use mounting cloud storage 
 RUN echo "deb http://packages.cloud.google.com/apt gcsfuse-bionic main" | tee /etc/apt/sources.list.d/gcsfuse.list
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 RUN apt-get update -qq && apt-get install -y gcsfuse
@@ -37,6 +38,15 @@ COPY Gemfile.lock Gemfile.lock
 
 RUN gem install bundler -v=1.17.3 
 
+## install the selenium testing dependencies
+RUN if [ "$BUILD_ENV" != "production" ]; then apt-get install -y firefox wget wbritish; fi
+RUN if [ "$BUILD_ENV" != "production" ]; \
+  then wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz; \ 
+  sh -c 'tar -x geckodriver -zf geckodriver-v0.24.0-linux64.tar.gz -O > /usr/bin/geckodriver'; \
+  chmod +x /usr/bin/geckodriver ; \
+  rm geckodriver-v0.24.0-linux64.tar.gz ; \
+  export PATH=$PATH:/usr/bin/geckodriver; \
+fi
 
 RUN if [ "$BUILD_ENV" = "production" ]; then bundle install --without development test; else bundle install; fi
 
