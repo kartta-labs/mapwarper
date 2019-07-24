@@ -265,9 +265,14 @@ class Api::V1::MapsController < Api::V1::ApiController
       end
       
     end
+
+    order_status = nil
+    if sort_key == "status"
+      order_status = "updated_at desc"
+    end
     
     
-    @maps = Map.all.where(layer_conditions).where(warped_options).where(query_options).where(bbox_conditions).order(order_options).order(sort_geo).paginate(paginate_options)
+    @maps = Map.all.where(layer_conditions).where(warped_options).where(query_options).where(bbox_conditions).order(order_options).order(sort_geo).order(order_status).paginate(paginate_options)
     
     if request.format == "geojson"
       geo = ["bbox", "mask"].include?(params["geo"]) ? params["geo"] : "bbox"  

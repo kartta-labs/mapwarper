@@ -187,14 +187,19 @@ class MapsController < ApplicationController
       where_options = conditions
       #order('name').where('name LIKE ?', "%#{search}%").paginate(page: page, per_page: 10)
 
+      order_status = nil
+      if params[:sort_key] == "status"
+        order_status = "updated_at desc"
+      end
+
       if @show_warped == "1"
-        @maps = Map.warped.are_public.where(where_options).where(year_conditions).order(order_options).paginate(paginate_params)
+        @maps = Map.warped.are_public.where(where_options).where(year_conditions).order(order_options).order(order_status).paginate(paginate_params)
       elsif @show_warped == "1" && (user_signed_in? and current_user.has_role?("editor"))
-        @maps = Map.warped.where(where_options).where(year_conditions).order(order_options).paginate(paginate_params)
+        @maps = Map.warped.where(where_options).where(year_conditions).order(order_options).order(order_status).paginate(paginate_params)
       elsif  @show_warped != "1" && (user_signed_in? and current_user.has_role?("editor"))
-        @maps = Map.where(where_options).order(order_options).where(year_conditions).paginate(paginate_params)
+        @maps = Map.where(where_options).order(order_options).where(year_conditions).order(order_status).paginate(paginate_params)
       else
-        @maps = Map.are_public.where(where_options).where(year_conditions).order(order_options).paginate(paginate_params)
+        @maps = Map.are_public.where(where_options).where(year_conditions).order(order_options).order(order_status).paginate(paginate_params)
       end
       
       @html_title = t('.title')
