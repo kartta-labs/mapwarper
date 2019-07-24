@@ -69,7 +69,7 @@ Rails.application.routes.draw do
   get '/layers/thumb/:id' => 'layers#thumb'
  
   
-  #get '/gcps/' => 'gcps#index', :as => "gcps"
+  get '/gcps/' => 'gcps#index', :as => "gcps"
   get '/gcps/bulk_import' => 'gcps#bulk_import', :as => "bulk_import_gcps"
   get '/gcps/csv' => 'gcps#csv', :as =>'csv_gcps'
   get '/gcps/:id' => 'gcps#show', :as => "gcp"

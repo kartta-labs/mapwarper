@@ -10,7 +10,7 @@ class GcpsController < ApplicationController
 
   def show
     respond_to do | format |
-      format.html {render :json => {:stat => "ok", :items => @gcp}.to_json, :callback => params[:callback]  }
+      format.html {render :json => {:stat => "ok", :items => @gcp}.to_json, :callback => params[:callback], content_type: "text/plain" }
       format.json {render :json => {:stat => "ok", :items => @gcp}.to_json, :callback => params[:callback]  }
       format.xml  {render :xml => @gcp.to_xml}
     end
@@ -234,8 +234,8 @@ class GcpsController < ApplicationController
     #logger.error("not found #{params[:id]}")
     respond_to do | format |
       format.html do
-        flash.now[:notice] = t('gcps.show.not_found')
-        redirect_to :action => :index
+        flash[:notice] = t('gcps.show.not_found')
+        return redirect_to :action => :index
       end
       format.json {render :json => {:stat => "not found", :items =>[]}.to_json, :status => 404}
     end
