@@ -148,3 +148,9 @@ Probably better to install and run things locally but you can get things going w
 ## API
 
 See README_API.md for API details
+
+## License
+
+MIT: see LICENSE
+
+Note that Tilestache which is bundled in lib/,  error_calculator.rb,  SelectFeatureNoClick.js and helmerttransform.js and all are individually BSD licensed. 
