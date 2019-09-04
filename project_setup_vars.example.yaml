@@ -1,0 +1,30 @@
+#Mapwarper_deployment_variables
+#Use this file to store variables as you go through the deployment stages.
+#Existing values are the default values as used in project_setup.md
+
+project_id:
+service_account_name: mapwarper-dev-sa
+service_account_file_name: mapwarper-service-account.json
+cluster_name:
+zone:
+db_instance_name:
+db_instance_ip:
+postgres_password:
+mapwarper_database_name:
+uploads_bucket_name:
+tiles_bucket_name:
+redis_instance_name:
+redis_host_ip:
+filestore_instance_id:
+fileshare_name:
+fileshare_ip:
+backend_bucket_name:
+url_map_name:
+http_proxy_name:
+tiles_ip:
+
+
+
+
+
+
