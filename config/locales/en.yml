@@ -731,6 +731,7 @@ en:
       unwarped: Unrectified
       view_map: View Map
       warp_map: Rectify Map
+      warped: Rectified
     map_detail:
       also_helped: "also helped including:"
       by: by

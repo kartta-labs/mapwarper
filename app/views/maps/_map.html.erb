@@ -64,8 +64,14 @@
     <%=h time_ago_in_words(map.updated_at) -%> <%= t('common.ago') %>
   </td>
   <td>
-    <%if map.gcps.hard.size > 0 %>
-      <%= t('.gcp_count', count: map.gcps.hard.size) -%>
+    <% if [:warping, :warped, :published].include?(map.status)%>
+      <% if map.status == :warped ||  map.status == :warping %>
+        <%= t('.warped') %>
+      <% elsif map.status == :published %>
+        <%= t('.published') %>
+      <% end %>
+      <br />
+      <span class="gcp-count"><%= t('.gcp_count', count: map.gcps.hard.size) -%> </span>
     <%else-%>
       <%= t('.unwarped') %>
     <%end-%>
