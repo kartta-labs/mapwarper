@@ -10,7 +10,7 @@
     jQuery("#export_window").hide();
     jQuery("#export_button").click(function() {
       var o = jQuery(this).offset();
-      jQuery("#export_window").css({'position': 'absolute', 'left': o.left, 'top': o.top + 17});
+   //   jQuery("#export_window").css({'position': 'absolute', 'left': o.left, 'top': o.top });
       jQuery("#export_window").show();
     });
 
@@ -28,7 +28,7 @@
   });
 </script>
 
-<span id="export_toolbox">|&nbsp;
+<span id="export_toolbox">
   <a href="#" id="export_button" class="export_button"><%=image_tag("KML-logo-20x25.png", :height => '16')%>&nbsp;<%= t('.header') %></a>
   <div id="export_window" class="export_float_div hidden" >
     <div id="export_window_inner">
