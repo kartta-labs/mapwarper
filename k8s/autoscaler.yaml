@@ -10,4 +10,4 @@ spec:
     name: mapwarper-web
   minReplicas: 1
   maxReplicas: 10
-  targetCPUUtilizationPercentage: 70
+  targetCPUUtilizationPercentage: 80

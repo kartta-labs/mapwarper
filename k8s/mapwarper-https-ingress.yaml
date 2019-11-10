@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mapwarper-ingress
+  labels:
+    app: "web"
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: ${STATIC_IP}
+    networking.gke.io/managed-certificates: mapwarper-certificate
+    kubernetes.io/ingress.allow-http: "false"
+spec:
+  backend:
+    serviceName: mapwarper-np
+    servicePort: 3000

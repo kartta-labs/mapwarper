@@ -30,7 +30,7 @@ spec:
             limits:
               cpu: 1
             requests:
-              cpu: 250m
+              cpu: 500m
           livenessProbe:
             tcpSocket:
               port: 3000
