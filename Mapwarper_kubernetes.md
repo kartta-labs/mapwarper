@@ -390,11 +390,92 @@ mapwarper-ingress   *         XX.XX.XX.XX    80        49s
 ```
 
  Wait for propagation - may take a few minutes. Set up your DNS if you want to use a domain name
-
-Optional: Convert the ephemeral IP 
+ 
+Optional: Convert the ephemeral IP to a static one. 
 
 Convert it here: https://console.cloud.google.com/networking/addresses/list
 See: https://cloud.google.com/compute/docs/ip-addresses/#ephemeraladdress 
+
+### HTTPS Loadbalancer
+
+For more general docs: https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
+
+#### Create static IP
+
+To create a https load balancer with a Google Managed certificate.
+
+First make sure you have a static IP address. If you have one already convert the ephemeral IP to a static one. 
+
+In the Console: https://console.cloud.google.com/networking/addresses/list find the ephemeral ip address for the loadbalancer and select it to static
+
+In the dialog window that appears give it a name and make a note of this (e.g. mapwarper-k8s-static-ip) and an optional description, and continue
+
+#### Create ManagedCertificate
+
+Using `example.com` as your domain, this will create a certificate with the name `mapwarper-certificate`
+
+```
+DOMAIN=example.com envsubst  < mapwarper-certificate.yaml > k8s.tmp && mv k8s.tmp mapwarper-certificate.yaml
+kubectl apply -f mapwarper-certificate.yaml
+```
+
+
+#### Apply Ingress using Certificate
+
+First if you have a regular http ingress you might have to delete it:
+
+```
+kubectl delete ingress mapwarper-ingress
+```
+
+Using the name of the static IP that you created above
+
+```
+STATIC_IP=mapwarper-k8s-static-ip envsubst  < mapwarper-https-ingress.yaml > k8s.tmp && mv k8s.tmp mapwarper-https-ingress.yaml
+
+kubectl apply -f mapwarper-https-ingress.yaml
+```
+
+You will need to wait up to 15 minutes for the certificate to provision. You can check on this via
+
+```
+kubectl describe managedcertificate
+```
+
+Once a certificate is successfully provisioned, the value of the Status.CertificateStatus field will be Active
+
+
+Note: if you want both http and https traffic change the value to true for 
+`kubernetes.io/ingress.allow-http: "false"` 
+
+#### Update Host with Scheme application config
+
+Change the mapwarper app config variable:
+
+MW_HOST_WITH_SCHEME from http to  https:// 
+
+`kubectl apply -f mapwarper-app-config.yaml`  or edit it on the console
+
+
+
+#### Increase loadbalancer timeout
+
+If you are using lower spec machines, upload requests may take some time to process more than the default timeout of the loadbalancer. One way to increase the timeout is via the gcloud commands:
+
+First get the name of the new backend service 
+
+```
+gcloud compute backend-services list
+
+NAME        BACKENDS                                            PROTOCOL
+k8s-be-XXX  zone/instanceGroups/k8s-ig--XX        HTTP
+```
+then using the name, update the timeout value. Here we increase the timeout to 90 seconds
+
+```
+gcloud compute backend-services update k8s-be-XXX --timeout=90
+```
+(and choose 1 to apply it for global)
 
 
 
