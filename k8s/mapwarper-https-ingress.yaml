@@ -7,7 +7,6 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: ${STATIC_IP}
     networking.gke.io/managed-certificates: mapwarper-certificate
-    kubernetes.io/ingress.allow-http: "false"
 spec:
   backend:
     serviceName: mapwarper-np

@@ -445,8 +445,8 @@ kubectl describe managedcertificate
 Once a certificate is successfully provisioned, the value of the Status.CertificateStatus field will be Active
 
 
-Note: if you want both http and https traffic change the value to true for 
-`kubernetes.io/ingress.allow-http: "false"` 
+Note: if you want to distable http at this level, add this annotation 
+`kubernetes.io/ingress.allow-http: "true"` 
 
 #### Update Host with Scheme application config
 
