@@ -51,7 +51,11 @@ class HomeController < ApplicationController
   def delay_test
     render :text => "delay test #{Time.now}"
   end
-  
+
+  def healthcheck
+    render :text => "ok"
+  end
+
   private
   
   def get_news_feeds
