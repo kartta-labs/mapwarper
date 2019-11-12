@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  force_ssl if: :ssl_configured?
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -72,5 +73,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def ssl_configured?
+    Rails.env.production? && (controller_name != 'home')
+  end
 
 end

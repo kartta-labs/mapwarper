@@ -1,4 +1,5 @@
 class Api::V1::ApiController < ActionController::API
+  force_ssl if: :ssl_configured?
   include ActionController::Serialization
   acts_as_token_authentication_handler_for User, :fallback => :none
   before_filter :check_protocol
@@ -65,6 +66,10 @@ class Api::V1::ApiController < ActionController::API
     else
       Rails.application.routes.default_url_options[:protocol] = 'http'
     end
+  end
+
+  def ssl_configured?
+    Rails.env.production?
   end
 
 end
