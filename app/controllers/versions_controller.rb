@@ -1,8 +1,9 @@
 class VersionsController < ApplicationController
   layout "application"
   
-  before_filter :authenticate_user!, :only => [ :revert_map, :revert_gcp]
+  before_filter :authenticate_user!
   
+  before_filter :check_administrator_role, :only => [:revert_map, :revert_gcp]
   def show
     @version  =  PaperTrail::Version.find(params[:id])
   end
