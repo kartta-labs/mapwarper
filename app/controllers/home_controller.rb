@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
-  force_ssl except:  [:healthcheck]
+  force_ssl if: :ssl_configured?, except:  [:healthcheck]
   layout 'application'
   before_filter :check_administrator_role, only: [:throttle_test, :delay_test]
   
