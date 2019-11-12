@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
-  force_ssl if: :ssl_configured?, except:  [:healthcheck]
+  force_ssl if: :ssl_enabled?, except:  [:healthcheck]
   layout 'application'
   before_filter :check_administrator_role, only: [:throttle_test, :delay_test]
   
@@ -63,6 +63,10 @@ class HomeController < ApplicationController
       feeds = RssParser.run("https://thinkwhere.wordpress.com/tag/mapwarper/feed/")
       feeds[:items][0..2]
     end
+  end
+
+  def ssl_enabled?
+    Rails.env.production?
   end
 
 
