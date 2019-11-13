@@ -14,7 +14,6 @@ Welcome to the documentation for the Warper API! MapWarper is a free application
 	- [Sign out](#sign-out)
 	- [Validate Token](#validate-token)
 - [Using the authentication token](#using-the-authentication-token)
-	- [Oauth Authenticaton and Authentication Token](#oauth-authenticaton-and-authentication-token)
 	- [Cookie Authentication](#cookie-authentication)
 - [Search for Maps](#search-for-maps)
 	- [Get a Map](#get-a-map)
@@ -242,6 +241,9 @@ curl  -X GET http://mapwarper.net/api/v1/users/2.json?user_id=2&user_token=longt
 
 ```
 
+<!-- 
+NOTE THIS IS DISABLED CURRENTLY
+
 ### Oauth Authenticaton and Authentication Token
 
 Instead of using an email and password, a user can login via OUath with Github, twitter, google, and Wikimedia Commons for example. 
@@ -316,7 +318,7 @@ function requestCredentials() {
 }
 ```
 
-Then, using the id and the email from the message, API response can be crafted. See https://github.com/timwaters/warper_oauth_token_auth_demo  for an example app.
+Then, using the id and the email from the message, API response can be crafted. See https://github.com/timwaters/warper_oauth_token_auth_demo  for an example app. -->
 
 
 ### Cookie Authentication
