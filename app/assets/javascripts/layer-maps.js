@@ -148,11 +148,11 @@ function init(){
       var coordinates = evt.coordinate;
       popup.setPosition(coordinates);
       content.innerHTML = "<div class='layermap-popup'> Map "+
-      feature.get('mapId') + "<br /> <a href='" + mapBaseURL + "/"+ feature.get('mapId') + "' target='_blank'>"+feature.get('mapTitle')+"</a><br />"+
+      feature.get('mapId') + "<br /> <a id='layermap-popup-title' href='" + mapBaseURL + "/"+ feature.get('mapId') + "' target='_blank'></a><br />"+
       "<img src='"+mapThumbBaseURL+ feature.get('mapId')+"' height='80'>"+
       "<br /> <a href='"+mapBaseURL+"/"+ feature.get('mapId')+"#Rectify_tab' target='_blank'>"+I18n['layers']['edit_map']+"</a>"+
       "</div>";
-
+      jQuery('#layermap-popup-title').text(feature.get('mapTitle'));
     } else {
       popup.setPosition(undefined);
       closer.blur();

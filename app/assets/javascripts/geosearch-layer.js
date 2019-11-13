@@ -5,10 +5,11 @@ function replaceMapTable(smaps) {
     var depicts_year = smap.depicts_year == null ? "" : smap.depicts_year;
     var tableRow = "<tr id='map-row-" + smap.id + "' class='minimap-tr'>" +
             "<td class='mini-map-thumb'><img src='" + mapThumbBaseURL + "/" + smap.id + "' height='70' ></td>" +
-            "<td>" + smap.name + "<br />" +
-            depicts_year + "<br />"+
+            "<td><span id='smap-title-"+ smap.id+"'></span><br /><span id='smap-year-"+ smap.id+"'></span><br />"+ 
             "<a href='" + mapBaseURL + "/" + smap.id + "' target='_blank'>"+I18n["geosearch"]["open_layer"]+"</a> </td></tr>";
     jQuery("#searchmap-table").append(tableRow);
+    jQuery("#smap-title-"+smap.id).text(smap.name);
+    jQuery("#smap-year-"+smap.id).text(depicts_year);
   }
   addClickToTable();
 }
@@ -56,7 +57,7 @@ function addMapToMapLayer(mapitem) {
 
   var feature = new ol.Feature({
     geometry: new ol.geom.Polygon.fromExtent(bbox),
-    mapTitle: mapitem.title,
+    mapTitle: mapitem.name,
     mapId:   mapitem.id
   });
   mapIndexLayer.getSource().addFeature(feature);
@@ -80,12 +81,13 @@ function getPopupHTML(feature){
   popupHTML = "<div class='searchmap-popup'><a href='" + mapBaseURL + "/" +
  mapId + "' target='_blank'>" +
   //feature.mapTitle+"</a><br />"+
-  "<a href='#a-map-row-" + mapId + "' ><img title='" + feature.get('mapTitle') + "' src='" + mapThumbBaseURL + "/" + mapId + "' height='80'></a>" +
+  "<a href='#a-map-row-" + mapId + "' ><img id='popup-title' src='" + mapThumbBaseURL + "/" + mapId + "' height='80'></a>" +
   "<br /> <a href='" + mapBaseURL + "/" + mapId + "' target='_blank'>"+I18n["geosearch"]["open_layer"]+"</a>" +
   "</div>"
 
   return popupHTML;
 }
 
-
-
+function getTitle(feature){
+  return feature.get('mapTitle');
+}

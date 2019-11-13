@@ -5,11 +5,13 @@ function replaceMapTable(smaps) {
     var issue_year = smap.issue_year == null ? "" : smap.issue_year;
     var tableRow = "<tr id='map-row-" + smap.id + "' class='minimap-tr'>" +
             "<td class='mini-map-thumb'><img src='" + mapThumbBaseURL + smap.id + "' height='70' ></td>" +
-            "<td>" + smap.title + "<br />" +
-            issue_year  + "<br />"+ 
+            "<td><span id='smap-title-"+ smap.id+"'></span><br /><span id='smap-year-"+ smap.id+"'></span><br />"+ 
             "<a href='" + mapBaseURL + "/" + smap.id + "' target='_blank'>"+I18n["geosearch"]["open_map"]+"</a> </td></tr>";
 
     jQuery("#searchmap-table").append(tableRow);
+ 
+    jQuery("#smap-title-"+smap.id).text(smap.title);
+    jQuery("#smap-year-"+smap.id).text(issue_year);
   }
   addClickToTable();
 }
@@ -95,13 +97,16 @@ function getPopupHTML(feature){
 
   popupHTML = "<div class='searchmap-popup'><a href='" + mapBaseURL + "/" +
   mapId + "' target='_blank'>" +
-          "<a href='#a-map-row-" + mapId + "' ><img title='" + feature.get('mapTitle') + "' src='" + mapThumbBaseURL + mapId + "' height='80'></a>" +
+          "<a href='#a-map-row-" + mapId + "' ><img id='popup-title' src='" + mapThumbBaseURL + mapId + "' height='80'></a>" +
           "<br /> <a href='" + mapBaseURL + "/" + mapId + "' target='_blank'>"+I18n["geosearch"]["open_map"]+".</a>" +
           "</div>"
 
   return popupHTML;
 }
 
+function getTitle(feature){
+  return feature.get('mapTitle');
+}
 
 
 

@@ -127,7 +127,8 @@ function searchmapinit(){
       jQuery("tr.minimap-tr").removeClass('highlight');
       var coordinates = evt.coordinate;
       popup.setPosition(coordinates);
-      popupContent.innerHTML = getPopupHTML(feature);  
+      popupContent.innerHTML = getPopupHTML(feature);
+      jQuery("#popup-title", popupContent).attr("title", getTitle(feature));
       jQuery("tr#map-row-" + feature.get('mapId')).addClass('highlight');
     } else {
       popup.setPosition(undefined);
@@ -279,7 +280,8 @@ function selectFeature(feature){
   });
 
   popup.setPosition(ol.extent.getCenter(feature.getGeometry().getExtent()));
-  popupContent.innerHTML = getPopupHTML(feature);  
+  popupContent.innerHTML = getPopupHTML(feature); 
+  jQuery("#popup-title", popupContent).attr("title", getTitle(feature));
 }
 
 
