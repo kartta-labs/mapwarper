@@ -9,6 +9,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_locale
 
   before_filter :check_rack_attack
+
+  before_filter :check_profile_complete, unless: :devise_controller?
   
   before_action :set_paper_trail_whodunnit
     
@@ -40,9 +42,16 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:sign_up) do |u|
       u.permit :login, :description, :email, :password, :password_confirmation
     end
-    devise_parameter_sanitizer.permit(:account_update) do |u|
-      u.permit :login, :description, :email, :password, :password_confirmation, :current_password
+    if current_user && current_user.provider
+      devise_parameter_sanitizer.permit(:account_update) do |u|
+        u.permit :login, :description
+      end
+    else
+      devise_parameter_sanitizer.permit(:account_update) do |u|
+        u.permit :login, :description, :email, :password, :password_confirmation, :current_password
+      end
     end
+
   end
 
   def default_url_options(options={})
@@ -75,6 +84,15 @@ class ApplicationController < ActionController::Base
 
   def ssl_configured?
     Rails.env.production? && (controller_name != 'home')
+  end
+
+  def check_profile_complete
+    if user_signed_in?
+      unless @current_user.profile_complete?
+        flash[:error] = I18n.t "devise.registrations.edit.profile_incomplete"
+        redirect_to edit_user_registration_path(current_user)
+      end
+    end
   end
 
 end

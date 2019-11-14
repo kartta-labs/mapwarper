@@ -61,6 +61,7 @@ class  OmniauthCallbacksController < Devise::OmniauthCallbacksController
     @user = User.find_for_google_oauth(request.env["omniauth.auth"], current_user)
     if @user.persisted?
       flash[:notice] = I18n.t "devise.omniauth_callbacks.success", :kind => "Google"
+      flash[:error] = I18n.t "devise.registrations.edit.profile_incomplete", :kind => "Google" unless @user.profile_complete?
       sign_in_render_or_redirect
     else
       redirect_to root_path

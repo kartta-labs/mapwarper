@@ -19,9 +19,9 @@ class User < ActiveRecord::Base
   has_many :groups, :through => :memberships
   has_many :user_warnings
   
-  validates_presence_of    :login
-  validates_length_of      :login,    :within => 3..40
-  validates_uniqueness_of  :login, :scope => :email, :case_sensitive => false
+  validates_presence_of    :email
+  validates_length_of      :email,    :within => 3..40
+  validates_uniqueness_of  :login, :scope => :email, :case_sensitive => false, :allow_nil => true, :allow_blank => true
   
     
   after_destroy :delete_maps
@@ -163,13 +163,13 @@ class User < ActiveRecord::Base
 
   def self.find_for_google_oauth(auth, signed_in_resource=nil)
     user = User.where(:provider => auth.provider, :uid => auth.uid.to_s).first
-    logger.debug auth.info.inspect 
+
     unless user
       user = User.new(
-        login: auth.info.name,
         provider: auth.provider,
         uid: auth.uid,
-        email: "google_oauth_"+auth.info["email"], # make sure this is unique
+        #email:  "google_oauth_"+Devise.friendly_token[0,20]+"@example.com", 
+        email: "google_oauth_"+auth.info["email"],
         password: Devise.friendly_token[0,20]
       )
       user.skip_confirmation!
@@ -223,6 +223,10 @@ class User < ActiveRecord::Base
     return total_size
   end
 
+  def profile_complete?
+    !login.blank?
+  end
+
   protected
 
   def is_allowed_in?
@@ -238,5 +242,5 @@ class User < ActiveRecord::Base
     end
   end
   
-  
+    
 end

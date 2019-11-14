@@ -189,14 +189,15 @@ en:
         description_label: Short profile description (optional)
         edit_header: Edit User
         header: User Settings
-        name_label: Name
+        name_label: Display Name
         no_settings_notice: You are logged in with your %{provider} account, and not a email and password, so there are no settings for you to edit.
         password_label: "(leave blank if you don't want to change it)"
+        profile_incomplete: Your profile is incomplete, please choose a display name.
         waiting_confirmation: Currently waiting confirmation for
       new:
         email_label: Email - you'll log in with this
         header: Sign up
-        name_label: Name
+        name_label: Display Name
         sign_up_button: Sign up
         sign_up_help: You can sign up with an email and password, or sign up using another service, using the links below.
       signed_up: Welcome! You have signed up successfully.
@@ -997,7 +998,7 @@ en:
       for: for
       for_query: "&mdash; Searched for "
       header: Users
-      login: Username
+      login: Display Name
       name: Name
       provider: OAuth Provider
       roles: Roles

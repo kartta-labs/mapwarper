@@ -9,8 +9,9 @@
     <% if user_signed_in? %>
     <li class="nav-item">
       <%= t('.logged_in_as') %>
-      <% if current_user.provider? %>
-        <%= link_to "#{image_tag(current_user.provider+'_logo.png', width: '17', height: '17', class: 'user_provider')} #{current_user.login.capitalize}".html_safe, user_path(current_user), class: "nav-link" %>
+      <% if current_user.provider? 
+      login = current_user.login || "" %>
+        <%= link_to "#{image_tag(current_user.provider+'_logo.png', width: '17', height: '17', class: 'user_provider')} #{h login.capitalize}".html_safe, user_path(current_user), class: "nav-link" %>
       <% else %>
         <%= link_to h(current_user.login.capitalize), user_path(current_user),  class: "nav-link" %>
       <% end %>
