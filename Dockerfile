@@ -3,7 +3,7 @@
 FROM ubuntu:18.04
 
 
-RUN apt-get update -qq && apt-get install -y build-essential ruby-dev nodejs git libpq-dev postgresql-client ruby-mapscript zlib1g-dev liblzma-dev imagemagick gdal-bin curl gnupg python-pip
+RUN apt-get update -qq && apt-get install -y build-essential ruby-dev nodejs git libpq-dev postgresql-client ruby-mapscript zlib1g-dev liblzma-dev imagemagick gdal-bin curl gnupg python-pip logrotate
 
 RUN pip install -U pillow modestmaps google-cloud-storage
 
@@ -14,6 +14,10 @@ RUN apt-get update -qq && apt-get install -y gcsfuse
 
 #for 18.04 we need to loosen up the imagemagick policy limits
 COPY config/imagemagick-policy.xml /etc/ImageMagick-6/policy.xml
+
+#copy log rotate 
+COPY config/mapwarper.logrotate /etc/logrotate.d/mapwarper
+RUN chmod 0644 /etc/logrotate.d/mapwarper
 
 ENV LISTEN_PORT 3000
 EXPOSE 3000
@@ -39,7 +43,7 @@ COPY Gemfile.lock Gemfile.lock
 RUN gem install bundler -v=1.17.3 
 
 ## install the selenium testing dependencies
-RUN if [ "$BUILD_ENV" != "production" ]; then apt-get install -y firefox wget wbritish; fi
+RUN if [ "$BUILD_ENV" != "production" ]; then apt-get update -qq && apt-get install -y firefox wget wbritish; fi
 RUN if [ "$BUILD_ENV" != "production" ]; \
   then wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz; \ 
   sh -c 'tar -x geckodriver -zf geckodriver-v0.24.0-linux64.tar.gz -O > /usr/bin/geckodriver'; \
