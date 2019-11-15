@@ -32,4 +32,23 @@ FactoryGirl.define do
     end
   end
 
+  factory :provider_no_login, :class => User do
+    provider "google_oauth2"
+    uid 123
+    password "password"
+    password_confirmation "password"
+    email "google_user@example.com"
+    confirmed_at Date.today
+  end
+
+  factory :provider, :class => User do
+    login "google_user2"
+    provider "google_oauth2"
+    uid 456
+    password "password"
+    password_confirmation "password"
+    email "google_user2@example.com"
+    confirmed_at Date.today
+  end
+
 end
