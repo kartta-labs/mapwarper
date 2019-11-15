@@ -148,7 +148,6 @@ class User < ActiveRecord::Base
     logger.debug auth.info.inspect 
     unless user
       user = User.new(
-        login: auth.info.name,
         provider: auth.provider,
         uid: auth.uid,
         email: "warper_fb_"+auth.info["email"], # make sure this is unique
@@ -168,7 +167,6 @@ class User < ActiveRecord::Base
       user = User.new(
         provider: auth.provider,
         uid: auth.uid,
-        #email:  "google_oauth_"+Devise.friendly_token[0,20]+"@example.com", 
         email: "google_oauth_"+auth.info["email"],
         password: Devise.friendly_token[0,20]
       )
