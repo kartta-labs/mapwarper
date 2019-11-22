@@ -13,23 +13,33 @@
     elsif version.item_type.downcase == "gcp"
     typename = "Control Point"
     controller_name = "gcp"
-    end %>
+    end 
+
+    whodunnit  = version.whodunnit || ""
+    user_agent = version.user_agent || ""
+    ip = version.ip || ""
+    %>
 
   <td class="<%= cl %>">
-    <% user = User.find_by_id(version.whodunnit.to_i)
+    <%
+    if !whodunnit.blank? && whodunnit.starts_with?("del")
+      user = nil
+    else
+      user = User.find_by_id(whodunnit)
+    end 
     if user -%>
       <%= link_to user.login, :controller=>"users",:action=>"show", :id=>user.id-%>
     <% else -%>
-      <span class="subdued">User:<%= version.whodunnit %></span>
+      <span class="subdued" title="hash <%= whodunnit %>"><%= whodunnit[0..10] %></span>
     <%end%>
   </td>
 
   <% if admin_authorized? %>
-    <td class="<%= cl %>">
-      <%= version.ip %>
+    <td class="<%= cl %>"> &nbsp;
+      <span title="hash <%= ip %>"><%= ip[0..7] %><span>
     </td>
     <td class="<%= cl %> smaller">
-      <%= version.user_agent %>
+    <span title="hash <%= user_agent %>"><%= user_agent[0..7] %><span>
     </td>
   <% end %>
 

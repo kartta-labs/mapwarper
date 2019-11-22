@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   
     
   after_destroy :delete_maps
+  after_destroy :clean_versions
    
   def has_role?(name)
     self.roles.find_by_name(name) ? true : false
@@ -237,6 +238,13 @@ class User < ActiveRecord::Base
     own_maps.each do | map |
       logger.debug "deleting map #{map.inspect}"
       map.destroy
+    end
+  end
+
+  def clean_versions
+    versions = PaperTrail::Version.where(:whodunnit => id)
+    versions.each do | version |
+      version.update(whodunnit: "del"+id.to_s.hash) 
     end
   end
   

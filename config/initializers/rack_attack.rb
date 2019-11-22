@@ -1,7 +1,7 @@
 class Rack::Attack
 
 
-  if APP_CONFIG["enable_throttling"] == "true"
+  if APP_CONFIG["enable_throttling"] == "true" || APP_CONFIG["enable_throttling"] == true
     limit =  APP_CONFIG["throttle_limit"].to_i  || 5  #5 requests
     period = APP_CONFIG["throttle_period"].to_i  || 20 #20 seconds
 
@@ -26,7 +26,7 @@ class Rack::Attack
     # Attacks on logins
     throttle('logins/ip', :limit => 15, :period => 60.seconds) do |req|
       if (req.path.include?('/u/sign_in') || req.path.include?('/auth/sign_in')) && req.post?
-        req.ip + req.user_agent.to_s
+        Digest::MD5.hexdigest(req.ip + req.user_agent.to_s)
       end
     end
 
@@ -36,34 +36,34 @@ class Rack::Attack
           req.path.include?("/save_mask_and_warp") || 
           req.path.include?("/comments") ||
           req.path.include?("/gcps/add"))  && req.post?
-        req.ip + req.user_agent.to_s
+        Digest::MD5.hexdigest(req.ip + req.user_agent.to_s)
       end
     end
 
     #  Limiting other requests, puts
     throttle('warper/put_request', :limit => limit, :period => period.seconds) do |req|
       if (req.path.include?("/rectify") || req.path.include?("/gcps") || req.path.include?("/comments")) && req.put?
-        req.ip + req.user_agent.to_s
+        Digest::MD5.hexdigest(req.ip + req.user_agent.to_s)
       end
     end
     
     throttle('warper/delete_request', :limit => limit, :period => period.seconds) do |req|
       if  (req.path.include?("/maps") || req.path.include?("/gcps")) && req.delete?
-        req.ip + req.user_agent.to_s
+        Digest::MD5.hexdigest(req.ip + req.user_agent.to_s)
       end
     end
 
     #  Limiting requests, admin throttle test
     throttle('admin/throttletest', :limit => limit, :period => period.seconds) do |req|
       if req.path.include?('/throttle_test') && req.get?
-        req.ip
+        Digest::MD5.hexdigest(req.ip)
       end
     end
 
     # track this request - it wont get throttled but the application controller will delay the request
     Rack::Attack.track('admin/delaytest', :limit => limit, :period => period.seconds) do |req|
       if req.path.include?('/delay_test') && req.get?
-        req.ip
+        Digest::MD5.hexdigest(req.ip)
       end
     end
 
