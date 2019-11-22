@@ -67,7 +67,7 @@ gem 'pg_search'
 gem 'rails-api'
 gem 'active_model_serializers', git: 'https://github.com/rails-api/active_model_serializers', tag: 'v0.10.5'
 gem 'simple_token_authentication', '~> 1.0'
-gem 'rack-cors', :require => 'rack/cors'
+gem 'rack-cors', ">= 1.0.4", :require => 'rack/cors'
 gem 'redcarpet'
 
 gem 'tzinfo-data'

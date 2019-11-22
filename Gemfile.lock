@@ -296,7 +296,8 @@ GEM
     rack (1.6.11)
     rack-attack (6.0.0)
       rack (>= 1.0, < 3)
-    rack-cors (1.0.2)
+    rack-cors (1.0.6)
+      rack (>= 1.6.0)
     rack-protection (1.5.5)
       rack
     rack-test (0.6.3)
@@ -508,7 +509,7 @@ DEPENDENCIES
   pg_search
   puma
   rack-attack (~> 6.0.0)
-  rack-cors
+  rack-cors (>= 1.0.4)
   rails (~> 4.2)
   rails-api
   rails-i18n
