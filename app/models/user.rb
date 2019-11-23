@@ -244,7 +244,7 @@ class User < ActiveRecord::Base
   def clean_versions
     versions = PaperTrail::Version.where(:whodunnit => id)
     versions.each do | version |
-      version.update(whodunnit: "del"+id.to_s.hash) 
+      version.update({whodunnit: nil, whodeadit: (id.to_s).hash}) 
     end
   end
   

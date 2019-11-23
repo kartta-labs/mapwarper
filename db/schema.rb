@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190629171855) do
+ActiveRecord::Schema.define(version: 20191123174639) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -218,8 +218,8 @@ ActiveRecord::Schema.define(version: 20190629171855) do
 
   create_table "maskings", force: :cascade do |t|
     t.text     "transformed_geojson"
-    t.text     "original_gml"
-    t.text     "original_ol_gml"
+    t.text     "original"
+    t.text     "original_ol"
     t.integer  "map_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -390,6 +390,7 @@ ActiveRecord::Schema.define(version: 20190629171855) do
     t.string   "user_agent"
     t.text     "object_changes"
     t.integer  "transaction_id"
+    t.string   "whodeadit"
   end
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
