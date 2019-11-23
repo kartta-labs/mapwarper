@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   layout 'application'
   
-  before_filter :authenticate_user!, :only => [:show, :edit, :update]
+  before_filter :authenticate_user!, :only => [:show, :edit, :update, :destroy_own]
 
   before_filter :check_super_user_role, :only => [:index, :destroy, :enable, :disable, :stats, :disable_and_reset, :force_confirm]
 
@@ -101,18 +101,30 @@ class UsersController < ApplicationController
 
 
   def edit
-    @html_title = t('.title')
-    @user = current_user
   end
 
   def update
-    @user = User.find(current_user)
-    if @user.update_attributes(params[:user])
+    if @current_user.update_attributes(user_params)
       flash[:notice] = t('.flash')
-      redirect_to :action => 'show', :id => current_user
+      redirect_to :root
     else
       render :action => 'edit'
     end
+  end
+  
+  #DELETE /profile
+  #allows a user to delete their own account
+  def destroy_own
+    unless @current_user.has_role?("administrator") ||  @current_user.has_role?("super user")
+      if @current_user.destroy
+        flash[:notice] = t('devise.registrations.destroyed')
+      else
+        flash[:error] = t('.error')
+      end
+    else
+      flash[:error] = t('users.destroy.admins_cannot_be_destroyed')
+    end
+    redirect_to :root
   end
 
   def destroy
@@ -225,6 +237,11 @@ class UsersController < ApplicationController
       COUNT(case when event='destroy' and item_type='Gcp' then 1 end) as gcp_destroy_count 
       from versions where whodunnit='#{user.id}' #{period_where_clause} group by whodunnit"
   
+  end
+
+  private
+  def user_params
+    params.require(:user).permit(:login, :description)
   end
 
 end

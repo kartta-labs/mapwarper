@@ -18,11 +18,17 @@
       </li>
       <li class="nav-item"> <%= link_to t('.my_maps'), my_maps_path(current_user),  class: "nav-link" %> </li>
       <li class="nav-item"><%= link_to t('.my_activity'), user_activity_path(current_user),  class: "nav-link" %></li>
-      <li class="nav-item"><%= link_to t('.settings'), edit_user_registration_path,  class: "nav-link" %></li>
+      <% if Devise.mappings[:user].modules.include?(:registerable) %>
+        <li class="nav-item"><%= link_to t('.settings'), edit_user_registration_path,  class: "nav-link" %></li>
+      <% else %>
+        <li class="nav-item"><%= link_to t('.settings'), edit_user_path,  class: "nav-link" %></li>
+      <% end %>
       <li class="nav-item"><%= link_to t('.log_out'), destroy_user_session_path, :method => :delete ,  class: "nav-link"%></li>
     <% else %>
-    <li class="nav-item"><%= link_to t('.log_in'), new_user_session_path ,  class: "nav-link"%></li>
-    <li class="nav-item"> <%= link_to t('.sign_up'), new_user_registration_path,  class: "nav-link" %></li>
+      <li class="nav-item"><%= link_to t('.log_in'), new_user_session_path ,  class: "nav-link"%></li>
+      <% if Devise.mappings[:user].modules.include?(:registerable) %>
+        <li class="nav-item"> <%= link_to t('.sign_up'), new_user_registration_path,  class: "nav-link" %></li>
+      <% end %>
     <% end %>
 
 

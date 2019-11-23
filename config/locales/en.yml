@@ -225,7 +225,7 @@ en:
         new_unlock_instructions: Didn't receive unlock instructions?
         openstreetmap: OpenStreetMap
         sign_up: Sign up
-        social_sign_in: 'Alternatively, %{action} with:'
+        social_sign_in: 'Welcome! %{action} with:'
         twitter: Twitter
         wikimedia: Wikimedia Commons
     unlocks:
@@ -971,6 +971,8 @@ en:
       admins_cannot_be_destroyed: Admins cannot be destroyed
       error: User could not be deleted
       flash: User successfully deleted
+    destroy_own:
+      error: There was an error cancelling this
     disable:
       error: There was a problem disabling this user.
       flash: User disabled
@@ -1040,7 +1042,8 @@ en:
       unknown: Unknown
       week: Week
     update:
-      flash: User updated
+      flash: Profile updated
+      error: There was an issue updating the profile
     user:
       activate: activate
       disable: disable

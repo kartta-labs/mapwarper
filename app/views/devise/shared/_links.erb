@@ -10,7 +10,7 @@
   <%= link_to t('.forgot_password'), new_password_path(resource_name), :class=>"devise-link" %><br />
 <% end -%>
 
-<%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+<%- if devise_mapping.confirmable? && controller_name != 'confirmations' && devise_mapping.used_routes.include?(:confirmable) %>
   <%= link_to t('.new_confirmation_instructions'), new_confirmation_path(resource_name), :class=>"devise-link" %><br />
 <% end -%>
 

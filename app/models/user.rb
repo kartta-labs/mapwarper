@@ -1,9 +1,10 @@
 class User < ActiveRecord::Base
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable 
-  # :encryptable  for custom authentication methods
-  devise :database_authenticatable, :registerable, :confirmable,
-    :recoverable, :rememberable, :trackable, :validatable,
+  # For Email and password Authentication:
+  # 1. in routes, remove the :skip hash for the devise_for rout
+  # 2. in devise initialiser, set params_authenticatable to true and http_authenticatable  to [:database]
+  # 3. here, add in :registerable, :confirmable, :recoverable, :rememberable to below
+  devise :database_authenticatable, # :registerable, :confirmable, :recoverable, :rememberable,
+    :trackable, :validatable, :confirmable,
     :omniauthable, :omniauth_providers => [ :google_oauth2]
 
   acts_as_token_authenticatable

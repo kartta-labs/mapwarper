@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :check_rack_attack
 
-  before_filter :check_profile_complete, unless: :devise_controller?
+  before_filter :check_profile_complete, unless: :devise_or_user_controller?
   
   before_action :set_paper_trail_whodunnit
     
@@ -86,11 +86,15 @@ class ApplicationController < ActionController::Base
     Rails.env.production? && (controller_name != 'home')
   end
 
+  def devise_or_user_controller?
+    devise_controller? || controller_name === 'users'
+  end
+
   def check_profile_complete
     if user_signed_in?
       unless @current_user.profile_complete?
         flash[:error] = I18n.t "devise.registrations.edit.profile_incomplete"
-        redirect_to edit_user_registration_path(current_user)
+        redirect_to edit_user_path
       end
     end
   end

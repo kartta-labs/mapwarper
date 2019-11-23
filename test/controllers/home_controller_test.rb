@@ -23,7 +23,7 @@ class HomeControllerTest < ActionController::TestCase
 
     assert_response :redirect
     assert flash[:error].include?("display name")
-    assert_redirected_to edit_user_registration_path(user)
+    assert_redirected_to edit_user_path
   end
 
 end
