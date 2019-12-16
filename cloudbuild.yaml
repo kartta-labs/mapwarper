@@ -8,3 +8,4 @@ steps:
 images:
 - 'gcr.io/$PROJECT_ID/mapwarper-cb:$SHORT_SHA'
 logsBucket: 'gs://mapwarper-cloudbuild-logs'
+timeout: 1700s
