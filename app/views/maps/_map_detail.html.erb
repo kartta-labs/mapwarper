@@ -100,7 +100,7 @@
         <%= link_to(t('maps.map.kml'), map_url(:id => map, :format=>:kml)) %> |
       <% end %>
 
-      <% if admin_authorized? %>
+      <% if editor_authorized? %>
         <%= render :partial  => 'maps/map_type', :object => @map %> |
       <% end %>
 

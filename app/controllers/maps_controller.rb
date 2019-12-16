@@ -602,10 +602,10 @@ class MapsController < ApplicationController
     if Map::MAP_TYPE.include? map_type.to_sym
       @map.update_map_type(map_type)
     end
-    if Layer.exists?(params[:layerid].to_i)
-      @layer = Layer.find(params[:layerid].to_i)
-      @maps = @layer.maps.paginate(:per_page => 30, :page => 1, :order => :map_type)
-    end
+    # if Layer.exists?(params[:layerid].to_i)
+    #   @layer = Layer.find(params[:layerid].to_i)
+    #   @maps = @layer.maps.paginate(:per_page => 30, :page => 1, :order => :map_type)
+    # end
     
     render :text => t('.flash', map_type: @map.map_type)
   end
@@ -1074,7 +1074,7 @@ class MapsController < ApplicationController
       @map = Map.find(params[:id])
     else
       flash[:notice] = t('maps.edit.cannot_edit_others')
-      redirect_to map_path
+      return redirect_to map_path
     end
   end
 

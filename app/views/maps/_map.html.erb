@@ -37,11 +37,11 @@
       <% end -%>
 
 
-      <% if admin_authorized? and @layer -%>
+      <% if editor_authorized? and @layer -%>
         | <%= link_to t('.remove_from_layer'), remove_layer_map_path(:id => @layer.id, :map_id => map.id), :method => :put %>
       <%end -%>
 
-      <% if admin_authorized? -%>
+      <% if editor_authorized? -%>
         <% @map = map-%>
         | <%= render :partial  => 'maps/map_type', :object => @map -%>
       <% end -%>
