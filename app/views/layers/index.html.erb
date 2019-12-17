@@ -1,6 +1,6 @@
 <% if @page == "for_map" %>
   <table id="map_table">
-    <%= render :partial => 'maps/map_detail', :object => @map %>
+    <%= render :partial => 'maps/map_detail', :object => @map, :locals => {:variety => "quick"} %>
   </table>
   <div id="search-title"><%= @html_title -%>
   </div>
