@@ -445,7 +445,7 @@ kubectl describe managedcertificate
 Once a certificate is successfully provisioned, the value of the Status.CertificateStatus field will be Active
 
 
-Note: if you want to distable http at this level, add this annotation 
+Note: if you want to disable http at this level, add this annotation 
 `kubernetes.io/ingress.allow-http: "true"` 
 
 #### Update Host with Scheme application config
@@ -458,25 +458,11 @@ MW_HOST_WITH_SCHEME from http to  https://
 
 
 
-#### Increase loadbalancer timeout
+#### Change loadbalancer timeout with BackendConfig
 
-If you are using lower spec machines, upload requests may take some time to process more than the default timeout of the loadbalancer. One way to increase the timeout is via the gcloud commands:
+If you are using lower spec machines, upload requests may take some time to process more than the default timeout of the loadbalancer. One way to increase the timeout is with the BackendConfig
 
-First get the name of the new backend service 
-
-```
-gcloud compute backend-services list
-
-NAME        BACKENDS                                            PROTOCOL
-k8s-be-XXX  zone/instanceGroups/k8s-ig--XX        HTTP
-```
-then using the name, update the timeout value. Here we increase the timeout to 90 seconds
-
-```
-gcloud compute backend-services update k8s-be-XXX --timeout=90
-```
-(and choose 1 to apply it for global)
-
+Edit the `mapwarper-https-ingress.yaml` file and change the `timeoutSec` in  the the BackendConfig definition
 
 
 ### Scaling
