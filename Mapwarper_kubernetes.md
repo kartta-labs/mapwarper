@@ -73,6 +73,20 @@ e.g.  `docker build . -t localhost:32000/mapwarper-dev:latest`
 
 Prerequisites: Follow the Cloud Build steps in the [Project Setup on GCP](/project_setup.md) document
 
+You can build automatically by using a trigger, or manually.
+
+#### Automatically using Cloud Build Trigger
+
+Consult the docs: https://cloud.google.com/cloud-build/docs/running-builds/create-manage-triggers
+
+Connect with the github repository, select a branch. This will build the image whenever the code has been pushed to that branch.
+
+Change the path to the image to something simple like 
+```
+gcr.io/project_name/image-name:$SHORT_SHA
+```
+
+#### Manually
 
 1) Checkout the code locally. You don't need to copy the config files as that is within a cloud build step. 
 
