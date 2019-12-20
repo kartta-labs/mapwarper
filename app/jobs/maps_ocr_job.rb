@@ -24,11 +24,8 @@ class MapsOcrJob < ActiveJob::Base
 
       processed_img = filename + ".ocr.png"
 
-      #we can have larger images if saving to the bucket
-      resize = "7500x6000\>"
-      if !APP_CONFIG["ocr_bucket"].blank?
-        resize = "10000x10000\>"
-      end
+      resize = "8000x8000\>"
+
       #resize makes it smaller. -threshold black and whites it, -trim and +repage "auto crops it"
       command = ["convert", "#{filename}[0]", "-resize", resize, "-threshold", "50%", "-trim", "+repage",  processed_img ]
       logger.debug command

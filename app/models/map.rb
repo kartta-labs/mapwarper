@@ -957,7 +957,11 @@ class Map < ActiveRecord::Base
   # Calls the maps ocr job 
   #
   def run_ocr(force=false, geocode=true)
-    MapsOcrJob.perform_later(self, force, geocode)
+    # Spawnling will run the job in another thread and return immediately
+    # When on Rails 5+ instead of Spawnling, use the async job which uses an in memory queue
+    Spawnling.new do
+      MapsOcrJob.perform_later(self, force, geocode)
+    end
   end
  
   ############
