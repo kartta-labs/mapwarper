@@ -161,9 +161,10 @@ module Tilestache
 
     name = self.title if options[:item_type] == "map"
     name = self.name if options[:item_type] == "layer"
+    name = ActionController::Base.helpers.sanitize(name,  :tags => [])
     max_zoom = options[:max_zoom].to_i || 21
 
-    description  = self.description
+    description  =  ActionController::Base.helpers.sanitize(self.description)
     site_url = APP_CONFIG['host_with_scheme']
     site_name  =  APP_CONFIG['site_name']
     attribution ="From: <a href='#{site_url}/#{self.class.to_s.downcase}s/#{self.id}/'>#{site_name}</a>" 

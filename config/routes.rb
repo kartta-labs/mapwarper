@@ -116,6 +116,7 @@ Rails.application.routes.draw do
       get 'export'
       get 'metadata'
       get 'delete'
+      get 'tilejson'
       #get 'id'
       #get 'trace'
       #get 'idland'

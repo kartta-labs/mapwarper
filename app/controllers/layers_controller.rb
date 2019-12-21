@@ -1,9 +1,9 @@
 class LayersController < ApplicationController
   layout 'layerdetail', :only => [:show,  :edit, :export, :metadata]
-  before_filter :authenticate_user! , :except => [:wms, :wms2, :show_kml, :show, :index, :metadata, :maps, :thumb, :geosearch, :comments, :tile, :trace, :id]
+  before_filter :authenticate_user! , :except => [:wms, :wms2, :show_kml, :show, :index, :metadata, :maps, :thumb, :geosearch, :comments, :tile, :trace, :id, :tilejson]
   before_filter :check_administrator_role, :only => [:publish, :toggle_visibility, :merge, :trace, :id] 
   
-  before_filter :find_layer, :only => [:show, :export, :metadata, :toggle_visibility, :update_year, :publish, :remove_map, :merge, :maps, :thumb, :comments, :trace, :id]
+  before_filter :find_layer, :only => [:show, :export, :metadata, :toggle_visibility, :update_year, :publish, :remove_map, :merge, :maps, :thumb, :comments, :trace, :id, :tilejson]
   before_filter :check_if_layer_is_editable, :only => [:edit, :update, :remove_map, :update_year, :update, :destroy]
 
   rescue_from ActiveRecord::RecordNotFound, :with => :bad_record
@@ -510,6 +510,44 @@ class LayersController < ApplicationController
   # called by id JS oauth
   def idland
     render "maps/idland", :layout => false
+  end
+
+
+  {
+
+    "name": "Atlas 110. Vol. 2, 1903.",
+   "attribution": "From: <a href='http://digitalcollections.nypl.org/items/5c4751e0-c5ff-012f-1fd4-58d385a7bc34'>NYPL Digital Collections</a> | <a href='http://maps.nypl.org/warper/layers/1142/'>Warper</a> ",
+    "tiles": [
+        "http://maptiles.nypl.org/1142/{z}/{x}/{y}.png"
+    ],
+    "bounds": [
+        -73.997817,
+        40.714955,
+        -73.969676,
+        40.743242
+    ],
+    "center": [
+        -73.9837465,
+        40.729098500000006,
+        21
+    ]
+}
+
+  def tilejson
+    name = ActionController::Base.helpers.sanitize(@layer.name,  :tags => [])
+
+    bbox = @layer.bbox.split(",")
+    tile_bbox = [bbox[0].to_f,bbox[1].to_f,bbox[2].to_f,bbox[3].to_f]
+    centroid_y = tile_bbox[1] + ((tile_bbox[3] -  tile_bbox[1]) / 2)
+    centroid_x = tile_bbox[0] + ((tile_bbox[2] -  tile_bbox[0]) / 2)
+    center  = [centroid_x, centroid_y, 21 ]
+    site_url = APP_CONFIG['host_with_scheme']
+    site_name  =  APP_CONFIG['site_name']
+    attribution = "From: <a href='#{site_url}/#{@layer.class.to_s.downcase}s/#{@layer.id}/'>#{site_name}</a>" 
+
+    tiles = ["#{tile_layer_base_url(:id => @layer.id)}/{z}/{x}/{y}.png"]
+    
+    render :json => JSON.pretty_generate({tilejson: "2.0.0", autoscale: true, version: "1.5.0", scheme: "xyz", minzoom: 1, maxzoom: 21, name: name, description: "", center: center, bounds: tile_bbox, attribution: attribution, tiles:tiles})  
   end
 
 
