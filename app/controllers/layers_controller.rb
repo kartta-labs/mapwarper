@@ -513,26 +513,6 @@ class LayersController < ApplicationController
   end
 
 
-  {
-
-    "name": "Atlas 110. Vol. 2, 1903.",
-   "attribution": "From: <a href='http://digitalcollections.nypl.org/items/5c4751e0-c5ff-012f-1fd4-58d385a7bc34'>NYPL Digital Collections</a> | <a href='http://maps.nypl.org/warper/layers/1142/'>Warper</a> ",
-    "tiles": [
-        "http://maptiles.nypl.org/1142/{z}/{x}/{y}.png"
-    ],
-    "bounds": [
-        -73.997817,
-        40.714955,
-        -73.969676,
-        40.743242
-    ],
-    "center": [
-        -73.9837465,
-        40.729098500000006,
-        21
-    ]
-}
-
   def tilejson
     name = ActionController::Base.helpers.sanitize(@layer.name,  :tags => [])
 
@@ -547,7 +527,7 @@ class LayersController < ApplicationController
 
     tiles = ["#{tile_layer_base_url(:id => @layer.id)}/{z}/{x}/{y}.png"]
     
-    render :json => JSON.pretty_generate({tilejson: "2.0.0", autoscale: true, version: "1.5.0", scheme: "xyz", minzoom: 1, maxzoom: 21, name: name, description: "", center: center, bounds: tile_bbox, attribution: attribution, tiles:tiles})  
+    render :json => {tilejson: "2.0.0", autoscale: true, version: "1.5.0", scheme: "xyz", minzoom: 1, maxzoom: 21, name: name, description: "", center: center, bounds: tile_bbox, attribution: attribution, tiles:tiles}.to_json
   end
 
 
