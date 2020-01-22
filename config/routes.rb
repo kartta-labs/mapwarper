@@ -116,7 +116,6 @@ Rails.application.routes.draw do
       get 'export'
       get 'metadata'
       get 'delete'
-      get 'tilejson'
       #get 'id'
       #get 'trace'
       #get 'idland'
@@ -194,6 +193,7 @@ Rails.application.routes.draw do
             patch 'toggle_visibility'
             patch 'remove_map'
             patch 'merge'
+            get   'tilejson'
           end
           collection do
           end

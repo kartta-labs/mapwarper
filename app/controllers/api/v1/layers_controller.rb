@@ -1,7 +1,7 @@
 class Api::V1::LayersController < Api::V1::ApiController
-  before_filter :authenticate_user!,       :except => [:show, :index]
+  before_filter :authenticate_user!,       :except => [:show, :index, :tilejson]
   before_filter :check_administrator_role, :only => [:toggle_visibility, :merge]
-  before_filter :find_layer,               :only =>   [:show, :update, :destroy, :toggle_visibility, :remove_map, :merge]
+  before_filter :find_layer,               :only =>   [:show, :update, :destroy, :toggle_visibility, :remove_map, :merge, :tilejson]
   before_filter :can_edit_layer, :only => [:update, :destroy, :remove_map]
   before_filter :validate_jsonapi_type,:only => [:create, :update]
   
@@ -189,6 +189,23 @@ end
     
 #maps
   
+def tilejson
+  name = ActionController::Base.helpers.sanitize(@layer.name,  :tags => [])
+
+  bbox = @layer.bbox.split(",")
+  tile_bbox = [bbox[0].to_f,bbox[1].to_f,bbox[2].to_f,bbox[3].to_f]
+  centroid_y = tile_bbox[1] + ((tile_bbox[3] -  tile_bbox[1]) / 2)
+  centroid_x = tile_bbox[0] + ((tile_bbox[2] -  tile_bbox[0]) / 2)
+  center  = [centroid_x, centroid_y, 21 ]
+  site_url = APP_CONFIG['host_with_scheme']
+  site_name  =  APP_CONFIG['site_name']
+  attribution = "From: <a href='#{site_url}/#{@layer.class.to_s.downcase}s/#{@layer.id}/'>#{site_name}</a>" 
+
+  tiles = ["#{tile_layer_base_url(:id => @layer.id)}/{z}/{x}/{y}.png"]
+  
+  render :json => {tilejson: "2.0.0", autoscale: true, version: "1.5.0", scheme: "xyz", minzoom: 1, maxzoom: 21, name: name, description: "", center: center, bounds: tile_bbox, attribution: attribution, tiles:tiles}.to_json
+end
+
   
   
   
