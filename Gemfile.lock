@@ -233,7 +233,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (5.1.0)
     nio4r (2.5.2)
-    nokogiri (1.10.7)
+    nokogiri (1.10.8)
       mini_portile2 (~> 2.4.0)
     nypl_repo (0.1.0)
     oauth (0.5.4)
