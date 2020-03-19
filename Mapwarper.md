@@ -226,8 +226,10 @@ At the `/users/stats` endpoint the admin user can view simple statistics of user
 
 Rake tasks are command line scripts that run from the application route. Run `rake -T` to list them all. In particular the following are worth noting
 
-* Create superuser
-  * Creates a new super user, used once just after creating a new database. Run `rake warper:create_superuser` and make note of the password created. You'd then log in with `super@example.com` with that password and give other user the super user role. Ideally you would then disable this initial super user. 
+* Set superuser (useful if using oauth / provider login)
+  * Sets an existing user to have the super user and administrator roles. Run `rake warper:set_superuser EMAIL=email@example.com` where the `EMAIL`  variable is set to be the email of an already existing user. 
+* Create superuser (if using email and password logins)
+  * If using emails and passwords: creates a new super user, used once just after creating a new database. Run `rake warper:create_superuser` and make note of the password created. You'd then log in with `super@example.com` with that password and give other user the super user role. Ideally you would then disable this initial super user. 
 * Migrate database
   * Migrates the database and deploys new migrations. Run after deploying new code which contains migrations. `rake db:migrate` With Kubernetes this is wrapped in the migration Job.
 * Import NYPL

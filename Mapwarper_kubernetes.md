@@ -333,7 +333,7 @@ Exec into the pod
 
 `kubectl exec -it POD_NAME bash`
 
-Now you can run the database migration and create the super user
+Now you can run the database migration and set the super user
 
 __Database Migration__
 
@@ -341,12 +341,15 @@ run
  `rake db:migrate`
 
 
-__Create Super User__
+__Set Super User__
+
+Once the application is up and running and you have logged in to the application (thereby creating a new user). You can set the new user to have the Super User and Administrator roles
 
 run 
- `rake warper:create_superuser`
+ `rake warper:set_superuser EMAIL=email@example.com`
 
-make a note of the created password and use for logging into
+Passing in the email of the user that you used to login that in the EMAIL variable
+
 
 __Make Paths__
 
