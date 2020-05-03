@@ -66,7 +66,7 @@ class HomeController < ApplicationController
   end
 
   def ssl_enabled?
-    Rails.env.production?
+    (APP_CONFIG["force_ssl"] && APP_CONFIG["force_ssl"] == "true")
   end
 
 

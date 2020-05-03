@@ -423,9 +423,29 @@ To create a https load balancer with a Google Managed certificate.
 
 First make sure you have a static IP address. If you have one already convert the ephemeral IP to a static one. 
 
-In the Console: https://console.cloud.google.com/networking/addresses/list find the ephemeral ip address for the loadbalancer and select it to static
+Via gcloud to convert and existing ephemeral address
+
+```
+gcloud compute addresses create ${NEW_STATIC_IP_NAME} --addresses ${EPHEMERAL_IP_ADDRESS} --global
+```
+
+or in the Console: https://console.cloud.google.com/networking/addresses/list find the ephemeral ip address for the loadbalancer and select it to static (it it's global)
 
 In the dialog window that appears give it a name and make a note of this (e.g. mapwarper-k8s-static-ip) and an optional description, and continue
+
+Note that the IP Address should be "global" for use with load balancers
+
+```
+gcloud compute addresses create address-name --global
+``` 
+Where address-name is the name you wish to create (e.g. mapwarper-k8s-static-ip)
+
+To get the IP of this new address :
+```
+gcloud compute addresses describe address-name --global
+```
+ 
+The DNS entry for the domain name would need to point to this IP address
 
 #### Create ManagedCertificate
 
@@ -465,11 +485,13 @@ Once a certificate is successfully provisioned, the value of the Status.Certific
 Note: if you want to disable http at this level, add this annotation 
 `kubernetes.io/ingress.allow-http: "true"` 
 
-#### Update Host with Scheme application config
+#### Update application config 
 
 Change the mapwarper app config variable:
 
 MW_HOST_WITH_SCHEME from http to  https:// 
+
+Optionally, change MW_FORCE_SSL from "" or "false" to "true" to enable the application to redirect from http to htttps 
 
 `kubectl apply -f mapwarper-app-config.yaml`  or edit it on the console
 

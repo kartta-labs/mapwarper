@@ -175,6 +175,10 @@ Whitelist IPs, comma separated list. So that you can put your own IP Address, or
     
   Name of the bucket to store images for OCR processing, should be globablly unique
 
+    force_ssl: "false"
+
+  Set force_ssl to "true" to enable automatic redirection of http to https in the application. Set to "false" by default so that you can run mapwarper in http in production mode before setting up https properly.  
+
 
 ## API Documentation
 

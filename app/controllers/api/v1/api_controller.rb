@@ -69,7 +69,7 @@ class Api::V1::ApiController < ActionController::API
   end
 
   def ssl_configured?
-    Rails.env.production?
+    (APP_CONFIG["force_ssl"] && APP_CONFIG["force_ssl"] == "true")
   end
 
 end

@@ -62,6 +62,7 @@ defaults: &defaults
   smtp_password:
   enable_ocr_job: "false"  #set to "true" to enable the OCR and geocoding job upon map creation
   ocr_bucket: "" # name of the bucket to store images for OCR processing, should be globablly unique
+  force_ssl: "false"  #set to "false" to disable ssl or "true" 
   
 
 development:
@@ -78,3 +79,4 @@ production:
   email: production_user@example.com
   src_maps_dir: "/var/etc/maps/src/"
   dst_maps_dir: "/var/etc/maps/dst/"
+  force_ssl: "false"  #set to "true" to force ssl in production mode 

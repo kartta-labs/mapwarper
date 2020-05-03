@@ -83,7 +83,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ssl_configured?
-    Rails.env.production? && (controller_name != 'home')
+    (APP_CONFIG["force_ssl"] && APP_CONFIG["force_ssl"] == "true") && (controller_name != 'home')
   end
 
   def devise_or_user_controller?
