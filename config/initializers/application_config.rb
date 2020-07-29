@@ -39,6 +39,7 @@ ENV["GOOGLE_APPLICATION_CREDENTIALS"] = APP_CONFIG['google_json_key_location']
 Rails.application.routes.default_url_options[:host] = APP_CONFIG['host']
 ActionMailer::Base.default_url_options[:host] = APP_CONFIG['host']
 Devise.mailer_sender = APP_CONFIG['email']
+Rails.application.config.assets.prefix = (APP_CONFIG["site_prefix"] || "") + "/assets"
 
 if !APP_CONFIG['sendgrid_api_key'].blank? 
   ActionMailer::Base.delivery_method = :sendgrid_actionmailer

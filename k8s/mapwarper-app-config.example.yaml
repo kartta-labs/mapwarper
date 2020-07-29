@@ -16,7 +16,7 @@ data:
   MW_TILEINDEX_DIR: /mnt/mapwarper/maps/tileindex
   MW_GDAL_PATH: "" 
   MW_PUBLIC_SHARED_DIR: shared
-  MW_DEBUG_K8S: "true"
+  MW_DEBUG_K8S: "false"
   REDIS_URL: redis://redis:6379/0/cache
   MW_GOOGLE_STORAGE_ENABLED: "true"
   MW_GOOGLE_JSON_KEY_LOCATION: /secrets/service-account/mapwarper-service-account.json

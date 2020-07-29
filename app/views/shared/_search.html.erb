@@ -1,40 +1,86 @@
 <%= form_tag url_for(:controller => "maps"), :id=>"searchform",:name=> "searchform", :method => :get do -%>
-  <%= t('.search') %>  
-  <select id="field" name="field">
-    <%= options_for_select([ [t('.title'), "title"], 
-            [t('.description'), "description"], 
-        [t('.publisher'), "publisher"],
-        [t('.author'), "authors"],
-        [t('.tags'), "tags"]], @field)-%>
-  </select>
-  <%= t('.for') %> 
-  <%= text_field_tag 'query', @query -%>
-  <input type="hidden" id="from" />
-  <input type="hidden" id="to"/>
-  
-  <div id="year-filter">
-    <div id="year-label">
-      <%= t('common.year_th') %>
-    </div>
-    <div id="year-slider-container">
-      <div id="year-slider"></div>
-    </div>	
-  </div>
-  
-  <input type="submit" value="<%= t('.button') %>">
-  <% if @show_warped == "1" -%>
-    <% check_all = false -%>
-    <% check_rectified = true -%>
-  <% else -%>
-    <% check_all = true -%>
-    <% check_rectified = false -%>
-  <% end %>
-  <div id="radio-buttons">
-    <label for="all_maps"><%= t('.all_maps') %></label>
-    <%= radio_button_tag('show_warped', 0, check_all, :id => 'all_maps') %>
-    <label for="rectified_maps"><%= t('.only_rectified') %></label>
-    <%= radio_button_tag('show_warped', 1, check_rectified, :id => 'rectified_maps') %>
- </div>
+
+
+
+
+
+<div class="searchPanel">
+
+<div class="searchPanelPart">
+<%-# SEARCH	-%>	  
+<%= t('.search') %>  
+</div>
+
+<div class="searchPanelPart">
+<%-# TITLE -%>	  
+<select id="field" name="field">
+				    <%= options_for_select([ [t('.title'), "title"], 
+				            [t('.description'), "description"], 
+				        [t('.publisher'), "publisher"],
+				        [t('.author'), "authors"],
+				        [t('.tags'), "tags"]], @field)-%>
+				  </select>
+</div>
+
+<div class="searchPanelPart">
+<%-# FOR -%>		  
+<%= t('.for') %> 
+</div>
+
+<div class="searchPanelPart">
+<%-# TEXT_FIELD	-%> 
+<%= text_field_tag 'query', @query -%>
+</div>
+
+<div class="searchPanelPart">
+<%-# SLIDER	-%> 
+				  <input type="hidden" id="from" />
+				  <input type="hidden" id="to"/>
+				  <div id="year-filter">
+				    <div id="year-label">
+				      <%= t('common.year_th') %>
+				    </div>
+				    <div id="year-slider-container">
+				      <div id="year-slider"></div>
+				    </div>	
+				  </div>
+</div>
+
+				  <% if @show_warped == "1" -%>
+				    <% check_all = false -%>
+				    <% check_rectified = true -%>
+				  <% else -%>
+				    <% check_all = true -%>
+				    <% check_rectified = false -%>
+				  <% end %>
+
+<div class="searchPanelPart radios">
+<%-# RADIOS	-%> 
+				  <div id="radio-buttons">
+				    <div>
+				      <%= radio_button_tag('show_warped', 0, check_all, :id => 'all_maps') %>
+				      <label for="all_maps"><%= t('.all_maps') %></label>
+				    </div>
+				    <div>
+				      <%= radio_button_tag('show_warped', 1, check_rectified, :id => 'rectified_maps') %>
+				      <label for="rectified_maps"><%= t('.only_rectified') %></label>
+				    </div>
+				 </div>
+</div>
+
+<div class="searchPanelPart">
+<%-# SEARCH BUTTON	-%> 
+				  <input type="submit" value="<%= t('.button') %>">
+
+</div>
+
+
+</div>
+
+
+
+
+
 
   <script>
     var year_from = <%= params[:from] || @year_min.to_i %>;
@@ -69,6 +115,17 @@
 
    </script>	
 <% end -%>
-<div id="geosearch-link">
+
+<hr>
+<div>
   <%= link_to t('.find_geosearch'),  url_for(:controller => 'maps', :action=>'geosearch'), :class => "buttonWarper" %>
+<% if false %>
+  <div class="alignLeft">
+    <%= link_to t("home.index.quick_place"),  quick_maps_path, :class => "buttonWarper" -%>
+  </div>
+  <div class="alignRight">
+    <%= link_to t("home.index.all_maps"), maps_path, :class => "buttonWarper" %>
+    <%= link_to t('.find_geosearch'),  url_for(:controller => 'maps', :action=>'geosearch'), :class => "buttonWarper" %>
+  </div>
+<% end %>
 </div>

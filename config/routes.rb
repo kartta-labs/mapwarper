@@ -1,11 +1,22 @@
+site_prefix = APP_CONFIG['site_prefix'] || "/"
+
+class UserAdminConstraints
+  def matches?(request)
+    request.format.json?
+  end
+end
+
 Rails.application.routes.draw do
+ scope(:path => site_prefix) do
   root 'home#index'
   get '/about' => 'home#about', :as => 'about'
   get '/help' => 'home#help', :as => 'help'
-  get '/privacy' => 'home#privacy', :as => 'privacy'
+  #get '/privacy' => 'home#privacy', :as => 'privacy'
+  get '/faq' => 'home#faq', :as => 'faq'
   
   #devise_for :users, :path => 'u',:controllers => { :sessions => "sessions", :omniauth_callbacks => "omniauth_callbacks", :registrations => "registrations" }
-  devise_for :users, :path => 'u',:controllers => { :sessions => "sessions", :omniauth_callbacks => "omniauth_callbacks" }, :skip => [ :registrations, :passwords, :confirmations ]
+#  devise_for :users, :path => 'u',:controllers => { :sessions => "sessions", :omniauth_callbacks => "omniauth_callbacks" }, :skip => [ :registrations, :passwords, :confirmations ]
+  devise_for :users, :path => 'u',:controllers => { :sessions => "sessions" }, :skip => [ :registrations, :passwords, :confirmations ]
 
   get '/profile' => 'users#edit', :as => 'edit_user'
   patch '/profile' => 'users#update', :as => 'update_user'
@@ -241,6 +252,11 @@ Rails.application.routes.draw do
   get '/throttle_test' => 'home#throttle_test'
   get '/delay_test' => 'home#delay_test'
 
+  post '/admin/api/v1/users/update' => 'api/v1/users#update', constraints: UserAdminConstraints.new
+  post '/admin/api/v1/users/delete' => 'api/v1/users#delete', constraints: UserAdminConstraints.new
+
+#  get '/admin/api/v1/users/update' => 'api/v1/users#update'
+
   resources :notifications
 
   get 'healthcheck' => 'home#healthcheck'
@@ -299,4 +315,5 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+ end
 end

@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <%= tag("meta", :name => "site-prefix", :content =>  APP_CONFIG['site_prefix'] || "") %>
     <%= favicon_link_tag 'favicon.ico' %>
     <title> <%= t('common.site_title') %>: <%= h(snippet(@html_title, 40)) || ''-%> </title>
 
@@ -136,11 +137,14 @@ type="text/javascript"></script>
     <%end%>
     <%= render :partial => 'shared/header' %>
     <div id="headerDiv" class="headerDiv">
+      <div class="siteLogo"></div>
       <h1><%= link_to t('common.site_title'), root_path %></h1>
       <%= render :partial => 'shared/nav' %>
       <%= render :partial => 'shared/disabled_site'%>
     </div>
+<% if false %>
     <%= breadcrumbs %>
+<% end %>
 
 
     <table id="map_table" class="card">

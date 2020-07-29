@@ -1,9 +1,9 @@
 class Api::V1::ApiController < ActionController::API
-  force_ssl if: :ssl_configured?
+#  force_ssl if: :ssl_configured?
   include ActionController::Serialization
-  acts_as_token_authentication_handler_for User, :fallback => :none
-  before_filter :check_protocol
-  before_action :set_paper_trail_whodunnit
+#  acts_as_token_authentication_handler_for User, :fallback => :none
+#  before_filter :check_protocol
+#  before_action :set_paper_trail_whodunnit
   
   def check_administrator_role
     check_role("administrator")

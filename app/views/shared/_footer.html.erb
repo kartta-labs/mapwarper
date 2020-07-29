@@ -1,9 +1,17 @@
 <div id="nav">
+
+<% if false %>
   <%= link_to t('.home'), :root %> |
   <%= link_to t('.add_map'), new_map_path %> |
-  <%= link_to t('.about'), about_path %> | 
+<% end %>
+
+  <%= link_to t('.faq'), faq_path %> | 
+
+  <%= link_to t('.privacy'), 'https://policies.google.com/privacy' %> |
+  <%= link_to t('.tos'), 'https://policies.google.com/terms' %> | 
+
   <%= link_to t('.help'), help_path %> | 
-  <%= link_to t('.privacy'), privacy_path %> | 
+  <%= link_to t('.about'), about_path %>
   <%= t('.supported_by_html') %>
 </div>
 

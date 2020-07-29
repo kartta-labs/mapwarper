@@ -140,7 +140,7 @@ Devise.setup do |config|
 
   # ==> Configuration for :validatable
   # Range for password length.
-  config.password_length = 8..128
+#  config.password_length = 8..128
 
   # Email regex used to validate email formats. It simply asserts that
   # one (and only one) @ exists in the given string. This is mainly
@@ -235,23 +235,16 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   # config.omniauth :twitter,  APP_CONFIG["omniauth_twitter_key"], APP_CONFIG["omniauth_twitter_secret"]
-  
-  # config.omniauth :osm, APP_CONFIG["omniauth_osm_key"], APP_CONFIG["omniauth_osm_secret"], {:client_options => {:site => "https://www.openstreetmap.org"}}
-  
-  # config.omniauth :mediawiki,  APP_CONFIG["omniauth_mediawiki_key"], APP_CONFIG["omniauth_mediawiki_secret"], {:client_options => {:site => APP_CONFIG["omniauth_mediawiki_site"] }}
-  
-  # config.omniauth :github, APP_CONFIG["omniauth_github_key"], APP_CONFIG["omniauth_github_secret"]
-
-  config.omniauth :google_oauth2, APP_CONFIG["omniauth_google_key"], APP_CONFIG["omniauth_google_secret"]
+#  config.omniauth :google_oauth2, APP_CONFIG["omniauth_google_key"], APP_CONFIG["omniauth_google_secret"]
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.
   #
-  # config.warden do |manager|
+  config.warden do |manager|
   #   manager.intercept_401 = false
-  #   manager.default_strategies(scope: :user).unshift :some_external_strategy
-  # end
+    manager.default_strategies(scope: :user).unshift :x_email_header_authenticatable
+  end
 
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine

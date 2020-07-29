@@ -1,40 +1,62 @@
 <h3>Help</h3>
 
-<h4>I'm having a problem</h4>
-<p>See the GitHub for Issues, open and closed: <a href="https://github.com/timwaters/mapwarper/issues">https://github.com/timwaters/mapwarper/issues</a></p>
-<br />
-Common Problems:
-<ul>
-  <li>My PDF won't work: Mapwarper accepts images. PDFs are containers of stuff, they can contain text. Try to extract the image from the PDF and upload that</li>
-  <li>My greyscale image won't work: Try to convert to RGB/Truecolor first and then upload. Often it seems as if images with just one or two bands cause issues</li>
-  <li>The image from the URL doesn't work: Try downloading and uploading manually.</li>
-  <li>How do I make a Mosaic from maps: Add the maps to your favourites first </li>
-  <li>How do I make a delete a map?: Go to the Edit tab of your map and find the delete link </li>
-</ul>
-
-<h4>Can I get the code and help?</h4>
-<p>Yes. you can get the code here: <a href="http://github.com/timwaters/mapwarper/">http://github.com/timwaters/mapwarper/</a> it's currently MIT licenced<br /></p>
-
-<h4>Is there an API?</h4>
-<p>Yes. See <a href="/api/v1/">/api/v1/</a></p>
-
-<h4>What are the terms for uploading maps?</h4>
-<p>By uploading images to the website you agree that you allow anyone to view and use them,
-  including changing control points. <br />
-  So we recommend that you have permission to upload them.
-  Uploading and making images available does not grant a copyright license to others.
-  There is no guarantee about privacy or protection of images and metadata uploaded
-  (see note below about personal data).<br />
-  If you suspect a copyright infringement, please contact us
-  <br />Generally, make sure the image is free to distribute or copy - and please make a note in the
-  description if there are any special conditions.<br />
- 
+<h4>Uploading</h4>
+<p>
+  To upload a new map to Kartta-Labs warper, click the
+  <%= link_to t('shared.nav.add_map'), new_map_path %> link above.  Add a title for the map, and give values for as many of the optional fields as possible.
+  Choose a local image file to upload, or give the URL of an image to be imported, and click the "Create" button.
 </p>
 
-<h4>Is there a privacy policy?</h4>
-<p>We hate spam - your personal data (used for logging in etc) will be kept private,
-  and they will never be shared with any third party, and will only be used in the rare occasion
-  if we need to contact you.
-  <br />If you want your details deleted, you can log in and delete your account or you can contact us. </p>
+<p>
+  The map that you upload or import must be a raster image format such as png, tiff, or jpeg. PDFs are not accepted; if you have a map in PDF format,
+  convert it to an image before uploading.
+</p>
+
+<h4>Rectifying</h4>
+
+<p>
+  To georectify an uploaded map, first go to the map's main page by clicking on its title on the home page or on the
+  <%= link_to 'Browse', maps_url %> page.  On the map's main page, click the "Retify" tab and use the two views
+  to place several (at least three, and the more the better) pairs of control points.  When you have finished adding control points, click the
+  'Warp Image' button.
+</p>
+
+<p>
+  You can return to the map to add more control points, and/or to edit previously added control points, at any time.  Each time you edit, delete,
+  or add control points, click the 'Warp Image' button to update the map.
+</p>
 
 
+<h4>Viewing and Exporting</h4>
+
+<p>
+  You can view a rectified map by clicking on the "Preview" tab on the map's main page.
+</p>
+
+<p>
+  The "Export" tab on the map's main page has links to let you download the rectified map in various digital formats.
+</p>
+
+
+<h4>Deleting a Map</h4>
+
+<p>
+  To delete a map, use the "Delete this map" link at the top of the "Edit" tab on the map's main page.  Note that all maps in Kartta-Labs warper
+  are public; deleting a map will cause it to be deleted from the Kartta-Labs warper servers and will prevent anyone from downloading the map
+  from that point on, but it will not delete any copies that had previously been downloaded. See the
+  <%= link_to 'FAQ', faq_url %>
+  for more information about what data is deleted when you delete a map.
+</p>
+
+
+<h4>Deleting Your Account</h4>
+
+<p>
+  To delete your Kartta-Labs account, go to the <%= link_to t('shared.header.settings'), edit_user_path %></li> page
+  and click the "<%= t('devise.registrations.edit.cancel_account_button') %>" button.  Note that deleting your Kartta-Labs 
+  account will not delete your Google account -- it just deletes your Google account's association with Kartta-Labs.
+  This will delete all maps that you have uploaded to Kartta-Labs warper;
+  see the
+  <%= link_to 'FAQ', faq_url %>
+  for more details.
+</p>

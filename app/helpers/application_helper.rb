@@ -79,7 +79,7 @@ module ApplicationHelper
   end
   
   def map_thumb_url(map)
-    map.upload.url(:thumb)
+    map.thumb_url
   end
 
   def disabled_site?

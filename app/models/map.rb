@@ -85,6 +85,10 @@ class Map < ActiveRecord::Base
   def upload_url_provided?
     !self.upload_url.blank?
   end
+
+  def thumb_url
+    (APP_CONFIG['site_prefix'] || "") + self.upload.url(:thumb)
+  end
   
   def download_remote_image
     img_upload = do_download_remote_image
@@ -513,6 +517,14 @@ class Map < ActiveRecord::Base
       logger.debug "Save bbox error "+ stderr.readlines.to_s
     end
   end
+
+  def view_params
+    bounds_float  = bounds.split(',').collect {|i| i.to_f}
+    x = (bounds_float[0] + bounds_float[2]) / 2
+    y = (bounds_float[1] + bounds_float[3]) / 2
+    scale = 18
+    [scale,y,x].join '/'
+  end
   
   def bounds
     if bbox.nil?
@@ -576,7 +588,11 @@ class Map < ActiveRecord::Base
   end
   
   def bbox_centroid
+    logger.info 'HEY WHAT NOW 1'
+    logger.info bbox_geom
+    logger.info 'HEY WHAT NOW 1a'
     centroid =  bbox_geom.nil? ? nil : "#{bbox_geom.centroid.x},#{bbox_geom.centroid.x}"
+    logger.info 'HEY WHAT NOW 2'
     
     return centroid
   end
@@ -774,7 +790,7 @@ class Map < ActiveRecord::Base
      
     memory_limit = APP_CONFIG["gdal_memory_limit"].blank? ? [] : ["-wm",  APP_CONFIG['gdal_memory_limit'] ]
 
-    command = ["#{GDAL_PATH}gdalwarp", memory_limit, transform_option.strip, resample_option.strip, "-dstalpha", mask_options_array, "-dstnodata", "none", "-s_srs", "EPSG:4326", "#{temp_filename}.vrt", dest_filename, "-co", "TILED=YES", "-co", "COMPRESS=JPEG", "-co", "BIGTIFF=YES"].reject(&:empty?).flatten
+    command = ["#{GDAL_PATH}gdalwarp", memory_limit, transform_option.strip.split, resample_option.strip, "-dstalpha", mask_options_array, "-dstnodata", "none", "-s_srs", "EPSG:4326", "#{temp_filename}.vrt", dest_filename, "-co", "TILED=YES", "-co", "COMPRESS=JPEG", "-co", "BIGTIFF=YES"].reject(&:empty?).flatten
     logger.info command
    
     w_stdout, w_stderr = Open3.capture3( *command )

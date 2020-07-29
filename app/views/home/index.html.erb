@@ -1,6 +1,9 @@
 <div id="container">
   <div class="row">
+
   <div id="left-col" class="col-lg-3">
+
+<% if false %>
     <div id="video-intro" class="paraMargin">
       <h2><%= t('.overview_header') %></h2>
       <p><%= t('.overview_p1') %></p>
@@ -16,6 +19,7 @@
       <p><%= t('.info_paragraph_html') %></p>
       <p><%= t('.info_contact') %></p>
     </div>
+<% end %>
 
     <div id="tag-cloud" class="paraMargin">
       <h3><%= t('.tags') %></h3>
@@ -26,17 +30,11 @@
       </p>
     </div>
 
-
-
   </div>
+
   <div id="right-col" class="col-lg-9">
     <div id="search-form">
       <%= render :partial => 'shared/search' -%>
-      <br/>
-      <p class="browseButtonBlock">
-        <%= link_to t(".all_maps"), maps_path, :class => "buttonWarper" %>
-        <%= link_to t(".quick_place"),  quick_maps_path, :class => "greenButton" -%>
-      </p>
     </div>
 
     <div id="map_list">
@@ -75,30 +73,31 @@
         </thead>
         <%= render :partial => 'maps/map', :collection => @maps unless @maps.nil? %>
       </table>
-
+<% if false %>
       <%= link_to t(".see_maps"), maps_path, :class => "buttonWarper" %>
-
+<% end %>
     </div>
 
-    <div id="layer_list">
-
-      <h3><%= t('.recent_layers') %></h3>
-      <table id="layer_table" cellpadding="3">
-        <thead>
-          <tr>
-            <th><%= t('common.layer_th') %></th>
-            <th class="widthTh"><%= t('common.title_th') %></th>
-            <th><%= t('common.year_th') %></th>
-            <th><%= t('common.last_th') %></th>
-            <th><%= t('common.num_th') %></th>
-            <th><%= t('common.percent_th') %></th>
-          </tr>
-        </thead>
-        <%= render :partial => 'layers/layer', :collection => @layers unless @layers.nil? %>
-      </table>
-      <%= link_to t(".view_layers"), layers_path, :class => "buttonWarper" %><br />
-      <%= link_to t(".create_layer"), new_layer_path, :class => "buttonWarper" %>
-    </div>
+    <% if false %>
+      <div id="layer_list">
+        <h3><%= t('.recent_layers') %></h3>
+        <table id="layer_table" cellpadding="3">
+          <thead>
+            <tr>
+              <th><%= t('common.layer_th') %></th>
+              <th class="widthTh"><%= t('common.title_th') %></th>
+              <th><%= t('common.year_th') %></th>
+              <th><%= t('common.last_th') %></th>
+              <th><%= t('common.num_th') %></th>
+              <th><%= t('common.percent_th') %></th>
+            </tr>
+          </thead>
+          <%= render :partial => 'layers/layer', :collection => @layers unless @layers.nil? %>
+        </table>
+        <%= link_to t(".view_layers"), layers_path, :class => "buttonWarper" %><br />
+        <%= link_to t(".create_layer"), new_layer_path, :class => "buttonWarper" %>
+      </div>
+    <% end %>
 
   </div>
   <div class="clear"></div>

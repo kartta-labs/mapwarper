@@ -20,8 +20,9 @@ Notifications = (function() {
   }
 
   Notifications.prototype.getLatestNotifications = function() {
+    var sitePrefix = document.querySelector('meta[name="site-prefix"]').content;
     return jQuery.ajax({
-      url: "/notifications.json?map=" + current_map_id + "&since="+ current_time,
+      url: sitePrefix + "/notifications.json?map=" + current_map_id + "&since="+ current_time,
       dataType: "JSON",
       method: "GET",
       success: this.handleSuccess

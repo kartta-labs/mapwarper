@@ -114,8 +114,8 @@
 
     <%- if defined?(page)  && (page =~ /edit/ && user_signed_in? && (current_user == @map.owner || current_user.has_role?("editor")) || page =~ /new/ ) -%>
       <p> 
-        <%= t('.are_visible') %><br />
         <% unless @map.public? %>
+          <%= t('.are_visible') %><br />
           <%= f.radio_button :public, "true" %><label for="map_public_true"><%= t('.make_public') %></label>
         <% end %>
       </p>

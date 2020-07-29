@@ -4,7 +4,7 @@ class MapsController < ApplicationController
   
   before_filter :store_location, :only => [:warp, :align, :clip, :export, :edit, :comments ]
   
-  before_filter :authenticate_user!, :only => [:new, :create, :edit, :update, :destroy, :delete, :warp, :rectify, :clip, :align, :warp_align, :mask_map, :delete_mask, :save_mask, :save_mask_and_warp, :set_rough_state, :set_rough_centroid, :publish, :trace, :id, :map_type, :quick, :quick_index]
+  before_filter :authenticate_user!, :only => [:new, :create, :edit, :update, :destroy, :delete, :warp, :rectify, :clip, :align, :warp_align, :mask_map, :delete_mask, :save_mask, :save_mask_and_warp, :set_rough_state, :set_rough_centroid, :publish, :map_type, :quick, :quick_index]
  
   before_filter :check_administrator_role, :only => [:publish, :csv]
  
@@ -15,6 +15,7 @@ class MapsController < ApplicationController
   before_filter :check_if_map_is_editable, :only => [:edit, :update, :map_type]
   before_filter :check_if_map_can_be_deleted, :only => [:destroy, :delete]
   #skip_before_filter :verify_authenticity_token, :only => [:save_mask, :delete_mask, :save_mask_and_warp, :mask_map, :rectify, :set_rough_state, :set_rough_centroid]
+  skip_before_filter :verify_authenticity_token
   before_filter :set_wms_format, :only => :wms
 
   rescue_from ActiveRecord::RecordNotFound, :with => :bad_record
@@ -400,6 +401,10 @@ class MapsController < ApplicationController
     @map = Map.find(params[:id])
     @html_title = t('.title', :map_id =>@map.id.to_s)
 
+    unless @map.warped?
+      @disabled_tabs += ["trace"]
+    end
+
     if @map.status.nil? || @map.status == :unloaded
       @mapstatus = "unloaded"
     else
@@ -426,7 +431,7 @@ class MapsController < ApplicationController
     @version_users = version_users.to_a.delete_if{|v| !User.exists?(v.whodunnit) }
     
     if !user_signed_in?
-      @disabled_tabs = ["warp", "edit", "clip", "align", "activity"]
+      @disabled_tabs = ["warp", "edit", "clip", "align", "activity", "trace"]
       
       if @map.status.nil? or @map.status == :unloaded or @map.status == :loading
         @disabled_tabs += ["warped"]
@@ -565,23 +570,6 @@ class MapsController < ApplicationController
     choose_layout_if_ajax
   end
   
-  
-  def trace
-    redirect_to map_path unless @map.published?
-    @overlay = @map
-  end
-  
-  def id
-    redirect_to map_path unless @map.published?
-    @overlay = @map
-    render "id", :layout => false
-  end
-  
-  # called by id JS oauth
-  def idland
-    render "idland", :layout => false
-  end
-  
   ###############
   #
   # Other / API actions 
@@ -590,7 +578,7 @@ class MapsController < ApplicationController
   
   def thumb
     map = Map.find(params[:id])
-    thumb = map.upload.url(:thumb)
+    thumb = map.thumb_url
     
     redirect_to thumb
   end

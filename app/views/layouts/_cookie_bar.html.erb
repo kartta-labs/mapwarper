@@ -1,0 +1,13 @@
+<div id="cookie-bar" class="navbar navbar-fixed-bottom">
+  <div class="container-fluid">
+    <div class="left-part">
+        <%= t('cookies.this_site_uses') %>
+        <%= link_to t('cookies.learn_more'), t('cookies.learn_more_url') %>
+    </div>
+
+    <div class="right-part cookie-ok">
+      <%= link_to t('cookies.ok_text'), request.original_url, class: 'buttonWarper' %>
+    </div>
+  </div>
+</div>
+

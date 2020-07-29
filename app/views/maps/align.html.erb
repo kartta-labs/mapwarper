@@ -63,7 +63,7 @@
             <% unless map.id == @map.id %>
               <tr id="map-<%= map.id %>">
                 <td class="align-map-thumb">
-                  <%=  image_tag(map.upload.url(:thumb)) %>
+                  <%=  image_tag(map.thumb_url) %>
                 </td>
                 <td class="align-map-title">
                   <%=map.title %>

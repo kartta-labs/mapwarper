@@ -21,4 +21,5 @@
  *= require openlayers/5.3/ol.css
  *= require ol-layerswitcher
  *= require toastr.min.css
+ *= require hms-common
  */

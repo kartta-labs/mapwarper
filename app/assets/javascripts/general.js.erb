@@ -1,6 +1,6 @@
-
- OpenLayers._getScriptLocation = function(){ return '/assets/openlayers/'; };
- OpenLayers.ImgPath = '/assets/openlayers/theme/dark/';
+ var site_prefix = '<%= APP_CONFIG['site_prefix'].blank? ? '' : APP_CONFIG['site_prefix'] %>';
+ OpenLayers._getScriptLocation = function(){ return site_prefix + '/assets/openlayers/'; };
+ OpenLayers.ImgPath = site_prefix + '/assets/openlayers/theme/dark/';
 
   var addthis_share = {templates: {twitter: '{{url}} (from @<%=  APP_CONFIG['addthis_twitter_user'] %>)'}};
 

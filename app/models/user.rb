@@ -3,9 +3,7 @@ class User < ActiveRecord::Base
   # 1. in routes, remove the :skip hash for the devise_for rout
   # 2. in devise initialiser, set params_authenticatable to true and http_authenticatable  to [:database]
   # 3. here, add in :registerable, :confirmable, :recoverable, :rememberable to below
-  devise :database_authenticatable, # :registerable, :confirmable, :recoverable, :rememberable,
-    :trackable, :validatable, :confirmable,
-    :omniauthable, :omniauth_providers => [ :google_oauth2]
+  devise :database_authenticatable, :trackable, :validatable, :confirmable
 
   acts_as_token_authenticatable
 
@@ -93,24 +91,6 @@ class User < ActiveRecord::Base
     user
   end
 
-
-  def self.find_for_osm_oauth(auth, signed_in_resource=nil)
-    user = User.where(:provider => auth.provider, :uid => auth.uid).first
-    # Create user if not exists
-    unless user
-      user = User.new(
-        login: auth.info.display_name,
-        provider: auth.provider,
-        uid: auth.uid,
-        email: "#{auth.info.display_name}+warper@osm.org", # make sure this is unique
-        password: Devise.friendly_token[0,20]
-      )
-      user.skip_confirmation!
-      user.save!
-    end
-    user
-  end
-  
   def self.find_for_mediawiki_oauth(auth, signed_in_resource=nil)
     user = User.where(:provider => auth.provider, :uid => auth.uid.to_s).first
     # Create user if not exists
@@ -162,6 +142,7 @@ class User < ActiveRecord::Base
     user
   end
 
+
   def self.find_for_google_oauth(auth, signed_in_resource=nil)
     user = User.where(:provider => auth.provider, :uid => auth.uid.to_s).first
 
@@ -169,7 +150,7 @@ class User < ActiveRecord::Base
       user = User.new(
         provider: auth.provider,
         uid: auth.uid,
-        email: "google_oauth_"+auth.info["email"],
+	email: auth.info["email"],
         password: Devise.friendly_token[0,20]
       )
       user.skip_confirmation!
@@ -179,7 +160,6 @@ class User < ActiveRecord::Base
     user
   end
 
-  
   alias :devise_valid_password? :valid_password?
 
   def valid_password?(password)

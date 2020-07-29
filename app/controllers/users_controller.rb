@@ -98,9 +98,8 @@ class UsersController < ApplicationController
 
   end
 
-
-
   def edit
+    redirect_to(APP_CONFIG['profile_url'] + @current_user.login) and return
   end
 
   def update

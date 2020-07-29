@@ -30,7 +30,7 @@
     <% @maps.each do | map |  %>
       <div class="quick-map-card grid-item">
       
-        <%= link_to image_tag(map.upload.url(:thumb),  width: 100), quick_map_url(map)%>
+        <%= link_to image_tag(map.thumb_url,  width: 100), quick_map_url(map)%>
         
         <span class="map-title"> <%= link_to(strip_brackets(snippet(map.title, 15)), quick_map_url(map))  %> </span>
         <span class="map-description"><%= strip_brackets(snippet(map.description,10)) -%></span>

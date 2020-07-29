@@ -44,6 +44,5 @@ class Api::V1::SessionsController < Devise::SessionsController
   def new
     return render :json => {:error => "Invalid email or password."}, :status => 401
   end
-
   
 end

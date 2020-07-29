@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= h(@html_title) || ''-%> <%=t("common.site_title") %></title>
+    <%= tag("meta", :name => "site-prefix", :content =>  APP_CONFIG['site_prefix'] || "") %>
+    <title><%=t("common.site_title") %></title>
     <%= favicon_link_tag 'favicon.ico' %>
     <%= stylesheet_link_tag    'application', media: 'all' %>
     <link href='//fonts.googleapis.com/css?family=Lato:400,700|Sorts+Mill+Goudy|Vidaloka' rel='stylesheet' type='text/css'>
@@ -11,6 +12,7 @@
     <%= csrf_meta_tags %>
 
     <%= yield :head %>
+
   </head>
   <% if @onload -%>
     <body onload="<%=@onload%>">
@@ -18,17 +20,29 @@
     <body>
   <%end%>
 
-    <%= render :partial => 'shared/header' %>
+    <% if !cookies[:allow_cookies] %>
+      <%= render 'layouts/cookie_bar' %>
+    <% end %>
 
+    <%= render 'layouts/hms_header' %>
+
+<% if false %>
+    <%= render :partial => 'shared/header' %>
     <div id="headerDiv" class="headerDiv">
-      <% if APP_CONFIG["debug_k8s"] %>
+      <% if false %>
         <span class="debug-info">Pod: <%= ENV["K8S_POD_NAME"] %></span>
       <% end %>
+      <div class="siteLogo"></div>
       <h1><%= link_to t('common.site_title'), root_path %></h1>
       <%= render :partial => 'shared/nav' %>
       <%= render :partial => 'shared/disabled_site'%>
     </div>
+<% end %>
+
+<% if false %>
     <%= breadcrumbs "application" %>
+<% end %>
+
     <div id="warper-maindiv">
 
       <%= flash_messages %>
@@ -36,9 +50,11 @@
       <%= yield %>
     </div>
 
+
     <div id="footer">
       <%= render :partial => 'shared/footer' %>
     </div>
+
 
     <%= render :partial => 'shared/analytics' %>
 

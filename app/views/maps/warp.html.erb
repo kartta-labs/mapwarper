@@ -8,10 +8,11 @@
   <%= javascript_include_tag 'select2/i18n/nl' %>
   <%= javascript_tag "window._token = '#{form_authenticity_token}'" %>
   <script type="text/javascript" charset="utf-8">
-    var icon_imgPath = '/assets/icons/';
+    var sitePrefix = "<%= APP_CONFIG['site_prefix'] || '' %>";
+    var icon_imgPath = sitePrefix + '/assets/icons/';
     var gcp_add_url = "<%= url_for add_gcp_path :mapid=> @map %>";
-    var gcp_update_url = "/gcps/update";
-    var gcp_update_field_url = "/gcps/update_field";
+    var gcp_update_url = sitePrefix + "/gcps/update";
+    var gcp_update_field_url = sitePrefix + "/gcps/update_field";
 
     var from_map;
     var to_map;

@@ -1,4 +1,10 @@
 defaults: &defaults
+  site_prefix: "/w"
+  signup_url: "http://localhost//e/user/new"
+  signout_url: "http://localhost//e/logout"
+  trace_url: "http://localhost/e/edit#map="
+  # make sure this ends with a /
+  profile_url: "http://localhost/e/user/"
   email: example_user@example.com
   addthis_twitter_user: example_user@example.com
   addthis_user: example_user
@@ -14,23 +20,10 @@ defaults: &defaults
   geoparse_region: ""
   geoparse_enable: false
   host: "localhost:3000"
-  site_name: "MapWarper"
+  site_name: "Mapwarper"
   host_with_scheme: "http://localhost:3000"
-  full_site_name: "MapWarper.net"
+  full_site_name: "example.com"
   reply_to: "example@example.com"
-  omniauth_osm_key: "ABC"
-  omniauth_osm_secret: "ABC"
-  omniauth_twitter_key: "ABC"
-  omniauth_twitter_secret: "ABC"
-  omniauth_mediawiki_site: "https://commons.wikimedia.org"
-  omniauth_mediawiki_key: "ABC"
-  omniauth_mediawiki_secret: "ABC"
-  omniauth_github_key: "ABC"
-  omniauth_github_secret: "ABC"
-  omniauth_facebook_key: "ABC"
-  omniauth_facebook_secret: "ABC"
-  omniauth_google_key: ""
-  omniauth_google_secret: ""
   id_key: ""
   id_secret: ""
   mapbox_access_token: ""

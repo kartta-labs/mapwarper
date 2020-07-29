@@ -1,9 +1,9 @@
 class LayersController < ApplicationController
   layout 'layerdetail', :only => [:show,  :edit, :export, :metadata]
-  before_filter :authenticate_user! , :except => [:wms, :wms2, :show_kml, :show, :index, :metadata, :maps, :thumb, :geosearch, :comments, :tile, :trace, :id]
-  before_filter :check_administrator_role, :only => [:publish, :toggle_visibility, :merge, :trace, :id] 
+  before_filter :authenticate_user! , :except => [:wms, :wms2, :show_kml, :show, :index, :metadata, :maps, :thumb, :geosearch, :comments, :tile]
+  before_filter :check_administrator_role, :only => [:publish, :toggle_visibility, :merge] 
   
-  before_filter :find_layer, :only => [:show, :export, :metadata, :toggle_visibility, :update_year, :publish, :remove_map, :merge, :maps, :thumb, :comments, :trace, :id]
+  before_filter :find_layer, :only => [:show, :export, :metadata, :toggle_visibility, :update_year, :publish, :remove_map, :merge, :maps, :thumb, :comments]
   before_filter :check_if_layer_is_editable, :only => [:edit, :update, :remove_map, :update_year, :update, :destroy]
 
   rescue_from ActiveRecord::RecordNotFound, :with => :bad_record
@@ -492,24 +492,6 @@ class LayersController < ApplicationController
       @layer.publish
       render :text => t('.flash')
     end
-  end
-
-
-  def trace
-    redirect_to layer_path unless @layer.is_visible? && @layer.rectified_maps_count > 0
-    @overlay = @layer
-    render "maps/trace", :layout => "application"
-  end
-  
-  def id
-    redirect_to layer_path unless @layer.is_visible? && @layer.rectified_maps_count > 0
-    @overlay = @layer
-    render "maps/id", :layout => false
-  end
-  
-  # called by id JS oauth
-  def idland
-    render "maps/idland", :layout => false
   end
 
 

@@ -1,6 +1,7 @@
 class GcpsController < ApplicationController
   layout 'application'
   #skip_before_filter :verify_authenticity_token, :only => [:update, :update_field, :add, :destroy, :show, :add_many, :add_many_to_map]
+  skip_before_filter :verify_authenticity_token
 
   before_filter :authenticate_user!, :only => [:update, :update_field, :add, :destroy, :add_many, :add_many_to_map, :csv, :corner_coords]
   before_filter :check_editor_role, :only => [:add_many, :bulk_import]

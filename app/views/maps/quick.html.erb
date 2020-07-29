@@ -269,7 +269,7 @@
 <tr>
 <% cl = cycle('table0', 'table1') %>
   <td class="<%= cl %>">
-    <%=  image_tag(@map.upload.url(:thumb), width: 100) %>
+    <%=  image_tag(@map.thumb_url, width: 100) %>
   </td>
   <td class="<%= cl %>">
     <span class="maplist_title">

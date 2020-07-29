@@ -49,6 +49,7 @@ db/imports/*
 
 #public assets
 public/assets/**
+public/w/assets/**
 
 vendor/bundle
 

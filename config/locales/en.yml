@@ -106,11 +106,16 @@ en:
     num_th: Number of Maps
     per_page: per page
     percent_th: Percentage Complete
-    site_title: Map Warper
+    site_title: Kartta-Labs warper
     status_th: Status
     title_th: Title
     update_button: Update
     year_th: Year
+  cookies:
+    this_site_uses: This site uses cookies from Google to deliver its services and to analyze traffic.
+    learn_more: Learn more.
+    learn_more_url: https://policies.google.com/technologies/cookies
+    ok_text: Ok, Got it.
   devise:
     confirmations:
       confirmed: Your account was successfully confirmed.
@@ -148,13 +153,13 @@ en:
         confirm_button: Confirm my account
         greeting: Welcome,
         intro: Thanks for signing up to use %{site_name}. Please confirm your email to continue the sign up process.
-        subject: Map Warper email address confirmation instructions
+        subject: Kartta-Labs warper email address confirmation instructions
       reset_password_instructions:
         greeting: Hello
         intro: Someone has requested a link to change your password. You can do this through the link below.
         link: Change my password
         please_ignore: If you are not expecting this, please ignore this email. Your password won't change until you access the link above and create a new one.
-        subject: Map Warper Reset password instructions
+        subject: Kartta-Labs warper Reset password instructions
       unlock_instructions:
         click_the_link: 'Click the link below to unlock your account:'
         greeting: Hello
@@ -181,9 +186,9 @@ en:
     registrations:
       destroyed: Bye! Your account was successfully cancelled. We hope to see you again soon.
       edit:
-        cancel_account_button: Cancel my account
-        cancel_account_header: Cancel my account
-        cancel_account_instructions: Unhappy? This will delete all the maps you uploaded and mosaics you created.
+        cancel_account_button: Delete my account
+        cancel_account_header: Delete my account
+        cancel_account_instructions: This will delete all the maps you have uploaded.
         cancel_confirm: Are you sure?
         current_password_label: "(we need your current password to confirm your changes)"
         description_label: Short profile description (optional)
@@ -192,7 +197,7 @@ en:
         name_label: Display Name
         no_settings_notice: You are logged in with your %{provider} account, and not a email and password, so there are no settings for you to edit.
         password_label: "(leave blank if you don't want to change it)"
-        profile_incomplete: Your profile is incomplete, please choose a display name.
+        profile_incomplete: By continuing on this website, you acknowledge that you have read Google’s Terms of Service and Privacy Policy, available at the bottom of this page, and accepted their terms. You should only upload maps that you have the full authority to make publicly available. You can delete your uploaded maps at any time. Please be aware that any contributions you provide (e.g., control points) will be made available on the web pursuant to an open source license and available for others to use for any purpose.
         waiting_confirmation: Currently waiting confirmation for
       new:
         email_label: Email - you'll log in with this
@@ -203,7 +208,7 @@ en:
       signed_up: Welcome! You have signed up successfully.
       signed_up_but_inactive: You have signed up successfully. However, we could not sign you in because your account is not yet activated.
       signed_up_but_locked: You have signed up successfully. However, we could not sign you in because your account is locked.
-      signed_up_but_not_allowed_in: Thanks! A message with a confirmation link has been sent to your email address. Please open the link to activate your account. However please be aware that logins are disabled currently as Mapwarper is in read only mode.
+      signed_up_but_not_allowed_in: Thanks! A message with a confirmation link has been sent to your email address. Please open the link to activate your account. However please be aware that logins are disabled currently as Kartta-Labs warper is in read only mode.
       signed_up_but_unconfirmed: Thanks! A message with a confirmation link has been sent to your email address. Please open the link to activate your account.
       update_needs_confirmation: You updated your account successfully, but we need to verify your new email address. Please check your email and click on the confirm link to finalize confirming your new email address.
       updated: You updated your account successfully.
@@ -275,7 +280,7 @@ en:
       button: Upload CSV!
       csv_file: CSV File to Upload
       header: Bulk Control Point CSV Import
-      help_html: For individual maps instead of using this page you can upload a CSV on the map recitfy view, under the control points table. The csv should have a header <pre><code>x,y,lon,lat</code></pre>
+      help_html: For individual maps instead of using this page you can upload a CSV on the map rectify view, under the control points table. The csv should have a header <pre><code>x,y,lon,lat</code></pre>
       import_help_html: 'Use this page to import many control points for many maps. Upload a CSV, comma separated file with a header row with the following format: <pre><code>mapid,x,y,lon,lat</code></pre> where <code>mapid</code> equals the warper map ID for each map you want to add a control point to. <br /> Points can only be added, not updated. Duplicate control points will not be added if imported again.'
       new_import_header: New Bulk Import
     destroy:
@@ -313,16 +318,16 @@ en:
       all_my_maps: See all Favourites
       click_news: click here to read this story
       create_layer: Create a new mosaic
-      info_contact: Contact email@example.com for more information!
+      info_contact: Contact kartta-labs@google.com for more information or issues.
       info_header: What is it?
-      info_paragraph_html: It's a free to use, open source map warper / map georectifier, and image georeferencer tool.
+      info_paragraph_html: Warper is a free to use and open source map georectifier from Kartta-Labs by Google.
       more: read more
       news: News
       overview_header: Overview
       overview_p1: Find maps and other imagery, upload, and rectify against a real map.
       overview_p2: You can then download and use the rectified map in your mapping applications.
       overview_p3: Just sign up and you can start uploading and get warping!
-      quick_place: Quick Place Maps
+      quick_place: Quick Place
       recent_layers: Recent Mosaics
       rect_maps: Last Rectified Maps
       see_maps: See all maps
@@ -584,6 +589,7 @@ en:
       preview: Preview
       rectify: Rectify
       show: Show
+      trace: Trace
       unaccessible_html: Sorry. The site is currently in read only mode and some features are disabled. Please try again later.
       unauthorized_html: Sorry. You may need to <a class='unauthorized' href='%{href}'>Log In</a> to view this.
   locales:
@@ -702,7 +708,7 @@ en:
       unique_id: Metadata Unique ID
       upload_file: 'Upload An Image File:'
       upload_or_url: OR
-      upload_url: 'Upload from a URL:'
+      upload_url: 'Import from a URL:'
     geosearch:
       button: Find Location
       description: Move or zoom map - both the map and list will be updated with found maps.
@@ -855,7 +861,7 @@ en:
       title: 'Rectifying Map '
       tps_method: Thin Plate Spline (many points widely spread)
       unmasked_question_html: This map is not currently masked. Do you want to <a href='%{href}'>add or edit a mask now</a>?
-      warp_button: Warp Image! &rarr;
+      warp_button: Warp Image &rarr;
       yes_mask: Yes
     warp_aligned:
       no_destination: Sorry the destination map is not available to be aligned.
@@ -888,7 +894,7 @@ en:
   shared:
     disabled_site:
       close: Okay
-      message_html: "<strong style='color:red;font-weight:normal;'>NOTICE: Mapwarper.net is currently in read only mode so the system cannot accept further uploads and edits.  We apologize for the inconvenience.</strong>"
+      message_html: "<strong style='color:red;font-weight:normal;'>NOTICE: Kartta-Labs warper is currently in read only mode so the system cannot accept further uploads and edits.  We apologize for the inconvenience.</strong>"
     export_window:
       header: Export
       links: Export Links
@@ -898,8 +904,10 @@ en:
       add_map: Add Map
       help: Help
       home: Home
-      privacy: Data Privacy / Terms
-      supported_by_html: A Kartta Labs Website
+      privacy: Data Privacy
+      tos: Terms of Service
+      faq: FAQ
+      supported_by_html: ' '
     header:
       admin_users: Users
       all_activity: Activity
@@ -911,14 +919,14 @@ en:
       log_out: Log Out
       logged_in_as: 'Logged in:'
       my_activity: My Activity
-      my_maps: Favourites
-      settings: Settings
+      my_maps: Favorites
+      settings: My Profile
       sign_up: Create Account
       user_stats: Stats
     nav:
       about: About
       add_layer: Add Mosaic
-      add_map: Upload Map
+      add_map: Upload
       geosearch_layers: Find Mosaics by Location
       geosearch_maps: Find Maps by Location
       help: Help
@@ -926,6 +934,8 @@ en:
       layers: Browse All Mosaics
       maps: Browse All Maps
       rectified_maps: Browse Rectified Maps
+      view_maps: Browse
+      privacy: Data Privacy / Terms
     search:
       all_maps: All maps
       author: Author
