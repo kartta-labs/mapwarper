@@ -592,6 +592,24 @@ p {
 	padding-left: 30px;
 }
 
+
+
+.siteLogo {
+  background-color: rgba(255, 179, 111, 0.4);
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  background-image: asset_url('re-logo.png');
+  background-size: cover;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.headerDiv h1 {
+  display: inline-block;
+}
+
+
 #warper-maindiv .buttonWarper {
 	background:#556b2f;
 }
@@ -692,7 +710,11 @@ font-weight: strong;
 
 .headerDiv {
 	position: relative;
+/*
 	background: #e2dedb asset_url('header_bg.jpg') 0 -30px scroll; 
+*/
+  background-image: asset_url('recity8.png');
+  background-repeat: repeat-x;
 	padding: 2px 10px 0 10px;
 }
 
@@ -1765,7 +1787,7 @@ width: 140px !important;
 }
 
 .headerDiv h1 {
-	font-size:36px; /*change later*/
+	font-size:18px; /*change later*/
 
 	margin-left:20px;
 	line-height: 1;
@@ -1953,7 +1975,7 @@ div.layer-maps-col {
 }
 
 .ui-tabs .ui-tabs-panel{
-
+  padding: 0;
 }
 
 .ol-popup {

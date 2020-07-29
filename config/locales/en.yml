@@ -106,7 +106,7 @@ en:
     num_th: Number of Maps
     per_page: per page
     percent_th: Percentage Complete
-    site_title: Kartta-Labs warper
+    site_title: rǝ warpǝr
     status_th: Status
     title_th: Title
     update_button: Update
@@ -153,13 +153,13 @@ en:
         confirm_button: Confirm my account
         greeting: Welcome,
         intro: Thanks for signing up to use %{site_name}. Please confirm your email to continue the sign up process.
-        subject: Kartta-Labs warper email address confirmation instructions
+        subject: rǝ warpǝr email address confirmation instructions
       reset_password_instructions:
         greeting: Hello
         intro: Someone has requested a link to change your password. You can do this through the link below.
         link: Change my password
         please_ignore: If you are not expecting this, please ignore this email. Your password won't change until you access the link above and create a new one.
-        subject: Kartta-Labs warper Reset password instructions
+        subject: rǝ warpǝr Reset password instructions
       unlock_instructions:
         click_the_link: 'Click the link below to unlock your account:'
         greeting: Hello
@@ -208,7 +208,7 @@ en:
       signed_up: Welcome! You have signed up successfully.
       signed_up_but_inactive: You have signed up successfully. However, we could not sign you in because your account is not yet activated.
       signed_up_but_locked: You have signed up successfully. However, we could not sign you in because your account is locked.
-      signed_up_but_not_allowed_in: Thanks! A message with a confirmation link has been sent to your email address. Please open the link to activate your account. However please be aware that logins are disabled currently as Kartta-Labs warper is in read only mode.
+      signed_up_but_not_allowed_in: Thanks! A message with a confirmation link has been sent to your email address. Please open the link to activate your account. However please be aware that logins are disabled currently as rǝ warpǝr is in read only mode.
       signed_up_but_unconfirmed: Thanks! A message with a confirmation link has been sent to your email address. Please open the link to activate your account.
       update_needs_confirmation: You updated your account successfully, but we need to verify your new email address. Please check your email and click on the confirm link to finalize confirming your new email address.
       updated: You updated your account successfully.
@@ -280,7 +280,7 @@ en:
       button: Upload CSV!
       csv_file: CSV File to Upload
       header: Bulk Control Point CSV Import
-      help_html: For individual maps instead of using this page you can upload a CSV on the map rectify view, under the control points table. The csv should have a header <pre><code>x,y,lon,lat</code></pre>
+      help_html: For individual maps instead of using this page you can upload a CSV on the map recitfy view, under the control points table. The csv should have a header <pre><code>x,y,lon,lat</code></pre>
       import_help_html: 'Use this page to import many control points for many maps. Upload a CSV, comma separated file with a header row with the following format: <pre><code>mapid,x,y,lon,lat</code></pre> where <code>mapid</code> equals the warper map ID for each map you want to add a control point to. <br /> Points can only be added, not updated. Duplicate control points will not be added if imported again.'
       new_import_header: New Bulk Import
     destroy:
@@ -318,9 +318,9 @@ en:
       all_my_maps: See all Favourites
       click_news: click here to read this story
       create_layer: Create a new mosaic
-      info_contact: Contact kartta-labs@google.com for more information or issues.
+      info_contact: Contact re-contact@google.com for more information or issues.
       info_header: What is it?
-      info_paragraph_html: Warper is a free to use and open source map georectifier from Kartta-Labs by Google.
+      info_paragraph_html: Warper is a free to use and open source map georectifier from rə Maps by Google.
       more: read more
       news: News
       overview_header: Overview
@@ -894,7 +894,7 @@ en:
   shared:
     disabled_site:
       close: Okay
-      message_html: "<strong style='color:red;font-weight:normal;'>NOTICE: Kartta-Labs warper is currently in read only mode so the system cannot accept further uploads and edits.  We apologize for the inconvenience.</strong>"
+      message_html: "<strong style='color:red;font-weight:normal;'>NOTICE: rǝ warpǝr is currently in read only mode so the system cannot accept further uploads and edits.  We apologize for the inconvenience.</strong>"
     export_window:
       header: Export
       links: Export Links

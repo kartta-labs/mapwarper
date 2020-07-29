@@ -2,12 +2,28 @@ body {
   color: black;
 }
 
-$primary: #005ece;
-$primary-slight: rgba($primary, 0.2);
-$primary-dark: #002d64;
-$complim: #ffb36f;
-$complim-slight: rgba($complim, 0.2);
+//$primary: #005ece;
+$primary-dark: #00ff00;
+$primary: #ed220d;
+//$primary-slight: rgba($primary, 0.2);
+//$primary-slight: #ffa78f;
+//$primary-slight: #ffcabb;
+
+//$primary-slight: #fee8e7;
+//$primary-slight: #dde0b6;
+$primary-slight: #f3d6be;
+
+//$primary-dark: #002d64;
+
 $primary-slighter: rgba($primary, 0.05);
+
+
+
+
+//$complim: #ffb36f;
+//$complim: #0dd7ed;
+$complim: #aaaaaa;
+$complim-slight: rgba($complim, 0.2);
 
 
 a:hover {
@@ -19,9 +35,13 @@ h1 {
 }
 .headerDiv{
   padding: 2px 0px 0 0px;
+  background-color: rgba(255, 179, 111, 0.4);
+  background-image: asset_url("recity4.png");
+  background-repeat: repeat-x;
 }
 .headerDiv h1 {
-  font-size: 36px;
+  font-size: 18px;
+  margin-top: 0px;
   margin-left: 5px;
   line-height: 1;
   padding: 8px 0 7px 10px !important;
@@ -71,7 +91,8 @@ h1 {
 
 #map_table.card, #layer_table.card {
   td {
-    background: $complim-slight;
+    //    background: $complim-slight;
+        background: $primary-slight;
   }
 } 
 
@@ -102,17 +123,26 @@ h1 {
 
 }
 
+.user_status a {
+  background: white !important;
+  color: #007bff !important;
+}
+
+.user_status a:hover {
+  background: $primary !important;
+  color: white !important;
+}
+
 .buttonWarper,
 .buttonWarperBlue,
 input[type="submit"],
- .user_status a,
 .selected-locale,
 .selective-locale {
   background: $primary;
   color: white !important; 
 }
 
-.buttonWarper:hover, .buttonWarperBlue:hover, input[type="submit"]:hover,  .user_status a:hover, 
+.buttonWarper:hover, .buttonWarperBlue:hover, input[type="submit"]:hover,
 .selective-locale:hover {
   box-shadow:1px 2px 4px 2px rgba(0,0,0,0.2), inset 1px 2px 4px rgba(255,255,255,0.4);;
 
@@ -123,10 +153,15 @@ input[type="submit"],
 	transition:all 0.2s ease-in-out;
 }
 
+#nav {
+  display: inline-block;
+}
 
 #navlist li a,
 #navlist li span {
-  background: $complim;
+  // background: $complim;  // background color for non-selected primary nav buttons
+  padding: 5px 15px;
+  background: white;
 }
 
 #navlist li span {
@@ -147,7 +182,10 @@ input[type="submit"],
 }
 
 .ui-widget-header {
-  background: $primary-slight;
+  //  background: $primary-slight;
+  //background: $complim-slight;
+  background: #ffffff;
+  border: 0;
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default {
@@ -176,8 +214,10 @@ color:white !important;
   border: 2px solid $primary;
 }
 
+/* slider bar color */
 .noUi-connect {
-  background: $primary !important;
+  //  background: $primary !important;
+  background: $complim-slight;
 }
 
 .user_status{
@@ -198,4 +238,58 @@ ul.locales {
 }
 .google-logo{
   margin-bottom: 2px;
+}
+
+/* slider handle colors */
+div.noUi-handle {
+  background: $primary;
+}
+
+.alignLeft {
+  float: left;
+  display: inline-block;
+}
+
+.alignRight {
+  float: right;
+  display: inline-block;
+}
+
+div.searchPanel {
+}
+
+div.searchPanel div.searchPanelPart {
+  vertical-align: middle;
+  display: inline-block;
+  padding: 0 0;
+}
+
+
+#search-form .searchPanelPart input {
+  margin-bottom: 0;
+}
+
+
+div.searchPanelPart.radios {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+
+td.mapTableImage {
+  width: 100px;
+}
+
+td.mapTableInfo {
+  width: 100%;
+}
+
+#cookie-bar {
+  background-color: $complim-slight;
+  border-bottom: 1px solid black;
+}
+
+
+#wooTabs input {
+  border-color: #cccccc;
 }
