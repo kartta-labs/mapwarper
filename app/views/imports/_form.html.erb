@@ -13,7 +13,7 @@
 
   <p>
   <label for="metadata"><b><%= t('.metadata') %></b></label> <br />
-  (<a href="/api/v1/#imports"><%= t('.metadata_hint') %></a>)<br />
+  (<a href=<%= APP_CONFIG['site_prefix'] + '/api/v1/#imports'%> ><%= t('.metadata_hint') %></a>)<br />
     <%= f.file_field :metadata %>
   </p>
 
