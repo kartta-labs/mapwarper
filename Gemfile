@@ -37,13 +37,7 @@ gem "rubyzip", ">= 2.0.0"
 gem 'devise'
 gem 'devise-encryptable'
 
-gem 'omniauth-twitter'
-gem 'omniauth-osm'
-gem 'omniauth-github'
-gem 'omniauth-mediawiki'
-gem 'omniauth-facebook'
-gem 'omniauth-google-oauth2'
-gem 'omniauth-rails_csrf_protection', '~> 0.1.2'
+#gem 'omniauth-rails_csrf_protection', '~> 0.1.2'
 
 gem 'pg', '~>0.21'
 
