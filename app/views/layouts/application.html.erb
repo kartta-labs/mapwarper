@@ -9,8 +9,8 @@
     <%= javascript_include_tag "openlayers/2.8/OpenLayers-2.8/OpenLayers" %>
     <%= javascript_include_tag 'application' %>
     <%= tag("link", :rel => "stylesheet", :href=> "https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600&display=swap") %>
-    <%= tag("link", :rel => "stylesheet", :media =>"screen", :href=> "/m/kartta-app-menu.css") %>
-    <script src="/m/kartta-app-menu.js"></script>
+    <script src="/m/kartta-app.js"></script>
+    <%= tag("link", :rel => "stylesheet", :media =>"screen", :href=> "/m/kartta-app.css") %>  
     <%= csrf_meta_tags %>
 
     <%= yield :head %>
@@ -22,9 +22,7 @@
     <body>
   <%end%>
 
-    <% if !cookies[:allow_cookies] %>
-      <%= render 'layouts/cookie_bar' %>
-    <% end %>
+    <div id="kartta-app-cookie-bar"></div>
 
     <%= render 'layouts/hms_header' %>
 

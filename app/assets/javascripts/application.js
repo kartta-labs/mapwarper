@@ -28,7 +28,6 @@
 //= require ol-layerswitcher
 //= require toastr.min
 //= require notifications
-//= require cookie-bar
 //= require hms-header
 
 var querystring = require('querystring-component');
