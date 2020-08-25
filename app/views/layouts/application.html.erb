@@ -8,7 +8,9 @@
     <link href='//fonts.googleapis.com/css?family=Lato:400,700|Sorts+Mill+Goudy|Vidaloka' rel='stylesheet' type='text/css'>
     <%= javascript_include_tag "openlayers/2.8/OpenLayers-2.8/OpenLayers" %>
     <%= javascript_include_tag 'application' %>
-
+    <%= tag("link", :rel => "stylesheet", :href=> "https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600&display=swap") %>
+    <%= tag("link", :rel => "stylesheet", :media =>"screen", :href=> "/m/kartta-app-menu.css") %>
+    <script src="/m/kartta-app-menu.js"></script>
     <%= csrf_meta_tags %>
 
     <%= yield :head %>

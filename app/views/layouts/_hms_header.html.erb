@@ -1,15 +1,5 @@
 <header class="hms-common">
-  <h1>
-  <a href=<%= APP_CONFIG['site_prefix'] ? APP_CONFIG['site_prefix'] + "/" : "/" %> >
-      <picture>
-          <source srcset="<%= image_path "site-logo.png" %>" type="image/png"></source>
-          <%= image_tag "site-logo.png",
-              :srcset => image_path("site-logo.png"),
-              :alt => "t-layouts.logo.alt_text", :class => "logo" %>
-      </picture>
-    </a>
-  </h1>
-
+  <div id="kartta-app-menu-placeholder" ></div>
   <nav class='secondary'>
     <ul>
       <li><%= link_to_unless((current_page?(maps_url) && !current_page?(maps_url(:show_warped =>1))),t('shared.nav.view_maps'), maps_url) { "<span>#{t('shared.nav.view_maps')}</span>".html_safe } %></li>
