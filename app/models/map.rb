@@ -87,7 +87,12 @@ class Map < ActiveRecord::Base
   end
 
   def thumb_url
-    (APP_CONFIG['site_prefix'] || "") + self.upload.url(:thumb)
+    thumb = self.upload.url(:thumb)
+    if thumb.start_with?('http')
+      thumb
+    else
+      (APP_CONFIG['site_prefix'] || "") + thumb
+    end
   end
   
   def download_remote_image
