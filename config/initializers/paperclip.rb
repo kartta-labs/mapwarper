@@ -7,7 +7,7 @@ if !APP_CONFIG["public_shared_dir"].blank?
   Map.attachment_definitions[:upload][:url] =  "/#{APP_CONFIG['public_shared_dir']}/:attachment/:id/:style/:basename.:extension"
 end
 
-if APP_CONFIG["google_storage_enabled"]
+if APP_CONFIG.key?("google_storage_enabled") and ['yes', 'true'].include? APP_CONFIG["google_storage_enabled"].to_s.downcase
   #clear the path for Import as the one defined in the import model is for normal file storage 
   Import.attachment_definitions[:metadata].delete(:path)
 

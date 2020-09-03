@@ -1,5 +1,6 @@
 defaults: &defaults
   site_prefix: "/w"
+  shared_assets_path: "/assets"
   signup_url: "http://localhost//e/user/new"
   signout_url: "http://localhost//e/logout"
   trace_url: "http://localhost/e/edit#map="

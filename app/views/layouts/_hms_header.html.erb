@@ -1,5 +1,7 @@
 <header class="hms-common">
-  <div id="kartta-app-menu" ></div>
+  <div class="app-menu-container">
+    <div id="kartta-app-menu" ></div>
+  </div>
   <nav class='secondary'>
     <ul>
       <li><%= link_to_unless((current_page?(maps_url) && !current_page?(maps_url(:show_warped =>1))),t('shared.nav.view_maps'), maps_url) { "<span>#{t('shared.nav.view_maps')}</span>".html_safe } %></li>

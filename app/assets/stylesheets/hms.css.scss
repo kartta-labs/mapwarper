@@ -240,56 +240,8 @@ ul.locales {
   margin-bottom: 2px;
 }
 
-/* slider handle colors */
-div.noUi-handle {
-  background: $primary;
-}
-
-.alignLeft {
-  float: left;
+.app-menu-container {
   display: inline-block;
-}
-
-.alignRight {
-  float: right;
-  display: inline-block;
-}
-
-div.searchPanel {
-}
-
-div.searchPanel div.searchPanelPart {
-  vertical-align: middle;
-  display: inline-block;
-  padding: 0 0;
-}
-
-
-#search-form .searchPanelPart input {
-  margin-bottom: 0;
-}
-
-
-div.searchPanelPart.radios {
-  margin-left: 15px;
-  margin-right: 15px;
-}
-
-
-td.mapTableImage {
-  width: 100px;
-}
-
-td.mapTableInfo {
-  width: 100%;
-}
-
-#cookie-bar {
-  background-color: $complim-slight;
-  border-bottom: 1px solid black;
-}
-
-
-#wooTabs input {
-  border-color: #cccccc;
+  margin: 0;
+  padding: 0;
 }
