@@ -12,6 +12,7 @@
       <script src="http://maps.google.com/maps?file=api&v=2&sensor=false&key=<%=APP_CONFIG['google_maps_key']-%>"
 type="text/javascript"></script>
     <% end %>
+    <%= render :partial => 'shared/analytics' %>
     <%= javascript_include_tag "openlayers/2.8/OpenLayers-2.8/OpenLayers" %>
     <%= javascript_include_tag "application" %>
     <%= javascript_tag "jQuery.noConflict();" -%>
@@ -211,8 +212,6 @@ type="text/javascript"></script>
     <div id="footer">
       <%= render :partial => 'shared/footer' %>
     </div>
-    <%= render :partial => 'shared/analytics' %>
-
     <%= javascript_include_tag 'bootstrap-native-v4.min.js' %>
     
   </body>
