@@ -9,8 +9,6 @@ defaults: &defaults
   email: example_user@example.com
   addthis_twitter_user: example_user@example.com
   addthis_user: example_user
-  google_analytics_code:
-  google_analytics_cookie_path:  ""
   src_maps_dir: 
   dst_maps_dir: 
   map_mask_dir: 
@@ -74,3 +72,4 @@ production:
   src_maps_dir: "/var/etc/maps/src/"
   dst_maps_dir: "/var/etc/maps/dst/"
   force_ssl: "false"  #set to "true" to force ssl in production mode 
+  analytics_tag: ""

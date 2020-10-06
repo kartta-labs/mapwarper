@@ -61,7 +61,7 @@ Listing the configuration variables and short explanations.
 
   Addthis addthis.com adds social sharing buttons. Twitter user is the twitter account that you want the tweet to come from. Addthis_user is the addthis id of your addthis account.
 
-    google_analytics_code:
+    analytics_tag:
 
   If you use Google Analytics, this is where to put the ID. e.g. "UA-18749303-1"
 
