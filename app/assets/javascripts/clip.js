@@ -1,156 +1,246 @@
-var vectors, formats;
-var controls;
+var un_bounds;
 var clipmap;
-var navigate;
-var modify;
-var polygon;
-var deletePoly;
-function updateFormats() {
+var vectorSource;
 
-  formats = {
-    'out': {
-      //wkt: new OpenLayers.Format.WKT(out_options),
-      wkt: new OpenLayers.Format.WKT(),
-      geojson: new OpenLayers.Format.GeoJSON(),
-      georss: new OpenLayers.Format.GeoRSS(),
-      gml: new OpenLayers.Format.GML(),
-      kml: new OpenLayers.Format.KML()
+drawPolygonControl = function(opts) {
+  var options = opts || {};
+
+  var button = document.createElement('button');
+  button.className  = 'crop-draw-poly-button';
+  var element = document.createElement('div');
+  element.title = "Add or Modify shapes";
+  element.className = 'crop-draw-poly ol-unselectable ol-control ol-active';
+  element.appendChild(button);
+
+  var drawPolygon = function(e) {
+    options.modify.setActive(true);
+    options.draw.setActive(true)
+
+    options.select.setActive(false); 
+  };
+
+  button.addEventListener('click', drawPolygon, false);
+
+  options.modify.on("change:active", function(e){
+    if (e.oldValue == false){
+      element.classList.add("ol-active")
+    } else {
+      element.classList.remove("ol-active")
     }
-  };
-}
+  })
 
-function clipinit() {
-
-  var mds = new OpenLayers.Control.MouseDefaults();
-
-  var iw = clip_image_width + 1000;
-  var ih = clip_image_height + 500;
-  clipmap = new OpenLayers.Map('clipmap', {
-    controls: [mds, new OpenLayers.Control.PanZoomBar()],
-    maxExtent: new OpenLayers.Bounds(-1000, 0, iw, ih),
-    maxResolution: 'auto',
-    numZoomLevels: 9
+  ol.control.Control.call(this, {
+    element: element,
+    target: options.target
   });
+};
 
-  var image = new OpenLayers.Layer.WMS(title,
-          clip_wms_url, {
-            layers: 'basic',
-            format: 'image/png',
-            status: 'unwarped'
-          });
+if ( ol.control.Control ) drawPolygonControl.prototype = ol.control.Control;
+drawPolygonControl.prototype = Object.create( ol.control.Control && ol.control.Control.prototype );
+drawPolygonControl.prototype.constructor = drawPolygonControl;
 
-  clipmap.addLayer(image);
-  if (!clipmap.getCenter()) {
-    clipmap.zoomToMaxExtent();
-  }
-  //if theres a file load it
-  //else make a plain one
+deletePolygonControl = function(opts) {
+  var options = opts || {};
 
-  if (gml_file_exists) {
+  var button = document.createElement('button');
+  button.className  = 'crop-del-poly-button';
+  var element = document.createElement('div');
+  element.className = 'crop-del-poly ol-unselectable ol-control';
+  element.title ="Delete this shape";
+  element.appendChild(button);
 
-    vectors = new OpenLayers.Layer.GML("GML", gml_url);
-  } else {
-    //console.log ("else");
-    vectors = new OpenLayers.Layer.Vector("Vector Layer");
-  }
-  clipmap.addLayer(vectors);
 
-  updateFormats();
+  var deletePolygon = function(e) {
+    options.modify.setActive(false);
+    options.draw.setActive(false)
 
-  vectors.styleMap.styles.temporary.defaultStyle.strokeWidth = 3;
-
-  var modifyOptions = {
-    onModificationStart: function(feature) {
-      //  OpenLayers.Console.log("start modifying", feature.id);
-    },
-    onModification: function(feature) {
-      // OpenLayers.Console.log("modified", feature.id);
-    },
-    onModificationEnd: function(feature) {
-      //  OpenLayers.Console.log("end modifying", feature.id);
-    },
-    onDelete: function(feature) {
-      //  OpenLayers.Console.log("delete", feature.id);
-    },
-    title: I18n["clip"]["modify_tool_title"],
-    displayClass: "olControlModifyFeature"
+    options.select.setActive(true); 
   };
 
-  var scratchGeom;
-  modify = new OpenLayers.Control.ModifyFeature(vectors, modifyOptions);
-  modify.events.register("activate", this, function() {
-    scratchGeom = null;
-  });
-  navigate = new OpenLayers.Control.Navigation({
-    title: I18n["clip"]["move_tool_title"]
-  });
-  navigate.events.register("activate", this, function() {
-    //check to see if theres something in the temp buffer
-    if (scratchGeom) {
-      polygon.drawFeature(scratchGeom);
+  button.addEventListener('click', deletePolygon, false);
+
+  options.select.on("change:active", function(e){
+    if (e.oldValue == false){
+      element.classList.add("ol-active")
+    } else {
+      element.classList.remove("ol-active")
     }
+  })
+
+  ol.control.Control.call(this, {
+    element: element,
+    target: options.target
   });
-  polygon = new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Polygon,
-          {
-            title: I18n["clip"]["draw_tool_title"],
-            displayClass: 'olControlDrawFeature',
-            callbacks: {
-              "cancel": function(polyGeom) {
-                scratchGeom = polyGeom.clone();
-              }
-            }
-          }
-  );
+};
+
+if ( ol.control.Control ) deletePolygonControl.prototype = ol.control.Control;
+deletePolygonControl.prototype = Object.create( ol.control.Control && ol.control.Control.prototype );
+deletePolygonControl.prototype.constructor = deletePolygonControl;
+
+function clip_init() {
+  var iw = clip_image_width ;
+  var ih = clip_image_height ;
+  un_bounds =  [0, 0, iw, ih];
+  var extent = un_bounds;
+
+  if (typeof (clipmap) == 'undefined') {
+    var projection = new ol.proj.Projection({
+      code: 'EPSG:32663',
+      units: 'm'
+    });
+    var layers = [
+      new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          extent: extent,
+          url: clip_wms_url,
+          projection:  projection,
+          params: {'FORMAT': 'image/png', 'STATUS': 'unwarped', 'SRS':'epsg:4326'}
+        })
+      })
+    ];
+    var url ="";
+    if (mask_exists) {
+      url = mask_url;
+      vectorSource = new ol.source.Vector({
+        url: url,
+        projection: 'EPSG:32663',
+        format: new ol.format.GeoJSON()
+      });
+    } else {
+        vectorSource = new ol.source.Vector({
+          projection: 'EPSG:32663',
+          format: new ol.format.GeoJSON()
+        });
+    }
 
 
-  polygon.featureAdded = function(feature) {
-    scratchGeom = null;
-    polygon.deactivate();
-    modify.activate();
-  };
 
-  deletePoly = new OpenLayers.Control.SelectFeature(vectors,
-          {
-            onSelect: deletePolygon,
-            title: I18n["clip"]["delete_tool_title"],
-            displayClass: 'olControlDeleteFeature'
-          });
+    var vertexStyle = new ol.style.Style({
+      image: new  ol.style.Circle({
+        radius: 4,
+        fill: new ol.style.Fill({
+          color: 'orange'
+        })
+      }),
+      geometry: function(feature) {
+        var coords = feature.getGeometry().getCoordinates()[0];
+        return new ol.geom.MultiPoint(coords);
+      }
+    });
 
-  var controlpanel = new OpenLayers.Control.Panel(
-          {
-            displayClass: 'olControlEditingToolbar2'
-          }
-  );
 
-  controlpanel.addControls([deletePoly, modify, polygon, navigate]);
-  clipmap.addControl(controlpanel);
-  navigate.activate();
-}
+    var vectorLayer = new ol.layer.Vector({
+      source: vectorSource,
+      style: [new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'rgba(238,153,0,0.4)'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#ee9900',
+          width: 2
+        }),
+        image: new ol.style.Circle({
+          radius: 7,
+          fill: new ol.style.Fill({
+            color: '#ee9900'
+          })
+        })
+      }), 
+      vertexStyle]
+    });
 
-function deletePolygon(feature) {
-  var c = confirm(I18n["clip"]["confirm_delete_tool"]);
-  if (c === true) {
-    vectors.removeFeatures([feature]);
+    var drawingStyle = new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: 'rgba(0,0,255, 0.4)'
+      }),
+      stroke: new ol.style.Stroke({
+        color: 'blue',
+        width: 2
+      }),
+      image: new ol.style.Circle({
+        radius: 7,
+        fill: new ol.style.Fill({
+          color: 'orange'
+        })
+      })
+    });
+
+    var deletePolygon = function (e) {
+      if (e.selected) {
+        var c = confirm(I18n["clip"]["confirm_delete_tool"]);
+        if (c === true) {
+          vectorSource.removeFeature(e.selected[0]);
+        }
+        select.getFeatures().remove(e.selected[0]);
+      }
+    }
+
+    var select = new ol.interaction.Select({
+      source: vectorSource
+    });
+    select.setActive(false);
+    select.on('select', function(e) {
+      deletePolygon(e);
+    });
+
+    var modify = new ol.interaction.Modify({
+      source: vectorSource,
+      pixelTolerance: 20,
+      style: drawingStyle
+    });
+
+    var draw = new ol.interaction.Draw({
+      source: vectorSource,
+      type: 'Polygon'
+    });
+
+    //deletes the vertex under the pointer. or the created draft when user presses the DELETE key (like ol2 behaviour)
+    document.addEventListener('keydown', function(event) {
+      if (event.key === "Delete") {
+        modify.removePoint();
+        draw.removeLastPoint()
+      }
+    });
+
+
+    clipmap = new ol.Map({
+      layers: layers,
+      target: 'clipmap',
+      controls: ol.control.defaults().extend([
+        new deletePolygonControl({source: vectorSource, select: select,  modify: modify, draw: draw}),
+        new drawPolygonControl({source: vectorSource, select: select,  modify: modify, draw: draw})
+      ]),
+      view: new ol.View({
+        center: ol.extent.getCenter(extent),
+        minZoom: -4,
+        maxZoom: 6,
+        maxResolution: 10.496,
+        projection: projection
+      })
+    });
+    clipmap.getView().fit(extent, clipmap.getSize());
+  
+    clipmap.addInteraction(modify);
+    clipmap.addInteraction(draw);
+    clipmap.addInteraction(select);
+
+    clipmap.addLayer(vectorLayer);
+
+
   }
-  deletePoly.unselectAll();
-  deletePoly.deactivate();
-  navigate.activate();
-}
+
+
+
+};
 
 function destroyMask() {
-  vectors.destroyFeatures();
+  vectorSource.clear();
 }
-function deselect() {
-  modify.deactivate();
-  polygon.deactivate();
-}
-//vectors.features[0].geometry.components[0].components[0].x
-function serialize_features() {
-  // var type = document.getElementById("formatType").value;
-  var type = "gml";
-  var str = formats['out']['gml'].write(vectors.features);
 
-  document.getElementById('output').value = str;
+function serialize_features() {
+  var gf = new ol.format.GeoJSON();
+  var geojson = gf.writeFeatures(vectorSource.getFeatures());
+  document.getElementById('output').value = geojson;
 }
 
 function updateOtherMaps() {
@@ -164,4 +254,3 @@ function updateOtherMaps() {
     warped_wmslayer.getSource().updateParams({'random': Math.random()})
   }
 }
-

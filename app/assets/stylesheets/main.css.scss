@@ -1619,7 +1619,147 @@ font-size: smaller;
 }
 
 
-/* OPENLAYERS spechul stilz */
+/* OPENLAYERS  */
+
+
+#to_map {
+
+  .add-layer-button{
+    background-image: asset_url("add_layer_button.gif");
+    background-repeat: no-repeat;
+    background-position-x: 3px;
+    background-position-y: 4px;
+    background-size: 25px;
+    height: 31px !important;
+    width: 31px !important;
+  }
+
+  .add-layer {
+    top: 10px;
+    right:10px;
+  }
+
+  .drag-pan {
+    right:50px;
+  }
+  .modify-point {
+    right:90px;
+  }
+  .draw-point {
+    right:130px;
+  }
+
+}
+
+
+.drag-pan {
+  top: 10px;
+  right:10px;
+}
+
+.drag-pan-button {
+  background-image: asset_url("dragpan_on.png");
+  background-repeat: no-repeat;
+  background-position-x: 3px;
+  background-position-y: 4px;
+  background-size: 25px;
+  height: 31px !important;
+  width: 31px !important;
+}
+
+
+.modify-point {
+  top: 10px;
+  right: 50px;
+}
+
+.modify-point-button {
+  background-image: asset_url("modify_point_on.png");
+  background-repeat: no-repeat;
+  background-position-x: 3px;
+  background-position-y: 4px;
+  background-size: 25px;
+  height: 31px !important;
+  width: 31px !important;
+}
+
+.draw-point {
+  top: 10px;
+  right:90px;
+}
+
+.draw-point-button {
+  background-image: asset_url("draw_point_on.png");
+  background-repeat: no-repeat;
+  background-position-x: 3px;
+  background-position-y: 4px;
+  background-size: 25px;
+  height: 31px !important;
+  width: 31px !important;
+}
+
+.ol-control.ol-active {
+
+  .draw-point-button {
+    background-image: asset_url("draw_point_active.png");
+  }
+
+  .modify-point-button {
+    background-image: asset_url("modify_point_active.png");
+  }
+
+  .drag-pan-button {
+    background-image: asset_url("dragpan_active.png");
+  }
+  .crop-del-poly-button {
+    background-image: asset_url("dragpan_active.png");
+  }
+
+  .crop-draw-poly-button {
+    background-image: asset_url("draw_polygon_on.png");
+  }
+}
+ 
+.layer-switcher {
+  top: 5.5em !important;
+}
+
+ #keyboard_shortcuts {
+   font-size: smaller;
+ }
+
+
+
+.crop-del-poly {
+  top: 10px;
+  right: 10px;
+}
+
+.crop-del-poly-button {
+  background-image: asset_url("draw_polygon_delete.png");
+  background-repeat: no-repeat;
+  background-position-x: 3px;
+  background-position-y: 4px;
+  background-size: 25px;
+  height: 31px !important;
+  width: 31px !important;
+}
+
+.crop-draw-poly {
+  top: 10px;
+  right: 48px; 
+}
+
+.crop-draw-poly-button {
+  background-image: asset_url("draw_polygon_off.png");
+  background-repeat: no-repeat;
+  background-position-x: 3px;
+  background-position-y: 4px;
+  background-size: 25px;
+  height: 31px !important;
+  width: 31px !important;
+}
+
 
 .olPopupCloseBox {
     background: asset_url("close.gif") no-repeat scroll 0% 0%;
@@ -2104,3 +2244,19 @@ div.layer-maps-col {
   border:none;
   font-weight: bold;
 }
+
+.date-control {
+  top: 0.7em;
+  right: 0.5em;
+  input {
+    width: 75px;
+  }
+  span {
+    margin: 0.5em;
+  }
+}
+
+#to_map .date-control{
+  top: 3em;
+}
+

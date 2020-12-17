@@ -7,6 +7,7 @@ class Api::V1::MapsControllerTest < ActionController::TestCase
   
   setup do
     @map = FactoryGirl.create(:available_map)
+    FactoryGirl.create(:original_masking, :map => @map)
     @warped_map = FactoryGirl.create(:warped_map, :upload_file_name => "different.png")
     MapsOcrJob.any_instance.stubs(:google_image_annotate).returns( JSON.parse({responses: [ text_annotations: [ description: "FOOBAR"]]}.to_json, object_class: OpenStruct) )
     MapsOcrJob.any_instance.stubs(:call_google_geocode).returns("dummy text")
@@ -32,20 +33,6 @@ class Api::V1::MapsControllerTest < ActionController::TestCase
       
     end
     
-    def cleanup_gml(map)
-      unless map.masking_file_gml == File.join(Rails.root, "/test/fixtures/data/", "test") + ".gml"
-        
-        if File.exists?(map.masking_file_gml)
-          File.delete(map.masking_file_gml)
-        end
-        if File.exists?(map.masking_file_gml+".ol")
-          File.delete(map.masking_file_gml+".ol")
-        end
-        if File.exists?(map.masking_file_gfs)
-          File.delete(map.masking_file_gfs)
-      end
-      end
-    end
     
     class LoggedOut < SingleMapTest   
       test "get a map" do
@@ -251,33 +238,24 @@ class Api::V1::MapsControllerTest < ActionController::TestCase
       #          patch  'mask_rectify' => 'crop_and_rectify'
     
       test "save_mask" do
-        test_gml = File.join(Rails.root, "/test/fixtures/data/",  @warped_map.id.to_s) + ".gml"
-        Map.any_instance.stubs(:masking_file_gml).returns(test_gml)
-
-        assert !File.exists?(test_gml)
-        output = '<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"><gml:featureMember xmlns:gml="http://www.opengis.net/gml"><feature:features xmlns:feature="http://mapserver.gis.umn.edu/mapserver" fid="OpenLayers.Feature.Vector_207"><feature:geometry><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates decimal="." cs="," ts=" ">1490.0376070686068,5380.396178794179 3342.4880893970894,5380.214910602912 3582.659,5126.446 3555.463,4813.692 3637.051,4487.34 4276.157,3753.048 4575.313,3113.942 4546.465124740124,1412.519663201663 2417.4615530145525,1317.354124740125 1431.415054054054,1294.9324823284824 1447.7525384615387,2187.807392931393 1434.5375363825372,5034.563750519751 1490.0376070686068,5380.396178794179</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></feature:geometry></feature:features></gml:featureMember></wfs:FeatureCollection>'
+        output = '{ "type": "FeatureCollection",  "features": [{ "type": "Feature", "properties": { "gml_id": "OpenLayers.Feature.Vector_207" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 1490.037607068606803, -5310.396178794178923 ], [ 3342.488089397089425, -5310.214910602911914 ], [ 3582.659, -5056.446 ], [ 3555.463, -4743.692 ], [ 3637.051, -4417.34 ], [ 4276.157, -3683.048 ], [ 4575.313, -3043.942 ], [ 4546.465124740124338, -1342.519663201662979 ], [ 2417.461553014552464, -1247.354124740124917 ], [ 1431.415054054054053, -1224.932482328482365 ], [ 1447.752538461538734, -2117.807392931393224 ], [ 1434.537536382537155, -4964.563750519751011 ], [ 1490.037607068606803, -5310.396178794178923 ] ] ] } }]}'
       
         post 'mask', :id => @warped_map.id, :format => :json, :output => output
         assert_response :ok
-        assert File.exists?(test_gml)
+        assert !@warped_map.masking.original.nil?
       
-        #cleanup
-        cleanup_gml(@warped_map)
       end
 
       test "delete_mask" do
-        test_gml = File.join(Rails.root, "/test/fixtures/data/",  @warped_map.id.to_s) + ".gml"
-        Map.any_instance.stubs(:masking_file_gml).returns(test_gml)
-
-        output = '<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"><gml:featureMember xmlns:gml="http://www.opengis.net/gml"><feature:features xmlns:feature="http://mapserver.gis.umn.edu/mapserver" fid="OpenLayers.Feature.Vector_207"><feature:geometry><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates decimal="." cs="," ts=" ">1490.0376070686068,5380.396178794179 3342.4880893970894,5380.214910602912 3582.659,5126.446 3555.463,4813.692 3637.051,4487.34 4276.157,3753.048 4575.313,3113.942 4546.465124740124,1412.519663201663 2417.4615530145525,1317.354124740125 1431.415054054054,1294.9324823284824 1447.7525384615387,2187.807392931393 1434.5375363825372,5034.563750519751 1490.0376070686068,5380.396178794179</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></feature:geometry></feature:features></gml:featureMember></wfs:FeatureCollection>'
+        output = '{ "type": "FeatureCollection",  "features": [{ "type": "Feature", "properties": { "gml_id": "OpenLayers.Feature.Vector_207" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 1490.037607068606803, -5310.396178794178923 ], [ 3342.488089397089425, -5310.214910602911914 ], [ 3582.659, -5056.446 ], [ 3555.463, -4743.692 ], [ 3637.051, -4417.34 ], [ 4276.157, -3683.048 ], [ 4575.313, -3043.942 ], [ 4546.465124740124338, -1342.519663201662979 ], [ 2417.461553014552464, -1247.354124740124917 ], [ 1431.415054054054053, -1224.932482328482365 ], [ 1447.752538461538734, -2117.807392931393224 ], [ 1434.537536382537155, -4964.563750519751011 ], [ 1490.037607068606803, -5310.396178794178923 ] ] ] } }]}'
         post 'mask', :id => @warped_map.id, :format => :json, :output => output
         assert_response :ok
-        assert File.exists?(test_gml)
-      
+        assert !@warped_map.masking.original.nil?
+
         delete 'delete_mask', :id => @warped_map.id, :format => :json
         assert_response :ok
       
-        assert !File.exists?(test_gml)
+        assert @warped_map.reload.masking.original.nil?
       
         body = JSON.parse(response.body)
         assert_equal "unmasked", body["data"]["attributes"]["mask_status"] 
@@ -287,10 +265,7 @@ class Api::V1::MapsControllerTest < ActionController::TestCase
     
       #clip (apply mask)
       test "clip_mask" do
-        test_gml = File.join(Rails.root, "/test/fixtures/data/", "test") + ".gml"
-        Map.any_instance.stubs(:masking_file_gml).returns(test_gml)
-        test_gfs = File.join(Rails.root, "/test/fixtures/data/", "test") + ".gfs"
-        Map.any_instance.stubs(:masking_file_gfs).returns(test_gfs)
+        FactoryGirl.create(:original_masking, :map => @warped_map)
 
         patch 'crop', :id =>@warped_map.id, :format => :json
         
@@ -308,7 +283,8 @@ class Api::V1::MapsControllerTest < ActionController::TestCase
       
         assert_equal :available, @map.status
         assert_equal :unmasked, @map.mask_status
-        output = '<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"><gml:featureMember xmlns:gml="http://www.opengis.net/gml"><feature:features xmlns:feature="http://mapserver.gis.umn.edu/mapserver" fid="OpenLayers.Feature.Vector_207"><feature:geometry><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates decimal="." cs="," ts=" ">1490.0376070686068,5380.396178794179 3342.4880893970894,5380.214910602912 3582.659,5126.446 3555.463,4813.692 3637.051,4487.34 4276.157,3753.048 4575.313,3113.942 4546.465124740124,1412.519663201663 2417.4615530145525,1317.354124740125 1431.415054054054,1294.9324823284824 1447.7525384615387,2187.807392931393 1434.5375363825372,5034.563750519751 1490.0376070686068,5380.396178794179</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></feature:geometry></feature:features></gml:featureMember></wfs:FeatureCollection>'
+
+        output = '{ "type": "FeatureCollection",  "features": [{ "type": "Feature", "properties": { "gml_id": "OpenLayers.Feature.Vector_207" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 1490.037607068606803, -5310.396178794178923 ], [ 3342.488089397089425, -5310.214910602911914 ], [ 3582.659, -5056.446 ], [ 3555.463, -4743.692 ], [ 3637.051, -4417.34 ], [ 4276.157, -3683.048 ], [ 4575.313, -3043.942 ], [ 4546.465124740124338, -1342.519663201662979 ], [ 2417.461553014552464, -1247.354124740124917 ], [ 1431.415054054054053, -1224.932482328482365 ], [ 1447.752538461538734, -2117.807392931393224 ], [ 1434.537536382537155, -4964.563750519751011 ], [ 1490.037607068606803, -5310.396178794178923 ] ] ] } }]}'
         patch 'mask_crop_rectify', :id => @map.id, :format => :json, :output => output
         assert_response :ok
             
@@ -318,7 +294,6 @@ class Api::V1::MapsControllerTest < ActionController::TestCase
       
         #cleanup
         cleanup_images(@map)
-        cleanup_gml(@map)
       end
     
     end

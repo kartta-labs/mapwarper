@@ -469,7 +469,7 @@ JSON API Format
 		"links": {
 			"self": "http://mapwarper.net/api/v1/maps/260",
 			"gcps_csv": "http://mapwarper.net/maps/260/gcps.csv",
-			"mask": "http://mapwarper.net/mapimages/260.gml.ol",
+			"mask": "http://mapwarper.net/maps/260/masking",
 			"geotiff": "http://mapwarper.net/maps/260/export.tif",
 			"png": "http://mapwarper.net/maps/260/export.png",
 			"aux_xml": "http://mapwarper.net/maps/260/export.aux_xml",
@@ -568,7 +568,7 @@ indicates that 50 results have been found over 2 pages.
 | Value | Description |
 | ------| -------     |
 | gcps_csv| CSV for the control points |
-| mask |  the GML clipping mask |
+| mask |  the geojson clipping mask |
 | geotiff | The export GeoTiff url |
 | png |The export PNG url |
 | aux_xml | The export PNG XML url |
@@ -705,7 +705,7 @@ The response will be be in the following format.
 		"links": {
 			"self": "http://mapwarper.net/api/v1/maps/2",
 			"gcps_csv": "http://mapwarper.net/maps/2/gcps.csv",
-			"mask": "http://mapwarper.net/mapimages/2.gml.ol",
+			"mask": "http://mapwarper.net/maps/2/masking",
 			"geotiff": "http://mapwarper.net/maps/2/export.tif",
 			"png": "http://mapwarper.net/maps/2/export.png",
 			"aux_xml": "http://mapwarper.net/maps/2/export.aux_xml",
@@ -772,7 +772,7 @@ GeoJSON Format
 | Value | Description |
 | ------| -------     |
 | gcps_csv| CSV for the control points |
-| mask |  the GML clipping mask |
+| mask |  the geojson clipping mask |
 | geotiff | The export GeoTiff url |
 | png |The export PNG url |
 | aux_xml | The export PNG XML url |
@@ -2128,33 +2128,32 @@ If a map cannot be found
 
 ## Masking
 
-Uses GML to mask a portion of the map. This essentially crops the map. Masking is used to delete the borders around the map images to make a seamless layer of contiguous maps. 
+Uses geojson to mask a portion of the map. This essentially crops the map. Masking is used to delete the borders around the map images to make a seamless layer of contiguous maps. 
 
 ### Get Mask
 
 | Method        | Definition | 
 | ------------- | ---------  | 
-| GET           |  http://mapwarper.net/mapimages/{:map_id}.gml.ol |
+| GET           |  http://mapwarper.net/maps/{:map_id}/masking |
 
-Gets a GML string containing coordinates for the polygon(s) to mask over.
+Gets a geojson string containing coordinates for the polygon(s) to mask over.
 No authentication required. 
 
 > ** Note: The correct way to find the path to the mask is to get the Map object and look in it's links
 
 ```
-"mask": "http://mapwarper.net/mapimages/260.gml.ol",
+"mask": "http://mapwarper.net/maps/260/masking",
 ```
 
 **Examples**
 
-http://mapwarper.net/shared/masks/7449.gml.ol 
+http://mapwarper.net/maps/7449/masking 
 
 **Response Example**
 
 ```
-{{{
-<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"><gml:featureMember xmlns:gml="http://www.opengis.net/gml"><feature:features xmlns:feature="http://mapserver.gis.umn.edu/mapserver" fid="OpenLayers.Feature.Vector_207"><feature:geometry><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates decimal="." cs="," ts=" ">1474.9689999999998,5425.602 3365.091,5357.612 3582.659,5126.446 3555.463,4813.692 3637.051,4487.34 4276.157,3753.048 4575.313,3113.942 4493.725,1917.318 4072.187,1645.358 3079.533,1441.388 2467.623,1427.79 2304.447,1264.614 1529.3609999999999,1332.6039999999998 1542.9589999999998,1862.926 2005.291,2202.876 1624.547,2542.826 </nowiki><nowiki>1651.743,3195.53 1665.341,3698.656 1692.5369999999998,3997.812 2005.291,4201.782 2005.291,4419.35 1570.155,5140.044 1474.9689999999998,5425.602</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></feature:geometry></feature:features></gml:featureMember><gml:featureMember xmlns:gml="http://www.opengis.net/gml"><feature:features xmlns:feature="http://mapserver.gis.umn.edu/mapserver" fid="OpenLayers.Feature.Vector_201"><feature:geometry><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates decimal="." cs="," ts=" ">1447.773,4854.486 1828.5169999999998,4582.526 1950.899,4242.576 1774.125,4065.802 1583.753,3902.626 1610.949,3345.108 1597.3509999999999,2923.57 1447.773,2638.0119999999997 1379.783,2787.59 1338.989,4854.486 1447.773,4854.486</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></feature:geometry></feature:features></gml:featureMember></wfs:FeatureCollection>
-}}}
+{"type": "FeatureCollection",                                                                
+"features": [{ "type": "Feature", "properties": { "gml_id": "OpenLayers.Feature.Vector_207" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 1490.037607068606803, -5310.396178794178923 ], [ 3342.488089397089425, -5310.214910602911914 ], [ 3582.659, -5056.446 ], [ 3555.463, -4743.692 ], [ 3637.051, -4417.34 ], [ 4276.157, -3683.048 ], [ 4575.313, -3043.942 ], [ 4546.465124740124338, -1342.519663201662979 ], [ 2417.461553014552464, -1247.354124740124917 ], [ 1431.415054054054053, -1224.932482328482365 ], [ 1447.752538461538734, -2117.807392931393224 ], [ 1434.537536382537155, -4964.563750519751011 ], [ 1490.037607068606803, -5310.396178794178923 ] ] ] } }]}
 ```
 
 ### Save Mask
@@ -2170,14 +2169,15 @@ Requires authentication.
 
 | Name          |              | Type        | Description  | Required  | Notes |
 | ------------- | ---------    | ----------  | ---------    | --------  | ----- |
-| map_id        |              |  integer    | the unique indentifer for the map | required  | |
-| output        |              |  gml        | the GML      | required  |        |
+| map_id        |              |  integer    | the unique identifer for the map | required  | |
+| output        |              | geojson     | the geojson      | required  |        |
 
 **cURL Example**
 
 ```
 {{{
-curl -X POST -d "format=json" -d 'output=<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"><gml:featureMember xmlns:gml="http://www.opengis.net/gml"><feature:features xmlns:feature="http://mapserver.gis.umn.edu/mapserver" fid="OpenLayers.Feature.Vector_207"><feature:geometry><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates decimal="." cs="," ts=" ">1490.0376070686068,5380.396178794179 3342.4880893970894,5380.214910602912 3582.659,5126.446 3555.463,4813.692 3637.051,4487.34 4276.157,3753.048 4575.313,3113.942 4546.465124740124,1412.519663201663 2417.4615530145525,1317.354124740125 1431.415054054054,1294.9324823284824 1447.7525384615387,2187.807392931393 1434.5375363825372,5034.563750519751 1490.0376070686068,5380.396178794179</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></feature:geometry></feature:features></gml:featureMember></wfs:FeatureCollection>' http://mapwarper.net/api/v1/maps/2/mask -b cookie
+curl -X POST -d "format=json" -d 'output={"type": "FeatureCollection",                                                                
+"features": [{ "type": "Feature", "properties": { "gml_id": "OpenLayers.Feature.Vector_207" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 1490.037607068606803, -5310.396178794178923 ], [ 3342.488089397089425, -5310.214910602911914 ], [ 3582.659, -5056.446 ], [ 3555.463, -4743.692 ], [ 3637.051, -4417.34 ], [ 4276.157, -3683.048 ], [ 4575.313, -3043.942 ], [ 4546.465124740124338, -1342.519663201662979 ], [ 2417.461553014552464, -1247.354124740124917 ], [ 1431.415054054054053, -1224.932482328482365 ], [ 1447.752538461538734, -2117.807392931393224 ], [ 1434.537536382537155, -4964.563750519751011 ], [ 1490.037607068606803, -5310.396178794178923 ] ] ] } }]}' http://mapwarper.net/api/v1/maps/2/mask -b cookie
 }}}
 ```
 
@@ -2206,7 +2206,7 @@ Requires authentication.
 
 **Response**
 
-If sucessfully deleted the response will be the affected map in json api format
+If successfully deleted the response will be the affected map in json api format
 
 
 ###Crop / Mask Map
@@ -2255,14 +2255,15 @@ Requires authentication.
 | Name        | Type        | Description | Required  |
 | ----------- | ----------- | ----------  | --------- |
 | map_id      | integer     | the unique identifier for the map | required |
-| output        |              |  gml        | the GML      | required  |        |
+| output        |              |  geojson        | the geojson      | required  |        |
 
 
 **Example**
 
 ```
 {{{
-curl -X POST -d "format=json" -d 'output=<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"><gml:featureMember xmlns:gml="http://www.opengis.net/gml"><feature:features xmlns:feature="http://mapserver.gis.umn.edu/mapserver" fid="OpenLayers.Feature.Vector_207"><feature:geometry><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates decimal="." cs="," ts=" ">1490.0376070686068,5380.396178794179 3342.4880893970894,5380.214910602912 3582.659,5126.446 3555.463,4813.692 3637.051,4487.34 4276.157,3753.048 4575.313,3113.942 4546.465124740124,1412.519663201663 2417.4615530145525,1317.354124740125 1431.415054054054,1294.9324823284824 1447.7525384615387,2187.807392931393 1434.5375363825372,5034.563750519751 1490.0376070686068,5380.396178794179</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></feature:geometry></feature:features></gml:featureMember></wfs:FeatureCollection>' http://mapwarper.net/api/v1/maps/2/mask_crop_rectify -b cookie
+curl -X POST -d "format=json" -d 'output={"type": "FeatureCollection",                                                                
+"features": [{ "type": "Feature", "properties": { "gml_id": "OpenLayers.Feature.Vector_207" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 1490.037607068606803, -5310.396178794178923 ], [ 3342.488089397089425, -5310.214910602911914 ], [ 3582.659, -5056.446 ], [ 3555.463, -4743.692 ], [ 3637.051, -4417.34 ], [ 4276.157, -3683.048 ], [ 4575.313, -3043.942 ], [ 4546.465124740124338, -1342.519663201662979 ], [ 2417.461553014552464, -1247.354124740124917 ], [ 1431.415054054054053, -1224.932482328482365 ], [ 1447.752538461538734, -2117.807392931393224 ], [ 1434.537536382537155, -4964.563750519751011 ], [ 1490.037607068606803, -5310.396178794178923 ] ] ] } }]}' http://mapwarper.net/api/v1/maps/2/mask_crop_rectify -b cookie
 }}}
 ```
 

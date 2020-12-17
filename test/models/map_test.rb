@@ -5,7 +5,7 @@ class MapTest < ActiveSupport::TestCase
  
   setup do
     @map = FactoryGirl.create(:available_map)
-    
+    FactoryGirl.create(:original_masking, :map => @map)
     FactoryGirl.create(:gcp_1, :map => @map)
     FactoryGirl.create(:gcp_2, :map => @map)
     FactoryGirl.create(:gcp_3, :map => @map)
@@ -42,15 +42,13 @@ class MapTest < ActiveSupport::TestCase
   end
 
   test "converts mask to geojson when warped" do
-    test_gml = File.join(Rails.root, "/test/fixtures/data/test.gml")
-    Map.any_instance.stubs(:masking_file_gml).returns(test_gml)
     @map.mask!
     
     resample_option = " -rn "
     transform_option = ""
     use_mask = "true"
     @map.warp!(transform_option, resample_option, use_mask)
-
+    @map.reload
     assert_not_nil @map.masking.transformed_geojson
     json = JSON.parse(@map.masking.transformed_geojson)
     assert_equal "FeatureCollection", json["type"]

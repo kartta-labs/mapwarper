@@ -1,7 +1,5 @@
 var warpedmap;
 var warped_wmslayer;
-var maxOpacity = 1;
-var minOpacity = 0.1;
 
 function get_map_layer(layerid){
   var newlayer_url = layer_baseurl + "/" + layerid;
@@ -20,6 +18,56 @@ function get_map_layer(layerid){
   return map_layer;
 }
 
+var DateControl = function(opts) {
+  var options = opts || {};
+
+  var input = document.createElement("input");
+  input.pattern="^[12][0-9]{3}$"
+  input.value = options.date || "1850";
+  input.title = "Enter in a year"
+  var span = document.createElement("span");
+  span.className = "datespan"
+  span.textContent = "Year"
+
+  var element = document.createElement("div");
+  element.className = "date-control ol-unselectable ol-control";
+  element.appendChild(span)
+  element.appendChild(input)
+
+  var handleChangeDate = function(e){
+    var num = Number(e.target.value);
+    if (num){
+     applyFilter(String(num));
+    }
+  }
+
+  input.addEventListener("input", handleChangeDate, false);
+
+  ol.control.Control.call(this, {
+    element: element,
+    target: options.target
+  });
+  
+};
+
+
+
+if ( ol.control.Control ) DateControl.prototype = ol.control.Control;
+DateControl.prototype = Object.create( ol.control.Control && ol.control.Control.prototype );
+DateControl.prototype.constructor = DateControl;
+
+
+
+var layersToFilter = [
+  "water",
+  "buildings",
+  "building_names",
+  "buildings_outline",
+  "road_names",
+  "minor_roads",
+  "roads_casing_major",
+  "roads_centre_major"
+];
 
 
 function warpedinit() {
@@ -47,6 +95,7 @@ function warpedinit() {
   var opacity = .7;
   warped_wmslayer.setOpacity(opacity);
 
+
   var blayers = [ 
     new ol.layer.Tile({
       visible: false,
@@ -60,8 +109,9 @@ function warpedinit() {
     new ol.layer.Tile({ 
       title: 'OpenStreetMap',
       type: 'base',
-      visible: true,
-      source: new ol.source.OSM() 
+      visible: false,
+      source: new ol.source.OSM(),
+      projection: "epsg:3857"
     })
   ]
 
@@ -99,10 +149,8 @@ function warpedinit() {
     })
   ];
 
-  var layers = base_layers.concat(overlay_layers); 
-
   warpedmap = new ol.Map({
-    layers: layers,
+    layers: [],
     target: 'warpedmap',
     view: new ol.View({
       center: ol.extent.getCenter(warped_extent),
@@ -111,11 +159,19 @@ function warpedinit() {
       zoom: 4
     })
   });
-
+  
   var layerSwitcher = new ol.control.LayerSwitcher({
     tipLabel: 'Layers' 
   });
   warpedmap.addControl(layerSwitcher);
+  var date = "1850";
+  if (depicts_year.length > 0 && Number(depicts_year)){
+    date = depicts_year
+  }
+  var dateControl = new DateControl({
+    date: date
+  });
+  
 
   var extent;
   if (mask_geojson) {
@@ -128,18 +184,76 @@ function warpedinit() {
   }
   warpedmap.getView().fit(extent, warpedmap.getSize()); 
   
-
   //set up slider
   jQuery("#slider").slider({
       value: 100 * opacity,
       range: "min",
       slide: function(e, ui) {
           warped_wmslayer.setOpacity(ui.value / 100);
-          OpenLayers.Util.getElement('opacity').value = ui.value;
+          document.getElementById('opacity').value = ui.value;
       }
   });
 
+  antique_layer = antique_layer_path;
 
+  olms(warpedmap, antique_layer).then(function(map) {
+  
+   // layer = map.getLayers().getArray().filter(layr => layr.get('mapbox-source') === "antique")[0]; 
+    layer = map.getLayers().getArray().filter(function (element) {
+      return element.get('mapbox-source') === "antique";
+     })[0];
+
+   
+    layer.setProperties({title: "Antique Vector Map", type: "base"})
+    layer.className_  =  "antiquelayer" // see https://github.com/openlayers/ol-mapbox-style/issues/264
+
+    layer.getSource().setAttributions('Vector Tiles <a href="https://re.city/copyright">Re.City Copyright</a>');
+
+     //add date control first
+    warpedmap.addControl(dateControl);
+
+    //listen for if the layer gets turned off and turn off the control too
+    layer.on("change:visible", function(e){
+      if (e.oldValue == false){
+        warpedmap.addControl(dateControl);
+      }else {
+        warpedmap.removeControl(dateControl);
+      }
+    })
+
+    var layers = base_layers.concat(overlay_layers); 
+    map.getLayers().extend(layers); //This adds layers to map
+    date = "1850"
+    if (depicts_year.length > 0 && Number(depicts_year)){
+      date = depicts_year
+    }
+    applyFilter(date);
+  });
+
+  
+} //warpedinit
+
+function applyFilter(date_str){
+  var startProp  = 'start_date';
+  var endProp    = 'end_date';
+   
+  var filterStart = ['any',
+      ['!', ['has', startProp]],
+      ['<=', ['get', startProp], date_str]
+    ];
+    var filterEnd = ['any',
+      ['!', ['has', endProp]],
+      ['>=', ['get', endProp], date_str]
+    ];
+
+    var newFilters = ['all', filterStart, filterEnd];
+
+ // olms.setFilter(warpedmap, "buildings", ["all",["any",["!",["has","start_date"]],["<=",["get","start_date"],"1850"]],["any",["!",["has","end_date"]],[">=",["get","end_date"],"1850"]]])
+
+    for (var i = 0; i < layersToFilter.length; i++) {
+      olms.setFilter(warpedmap, layersToFilter[i],  newFilters)
+
+    }
 }
 
 
