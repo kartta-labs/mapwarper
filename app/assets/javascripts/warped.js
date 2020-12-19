@@ -24,7 +24,7 @@ var DateControl = function(opts) {
   var input = document.createElement("input");
   input.pattern="^[12][0-9]{3}$"
   input.value = options.date || "1850";
-  input.title = "Enter in a year"
+  input.title = I18n["warp"]["enter_year"];
   var span = document.createElement("span");
   span.className = "datespan"
   span.textContent = "Year"
@@ -130,7 +130,7 @@ function warpedinit() {
   } 
 
   var base_layers = [ new ol.layer.Group({
-      title: 'Base Layer',
+      title: I18n["warp"]["base_layer"],
       layers: blayers
       })
     ] ;
@@ -144,7 +144,7 @@ function warpedinit() {
 
   var overlay_layers = [
     new ol.layer.Group({
-      title: 'Overlays',
+      title: I18n["warp"]["overlays"],
       layers:  overlays 
     })
   ];

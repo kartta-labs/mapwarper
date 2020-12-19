@@ -19,7 +19,7 @@ DrawPointControl = function(opts) {
   var button = document.createElement('button');
   button.className  = 'draw-point-button';
   var element = document.createElement('div');
-  element.title = "Add GCP";
+  element.title = I18n["warp"]["add_gcp"];
   element.className = 'draw-point ol-unselectable ol-control';
   element.appendChild(button);
 
@@ -58,7 +58,7 @@ ModifyPointControl = function(opts) {
   var button = document.createElement('button');
   button.className  = 'modify-point-button';
   var element = document.createElement('div');
-  element.title = "Move GCP";
+  element.title = I18n["warp"]["move_gcp"];
   element.className = 'modify-point ol-unselectable ol-control';
   element.appendChild(button);
 
@@ -96,7 +96,7 @@ DragPanControl = function(opts) {
   var button = document.createElement('button');
   button.className  = 'drag-pan-button';
   var element = document.createElement('div');
-  element.title = "Move Map";
+  element.title = I18n["warp"]["move_map"];
   element.className = 'drag-pan ol-unselectable ol-control ol-active';
   element.appendChild(button);
 
@@ -134,7 +134,7 @@ AddLayerControl = function(opts) {
   var button = document.createElement('button');
   button.className  = 'add-layer-button';
   var element = document.createElement('div');
-  element.title = "Add Layer";
+  element.title = I18n["warp"]["custom_layer_title"];
   element.className = 'add-layer ol-unselectable ol-control';
   element.appendChild(button);
 
@@ -249,7 +249,7 @@ var DateControl = function(opts) {
   input.id = "date-input";
   input.pattern="^[12][0-9]{3}$"
   input.value = options.date || "1850";
-  input.title = "Enter in a year"
+  input.title = I18n["warp"]["enter_year"];
   var span = document.createElement("span");
   span.className = "datespan"
   span.textContent = "Year"
@@ -402,7 +402,7 @@ function init() {
     }
     
     var base_layers = [ new ol.layer.Group({
-      title: 'Base Layer',
+      title: I18n["warp"]["base_layer"],
       layers: blayers
       })
     ] ;
@@ -416,7 +416,7 @@ function init() {
 
     var overlay_layers = [
       new ol.layer.Group({
-        title: 'Overlays',
+        title: I18n["warp"]["overlays"],
         layers:  overlays 
       })
     ];
