@@ -454,6 +454,7 @@ en:
       fail: Sorry, something went wrong with this action
     warp:
       add_gcp: Add Control Point (1,p)
+      base_layer: Base Layer
       best_guess_message: 'Map moved to best guess:'
       custom_custom_type: Custom
       custom_layer: Custom basemap
@@ -463,6 +464,7 @@ en:
       custom_layer_type: Mosaic
       custom_layer_year: Year
       custom_map_type: Map
+      enter_year: Enter in a year
       gcp_adding: Adding...
       gcp_failed: Had trouble updating that point with the server. Try again?
       gcp_premature_alert: You have to add a new control point on each map before pressing this button.
@@ -471,6 +473,7 @@ en:
       move_gcp: Move Control Point (2,d)
       move_map: Move Around Map (3,m)
       other_places: 'Other places:'
+      overlays: Overlays
       rms_error_prefix: Error
       warp_popup_title: Rectifier is Working...
       warped_layer: warped map
@@ -761,6 +764,7 @@ en:
     model:
       delete_mask_success: mask deleted
       gml_mask_saved: Map clipping mask saved (gml)
+      geojson_mask_saved:  Map clipping mask saved (geojson)
       map_type:
         index: Index/Overview
         map: Is a map

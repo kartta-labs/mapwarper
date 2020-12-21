@@ -18,7 +18,7 @@
  *= require hms
  *= require headersvg
  *= require bootstrap.min.css
- *= require openlayers/5.3/ol.css
+ *= require openlayers/6.4/ol.css
  *= require ol-layerswitcher
  *= require toastr.min.css
  *= require hms-common

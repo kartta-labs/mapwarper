@@ -1,0 +1,4 @@
+{
+  "background": 	{ "width": 512, "height": 512, "x": 0  , "y": 0 ,  "pixelRatio": 1 },
+  "stripes":		{ "width": 256, "height": 256, "x": 512, "y": 0 ,  "pixelRatio": 1 }
+}

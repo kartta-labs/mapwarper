@@ -26,18 +26,21 @@
     var map_has_bounds = false;
     var layer_baseurl = '<%= url_for(wms_layer_base_path) %>';
     var layers_array = [<%=@other_layers.join(",")-%>];
-    var map_bounds = new OpenLayers.Bounds();
+    var map_bounds;
     var map_center = false;
     var mask_geojson = false;
     var geocode_result = false;
+    var mapbox_access_token = '<%= APP_CONFIG['mapbox_access_token'] %>';
+    var antique_layer_path = sitePrefix + '/assets/antique_style_local.json';
+    var depicts_year = '<%= @map.depicts_year =%>';
   <% if @map.gcps.hard.size > 0 %>
-      map_bounds = new OpenLayers.Bounds(<%=@map.bounds-%>);
+      map_bounds = [<%=@map.bounds-%>];
       map_has_bounds = true;
   <% elsif @map.soft_bounds   %>
-     map_bounds = new OpenLayers.Bounds.fromString('<%=@map.soft_bounds-%>');
+     map_bounds = [<%=@map.soft_bounds-%>];
      map_has_bounds = true;
   <% elsif @map.has_metadata_location? %>
-      map_center = new OpenLayers.LonLat(<%="#{@map.metadata_lon},#{@map.metadata_lat}" %>);
+      map_center = [<%="#{@map.metadata_lon},#{@map.metadata_lat}" %>];
   <% else %>
       mask_geojson = <%= (@map.masking.nil? || @map.masking.transformed_geojson.blank? )? false : @map.masking.transformed_geojson.html_safe %>;
   <% end %>
@@ -77,7 +80,7 @@
 
   </script>
   <%= javascript_include_tag 'helmerttransform.js' %> 
-  <%= javascript_include_tag "warp"-%>
+  <%= javascript_include_tag "warp.ol.js"-%>
 
   <script  type="text/javascript">
     function popul() {

@@ -24,7 +24,8 @@
 //= require querystring
 //= require jquery.nouislider.all.min
 //= require cookies_helper
-//= require openlayers/5.3/ol
+//= require openlayers/6.4/ol
+//= require openlayers/ol-mapbox-style/olms
 //= require ol-layerswitcher
 //= require toastr.min
 //= require notifications

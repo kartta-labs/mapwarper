@@ -519,9 +519,22 @@ class MapsController < ApplicationController
     @current_tab = "clip"
     @selected_tab = 3
     @html_title = t('.title')+ @map.id.to_s
-    @gml_exists = "false"
-    if File.exists?(@map.masking_file_gml+".ol")
-      @gml_exists = "true"
+
+    @mask_exists = "false"
+    if @map.masking && @map.masking.has_or_create_original_ol
+      @mask_exists = "true"
+    end
+
+    if @map.versions.last 
+      @current_version_number = @map.versions.last.index
+      if User.exists?(@map.versions.last.whodunnit.to_i)
+        @current_version_user = User.find_by_id(@map.versions.last.whodunnit.to_i)
+      else
+        @current_version_user  = nil
+      end
+    else
+      @current_version_number = 1
+      @current_version_user = nil
     end
     choose_layout_if_ajax
   end
@@ -706,7 +719,7 @@ class MapsController < ApplicationController
 
   def mask_map
     respond_to do | format |
-      if File.exists?(@map.masking_file_gml)
+      if @map.masking && @map.masking.original
         message = @map.mask!
         format.html { render :text => message }
         format.js { render :text => message} #if request.xhr?
@@ -890,11 +903,11 @@ class MapsController < ApplicationController
     
   end
 
-  # sends the masking file
+  # Returns the OpenLayers version of the masking file.
+  #
   def masking
-    mask_file = @map.masking_file_gml+".ol"
-    if File.exists? mask_file
-      send_file mask_file, :x_sendfile => (Rails.env != "development") 
+    if @map.masking && @map.masking.has_or_create_original_ol
+      render :json => @map.masking.original_ol
     else
       render :json => {:stat => "not found", :items =>[]}.to_json, :status => 404
     end
