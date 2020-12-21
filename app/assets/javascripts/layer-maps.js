@@ -108,7 +108,7 @@ function init(){
       range: "min",
       slide: function(e, ui) {
         wmslayer.setOpacity(ui.value / 100);
-        OpenLayers.Util.getElement('opacity').value = ui.value;
+        document.getElementById('opacity').value = ui.value;
       }
     });
 

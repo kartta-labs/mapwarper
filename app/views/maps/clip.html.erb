@@ -2,9 +2,9 @@
   <script  type="text/javascript">
     var map_id = '<%=h @map.id -%>';
     var title = 'clipping map';
-    var gml_file_exists = <%= @gml_exists %>;
+    var mask_exists = <%= @mask_exists %>;
     var timestamp = Math.round(new Date().getTime() / 1000.0);
-    var gml_url = '<%= masking_map_url(@map) %>'+"?"+timestamp;
+    var mask_url = '<%= masking_map_url(@map) %>'+"?"+timestamp;
       var clip_image_width = <%= @map.width %>;
       var clip_image_height = <%= @map.height %>;
       var clip_wms_url = '<%= url_for :controller => 'maps', :action => 'wms', :id => @map  -%>';
@@ -15,7 +15,7 @@
   </script>
   <%= javascript_include_tag "clip" %>
 <% end -%>
-<% @onload =  "clipinit();" -%>
+<% @onload =  "clip_init();" -%>
 
 <div id="clipmap">
 </div>
@@ -33,7 +33,6 @@
         jqHighlight('maskresult');
         jQuery("#maskresult").html(data.message);
       }).bind("ajax:before", function() {
-        deselect();
         bigModalDialog2("<%= t('.clipping_wait_msg_html') %>");
         serialize_features();
       }).bind("ajax:complete", function() {

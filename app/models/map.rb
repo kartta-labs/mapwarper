@@ -424,7 +424,7 @@ class Map < ActiveRecord::Base
   end
 
   def mask_file_format
-    "gml"
+    "geojson"
   end
 
   def temp_filename
@@ -695,12 +695,11 @@ class Map < ActiveRecord::Base
     self.paper_trail_event = nil
     format = self.mask_file_format
     
-    if format == "gml"
-      return "no masking file found, have you created a clipping mask and saved it?"  if !File.exists?(masking_file_gml)
-      masking_file = self.masking_file_gml
-      layer = "features"
+    if format == "geojson"
+      return "no mask found, have you created a clipping mask and saved it?"  if !self.masking || self.masking.original.nil?
+      mask = self.masking.original
     else
-      return "no masking file matching specified format found."
+      return "no mask found matching specified format found."
     end
 
     masked_src_filename = self.masked_src_filename
@@ -711,9 +710,10 @@ class Map < ActiveRecord::Base
     #copy over orig to a new unmasked file
     FileUtils.copy(unwarped_filename, masked_src_filename)
     
-    command = ["#{GDAL_PATH}gdal_rasterize", "-i", "-b", "1", "-b", "2", "-b", "3", "-burn", "17", "-burn", "17", "-burn", "17", masking_file, "-l", layer, masked_src_filename]
-    r_stdout, r_stderr = Open3.capture3( *command )
-    logger.info command
+    command = ["#{GDAL_PATH}gdal_rasterize", "-i", "-b", "1", "-b", "2", "-b", "3", "-burn", "17", "-burn", "17", "-burn", "17", "/vsistdin/",  masked_src_filename]
+    logger.debug command
+
+    r_stdout, r_stderr = Open3.capture3( *command, :stdin_data => mask )
     
     r_out  = r_stdout
     r_err = r_stderr
@@ -884,20 +884,15 @@ class Map < ActiveRecord::Base
   
   def delete_mask
     logger.info "delete mask"
-    if File.exists?(self.masking_file_gml)
-      File.delete(self.masking_file_gml)
+
+    map_mask = Masking.find_by(map_id: self.id)
+    if map_mask
+      map_mask.update({original: nil, original_ol:nil})
     end
-    if File.exists?(self.masking_file_gml+".ol")
-      File.delete(self.masking_file_gml+".ol")
-    end
-    if File.exists?(self.masking_file_gfs)
-      File.delete(self.masking_file_gfs)
-    end
-    
+
     self.mask_status = :unmasked
     self.paper_trail_event = 'mask_deleted'
-    self.masking.destroy if self.masking
-    
+  
     save!
     self.paper_trail_event = nil
     I18n.t('maps.model.delete_mask_success')
@@ -905,50 +900,29 @@ class Map < ActiveRecord::Base
   
   
   def save_mask(vector_features)
-    if self.mask_file_format == "gml"
-      msg = save_mask_gml(vector_features)
+    if self.mask_file_format == "geojson"
+      msg = save_mask_geojson(vector_features)
     else
       msg = I18n.t('maps.model.unknown_mask_format')
     end
     msg
   end
   
-  
-  #parses geometry from openlayers, and saves it to file.
-  #GML format
-  def save_mask_gml(features)
-    require 'rexml/document'
-    if File.exists?(self.masking_file_gml)
-      File.delete(self.masking_file_gml)
-    end
-    if File.exists?(self.masking_file_gml+".ol")
-      File.delete(self.masking_file_gml+".ol")
-    end
-    if File.exists?(self.masking_file_gfs)
-      File.delete(self.masking_file_gfs)
-    end
-    origfile = File.new(self.masking_file_gml+".ol", "w+")
-    origfile.puts(features)
-    origfile.close
-    
-    doc = REXML::Document.new features
-    REXML::XPath.each( doc, "//gml:coordinates") { | element|
-      # blimey element.text.split(' ').map {|i| i.split(',')}.map{ |i| i[0] => i[1]}.inject({}){|i,j| i.merge(j)}
-      coords_array = element.text.split(' ')
-      new_coords_array = Array.new
-      coords_array.each do |coordpair|
-        coord = coordpair.split(',')
-        coord[1] = self.height - coord[1].to_f
-        newcoord = coord.join(',')
-        new_coords_array << newcoord
+  def save_mask_geojson(string)
+    #saves geojson to masking and converts to ol
+    geojson = JSON.parse(string)
+    ol_geojson = JSON.parse(string)
+
+    geojson["features"].each do | feature | 
+      feature["geometry"]["coordinates"][0].each do | coord |
+        coord[1]  = self.height - coord[1].to_f
       end
-      element.text = new_coords_array.join(' ')
-      
-    } #element
-    gmlfile = File.new(self.masking_file_gml, "w+")
-    doc.write(gmlfile)
-    gmlfile.close
-    message = I18n.t('maps.model.gml_mask_saved')
+    end
+
+    map_mask = Masking.find_or_initialize_by(map_id: self.id)
+    map_mask.update({original: JSON.dump(geojson), original_ol: JSON.dump(ol_geojson) })
+
+    message = I18n.t('maps.model.geojson_mask_saved')
   end
   
   
@@ -1097,10 +1071,10 @@ class Map < ActiveRecord::Base
         gdal_gcp_array << gcp.gdal_array
       end
       gdal_gcp_array.flatten!
-
-      command = ["ogr2ogr", "-f", "geojson", "-s_srs", "epsg:4326", "-t_srs", "epsg:3857", gdal_gcp_array, "/dev/stdout",  self.masking_file_gml].flatten
+      mask = self.masking.original
+      command = ["ogr2ogr", "-f", "geojson", "-s_srs", "epsg:4326", "-t_srs", "epsg:3857", gdal_gcp_array, "/dev/stdout",  "/vsistdin/" ].flatten
       logger.info command
-      o_out, o_err = Open3.capture3( *command )
+      o_out, o_err = Open3.capture3( *command, :stdin_data => mask  )
 
       if !o_err.blank? 
         logger.error "Error ogr2ogr script" + o_err

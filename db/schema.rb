@@ -218,8 +218,8 @@ ActiveRecord::Schema.define(version: 20191123174639) do
 
   create_table "maskings", force: :cascade do |t|
     t.text     "transformed_geojson"
-    t.text     "original"
-    t.text     "original_ol"
+    t.text     "original_gml"
+    t.text     "original_ol_gml"
     t.integer  "map_id"
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -131,7 +131,7 @@ class Api::V1::MapsController < Api::V1::ApiController
   end
   
   def crop
-    unless  File.exists?(@map.masking_file_gml)
+    unless @map.masking && @map.masking.original
       render :json => {:errors => [{:title => "Mask error", :detail => "Mask file not found"}]},:status => :unprocessable_entity
       return false
     end
