@@ -540,36 +540,15 @@ function init() {
   });
   from_map.addLayer(from_vectors);
 
-  var modify_from = new ol.interaction.Modify({
-    source: from_source,
-    pixelTolerance: 20,
-    style: drawingStyle
+  var modify_from = new ol.interaction.Translate({
+    layers: [from_vectors],
+    hitTolerance: 4,
   });
   from_map.addInteraction(modify_from);
 
-  var modify_from_array = [];
-  modify_from.on("modifyend", function(e){
-    if (modify_from_array[0]){
-      saveDraggedMarker(modify_from_array[0], "from")
-    }
-    var features = from_source.getFeatures()
-    for (var i=0;i< features.length;i++){
-      features[i].un("change", modifychange)
-    }
-    modify_from_array = [];
+  modify_from.on("translateend", function(e){
+    saveDraggedMarker(e.features.getArray()[0], "from")
   })
-  modify_from.on("modifystart", function(e){
-    var features = from_source.getFeatures()
-    for (var i=0;i< features.length;i++){
-      features[i].on("change", modifychange)
-    }
-  })
-  function modifychange(evt){
-    if (modify_from_array.indexOf(evt.target) == -1){
-      modify_from_array.push(evt.target)
-    }
-  }
-
 
   var draw_from = new ol.interaction.Draw({
     source: active_from_source,
@@ -610,35 +589,15 @@ function init() {
   });
   to_map.addLayer(to_vectors);
 
-  var modify_to = new ol.interaction.Modify({
-    source: to_source,
-    pixelTolerance: 20,
-    style: drawingStyle
+  var modify_to = new ol.interaction.Translate({
+    layers: [to_vectors],
+    hitTolerance: 4
   });
   to_map.addInteraction(modify_to);
 
-  var modify_to_array = [];
-  modify_to.on("modifyend", function(e){
-    if (modify_to_array[0]){
-      saveDraggedMarker(modify_to_array[0], "to")
-    }
-    var features = to_source.getFeatures()
-    for (var i=0;i< features.length;i++){
-      features[i].un("change", modifyToChange)
-    }
-    modify_to_array = [];
+  modify_to.on("translateend", function(e){
+    saveDraggedMarker(e.features.getArray()[0], "to")
   })
-  modify_to.on("modifystart", function(e){
-    var features = to_source.getFeatures()
-    for (var i=0;i< features.length;i++){
-      features[i].on("change", modifyToChange)
-    }
-  })
-  function modifyToChange(evt){
-    if (modify_to_array.indexOf(evt.target) == -1){
-      modify_to_array.push(evt.target)
-    }
-  }
 
   var draw_to = new ol.interaction.Draw({
     source: active_to_source,
