@@ -533,7 +533,7 @@ function init() {
   });
   from_map.addLayer(active_from_vectors);
 
-  var from_source = new ol.source.Vector({   projection: 'EPSG:32663'   });
+  var from_source = new ol.source.Vector({   projection: 'EPSG:32663', features: new ol.Collection()   });
   from_vectors = new ol.layer.Vector({
     source: from_source,
     style:  active_style
@@ -602,7 +602,7 @@ function init() {
   });
   to_map.addLayer(active_to_vectors);
 
-  var to_source = new ol.source.Vector({ projection: 'EPSG:3857'  });
+  var to_source = new ol.source.Vector({ projection: 'EPSG:3857', features: new ol.Collection()  });
   to_vectors = new ol.layer.Vector({
     zIndex: 1001,
     source: to_source,
