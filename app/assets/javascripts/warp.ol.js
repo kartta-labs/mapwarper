@@ -368,9 +368,9 @@ function init() {
     })
     var warpedOpacity = 0.6;
     warped_layer.setOpacity(warpedOpacity);
-    var osmlayer;
+    var esrilayer;
     var blayers = [ 
-      new ol.layer.Tile({
+      esrilayer =  new ol.layer.Tile({
         visible: false,
         type: 'base',
         title: 'Esri World Imagery',
@@ -379,7 +379,7 @@ function init() {
           url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
         })
       }),
-      osmlayer = new ol.layer.Tile({ 
+      new ol.layer.Tile({ 
         title: 'OpenStreetMap',
         type: 'base',
         visible: false,
@@ -422,7 +422,6 @@ function init() {
     ];
 
     var layers = base_layers.concat(overlay_layers);
-    
     if (map_has_bounds != true) {
        map_bounds = [];
     }
@@ -431,9 +430,10 @@ function init() {
       target: 'to_map',
       view: new ol.View({
         minZoom: 2,
-        maxZoom: 20,
+        maxZoom: 21,
         zoom: 4,
-        resolutions: osmlayer.getSource().getTileGrid().getResolutions()
+        pixelRatio: 1,
+        resolutions: esrilayer.getSource().getTileGrid().getResolutions()
       })
     });
   }
