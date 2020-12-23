@@ -505,10 +505,10 @@ function init() {
 
   var drawingStyle = new ol.style.Style({
     image: new ol.style.Circle({
-      radius: 4,
+      radius: 1,
       fill: new ol.style.Fill({
         color: 'orange',
-        opacity: 0.4
+        opacity: 0.3
       })
     })
   });
