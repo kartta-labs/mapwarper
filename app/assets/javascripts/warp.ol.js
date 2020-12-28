@@ -368,9 +368,9 @@ function init() {
     })
     var warpedOpacity = 0.6;
     warped_layer.setOpacity(warpedOpacity);
-    var osmlayer;
+    var esrilayer;
     var blayers = [ 
-      new ol.layer.Tile({
+      esrilayer =  new ol.layer.Tile({
         visible: false,
         type: 'base',
         title: 'Esri World Imagery',
@@ -379,7 +379,7 @@ function init() {
           url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
         })
       }),
-      osmlayer = new ol.layer.Tile({ 
+      new ol.layer.Tile({ 
         title: 'OpenStreetMap',
         type: 'base',
         visible: false,
@@ -422,7 +422,6 @@ function init() {
     ];
 
     var layers = base_layers.concat(overlay_layers);
-    
     if (map_has_bounds != true) {
        map_bounds = [];
     }
@@ -431,9 +430,10 @@ function init() {
       target: 'to_map',
       view: new ol.View({
         minZoom: 2,
-        maxZoom: 20,
+        maxZoom: 21,
         zoom: 4,
-        resolutions: osmlayer.getSource().getTileGrid().getResolutions()
+        pixelRatio: 1,
+        resolutions: esrilayer.getSource().getTileGrid().getResolutions()
       })
     });
   }
@@ -505,10 +505,10 @@ function init() {
 
   var drawingStyle = new ol.style.Style({
     image: new ol.style.Circle({
-      radius: 4,
+      radius: 1,
       fill: new ol.style.Fill({
         color: 'orange',
-        opacity: 0.4
+        opacity: 0.3
       })
     })
   });
@@ -533,43 +533,22 @@ function init() {
   });
   from_map.addLayer(active_from_vectors);
 
-  var from_source = new ol.source.Vector({   projection: 'EPSG:32663'   });
+  var from_source = new ol.source.Vector({   projection: 'EPSG:32663', features: new ol.Collection()   });
   from_vectors = new ol.layer.Vector({
     source: from_source,
     style:  active_style
   });
   from_map.addLayer(from_vectors);
 
-  var modify_from = new ol.interaction.Modify({
-    source: from_source,
-    pixelTolerance: 20,
-    style: drawingStyle
+  var modify_from = new ol.interaction.Translate({
+    layers: [from_vectors],
+    hitTolerance: 4,
   });
   from_map.addInteraction(modify_from);
 
-  var modify_from_array = [];
-  modify_from.on("modifyend", function(e){
-    if (modify_from_array[0]){
-      saveDraggedMarker(modify_from_array[0], "from")
-    }
-    var features = from_source.getFeatures()
-    for (var i=0;i< features.length;i++){
-      features[i].un("change", modifychange)
-    }
-    modify_from_array = [];
+  modify_from.on("translateend", function(e){
+    saveDraggedMarker(e.features.getArray()[0], "from")
   })
-  modify_from.on("modifystart", function(e){
-    var features = from_source.getFeatures()
-    for (var i=0;i< features.length;i++){
-      features[i].on("change", modifychange)
-    }
-  })
-  function modifychange(evt){
-    if (modify_from_array.indexOf(evt.target) == -1){
-      modify_from_array.push(evt.target)
-    }
-  }
-
 
   var draw_from = new ol.interaction.Draw({
     source: active_from_source,
@@ -602,7 +581,7 @@ function init() {
   });
   to_map.addLayer(active_to_vectors);
 
-  var to_source = new ol.source.Vector({ projection: 'EPSG:3857'  });
+  var to_source = new ol.source.Vector({ projection: 'EPSG:3857', features: new ol.Collection()  });
   to_vectors = new ol.layer.Vector({
     zIndex: 1001,
     source: to_source,
@@ -610,35 +589,15 @@ function init() {
   });
   to_map.addLayer(to_vectors);
 
-  var modify_to = new ol.interaction.Modify({
-    source: to_source,
-    pixelTolerance: 20,
-    style: drawingStyle
+  var modify_to = new ol.interaction.Translate({
+    layers: [to_vectors],
+    hitTolerance: 4
   });
   to_map.addInteraction(modify_to);
 
-  var modify_to_array = [];
-  modify_to.on("modifyend", function(e){
-    if (modify_to_array[0]){
-      saveDraggedMarker(modify_to_array[0], "to")
-    }
-    var features = to_source.getFeatures()
-    for (var i=0;i< features.length;i++){
-      features[i].un("change", modifyToChange)
-    }
-    modify_to_array = [];
+  modify_to.on("translateend", function(e){
+    saveDraggedMarker(e.features.getArray()[0], "to")
   })
-  modify_to.on("modifystart", function(e){
-    var features = to_source.getFeatures()
-    for (var i=0;i< features.length;i++){
-      features[i].on("change", modifyToChange)
-    }
-  })
-  function modifyToChange(evt){
-    if (modify_to_array.indexOf(evt.target) == -1){
-      modify_to_array.push(evt.target)
-    }
-  }
 
   var draw_to = new ol.interaction.Draw({
     source: active_to_source,
