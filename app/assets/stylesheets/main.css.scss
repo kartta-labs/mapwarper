@@ -2248,6 +2248,7 @@ div.layer-maps-col {
 .date-control {
   top: 0.7em;
   right: 0.5em;
+  height: 2.2em;
   input {
     width: 75px;
   }
@@ -2260,3 +2261,18 @@ div.layer-maps-col {
   top: 3em;
 }
 
+#to_map  .layer-switcher {
+  top: 7em !important;
+}
+
+#date-slider, #warped-date-slider {
+  top: 0.7em;
+  height: 8px;
+}
+
+#date-slider .ui-slider-handle, #warped-date-slider  .ui-slider-handle{
+  height: 15px;
+  width: 10px;
+  top: -4px;
+  margin-left: -4px;
+}
