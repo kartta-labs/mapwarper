@@ -513,7 +513,7 @@ function init() {
       jQuery("#"+dateControl.slider_div_id).slider({
         value: date,
         range: "min",
-        max: 2020,
+        max: 2000,
         min: 1500,
         step: 5,
         slide: function(e, ui) {
