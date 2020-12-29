@@ -244,9 +244,11 @@ AddLayerControl.prototype.constructor = AddLayerControl;
 
 var DateControl = function(opts) {
   var options = opts || {};
+  this.slider_div_id = "date-slider"
+  this.input_id = "date-input"
 
   var input = document.createElement("input");
-  input.id = "date-input";
+  input.id = this.input_id;
   input.pattern="^[12][0-9]{3}$"
   input.value = options.date || "1850";
   input.title = I18n["warp"]["enter_year"];
@@ -263,10 +265,21 @@ var DateControl = function(opts) {
     var num = Number(e.target.value);
     if (num){
      applyFilter(String(num));
+     updateSlider(num);
     }
   }
 
   input.addEventListener("input", handleChangeDate, false);
+
+  if (options.slider){
+    this.slider = true;
+    var sliderdiv = document.createElement("div");
+    sliderdiv.id = this.slider_div_id;
+    var handle =  document.createElement("div");
+    handle.className = "ui-slider-handle";
+    sliderdiv.appendChild(handle);
+    element.appendChild(sliderdiv);
+  }
 
   ol.control.Control.call(this, {
     element: element,
@@ -311,6 +324,18 @@ function applyFilter(date_str){
       olms.setFilter(to_map, layersToFilter[i],  newFilters)
 
     }
+}
+
+function updateSlider(num){
+  var controls = to_map.getControls().getArray();
+  var datecontrol;
+  for (var a=0; a<controls.length;a++){
+    if (controls[a].constructor.name == "DateControl"){
+      datecontrol = controls[a];
+      break;
+    }
+  }
+  jQuery("#"+datecontrol.slider_div_id).slider("value", num)
 }
 
 
@@ -446,7 +471,8 @@ function init() {
     date = depicts_year
   }
   var dateControl = new DateControl({
-    date: date
+    date: date,
+    slider: true
   });
 
   antique_layer = antique_layer_path;
@@ -481,6 +507,23 @@ function init() {
        date = depicts_year
      }
      applyFilter(date);
+
+    //set up slider
+    if (dateControl.slider) {
+      jQuery("#"+dateControl.slider_div_id).slider({
+        value: date,
+        range: "min",
+        max: 2020,
+        min: 1500,
+        step: 5,
+        slide: function(e, ui) {
+          applyFilter(String(ui.value));
+          jQuery("#"+dateControl.input_id).val(ui.value)
+        }
+      });
+    }
+
+
    });
 
 
