@@ -20,8 +20,11 @@ function get_map_layer(layerid){
 
 var DateControl = function(opts) {
   var options = opts || {};
+  this.slider_div_id = "warped-date-slider"
+  this.input_id = "warped-date-input"
 
   var input = document.createElement("input");
+  input.id = this.input_id;
   input.pattern="^[12][0-9]{3}$"
   input.value = options.date || "1850";
   input.title = I18n["warp"]["enter_year"];
@@ -37,11 +40,21 @@ var DateControl = function(opts) {
   var handleChangeDate = function(e){
     var num = Number(e.target.value);
     if (num){
-     applyFilter(String(num));
+     applyFilterWarped(String(num));
     }
   }
 
   input.addEventListener("input", handleChangeDate, false);
+
+  if (options.slider){
+    this.slider = true;
+    var sliderdiv = document.createElement("div");
+    sliderdiv.id = this.slider_div_id;
+    var handle =  document.createElement("div");
+    handle.className = "ui-slider-handle";
+    sliderdiv.appendChild(handle);
+    element.appendChild(sliderdiv);
+  }
 
   ol.control.Control.call(this, {
     element: element,
@@ -169,7 +182,8 @@ function warpedinit() {
     date = depicts_year
   }
   var dateControl = new DateControl({
-    date: date
+    date: date,
+    slider: true
   });
   
 
@@ -227,13 +241,28 @@ function warpedinit() {
     if (depicts_year.length > 0 && Number(depicts_year)){
       date = depicts_year
     }
-    applyFilter(date);
+    applyFilterWarped(date);
+    //set up slider
+    if (dateControl.slider) {
+      jQuery("#"+dateControl.slider_div_id).slider({
+        value: date,
+        range: "min",
+        max: 2020,
+        min: 1500,
+        step: 5,
+        slide: function(e, ui) {
+          applyFilterWarped(String(ui.value));
+          jQuery("#"+dateControl.input_id).val(ui.value)
+        }
+      });
+    }
+    
   });
 
   
 } //warpedinit
 
-function applyFilter(date_str){
+function applyFilterWarped(date_str){
   var startProp  = 'start_date';
   var endProp    = 'end_date';
    
