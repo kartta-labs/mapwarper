@@ -41,6 +41,7 @@ var DateControl = function(opts) {
     var num = Number(e.target.value);
     if (num){
      applyFilterWarped(String(num));
+     updateSliderWarped(num);
     }
   }
 
@@ -283,6 +284,18 @@ function applyFilterWarped(date_str){
       olms.setFilter(warpedmap, layersToFilter[i],  newFilters)
 
     }
+}
+
+function updateSliderWarped(num){
+  var controls = warpedmap.getControls().getArray();
+  var datecontrol;
+  for (var a=0; a<controls.length;a++){
+    if (controls[a].constructor.name == "DateControl"){
+      datecontrol = controls[a];
+      break;
+    }
+  }
+  jQuery("#"+datecontrol.slider_div_id).slider("value", num)
 }
 
 

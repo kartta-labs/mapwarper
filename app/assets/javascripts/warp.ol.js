@@ -265,6 +265,7 @@ var DateControl = function(opts) {
     var num = Number(e.target.value);
     if (num){
      applyFilter(String(num));
+     updateSlider(num);
     }
   }
 
@@ -323,6 +324,18 @@ function applyFilter(date_str){
       olms.setFilter(to_map, layersToFilter[i],  newFilters)
 
     }
+}
+
+function updateSlider(num){
+  var controls = to_map.getControls().getArray();
+  var datecontrol;
+  for (var a=0; a<controls.length;a++){
+    if (controls[a].constructor.name == "DateControl"){
+      datecontrol = controls[a];
+      break;
+    }
+  }
+  jQuery("#"+datecontrol.slider_div_id).slider("value", num)
 }
 
 
