@@ -68,23 +68,37 @@
       "source-layer":"minor_roads",
       "type":"line",
       "minzoom":16,
-      "maxzoom":20
+      "maxzoom":21
     },
     {
-      "paint":{"line-color":"#444444", "line-width": ["interpolate", ["linear"], ["zoom"], 14, ["match", ["get", "type"],["motorway","trunk","primary","secondary" ], 6, 4], 19, ["match", ["get", "type"],["motorway","trunk","primary","secondary" ], 29, 24] ] },
+      "paint":{"line-color":"#444444",  "line-width": ["interpolate", ["linear"], ["zoom"], 14, ["match", ["get", "type"],["motorway","trunk","primary","secondary" ], 6, 4], 18, ["match", ["get", "type"],["motorway","trunk","primary","secondary" ], 29, 24], 20, ["match", ["get", "type"],["motorway","trunk","primary","secondary" ], 56, 56] ] },
       "source-layer":"roads",
       "id":"roads_casing_major",
       "source":"antique",
       "type":"line",
-      "minzoom":14,
+      "minzoom":13,
       "maxzoom":21
     },
-
+    
     {
-      "paint":{"line-color":"#e8e0c8",
-      "line-width": ["interpolate", ["linear"], ["zoom"], 14, ["match", ["get", "type"],["motorway","trunk","primary","secondary" ], 5, 2], 19, ["match", ["get", "type"],["motorway","trunk","primary","secondary" ], 28, 23] ]},
+      "paint":{"line-color":"#e8e0c8", 
+      "line-width": ["interpolate", ["linear"], ["zoom"], 14, ["match", ["get", "type"],["motorway","trunk","primary","secondary" ], 5, 2], 18, ["match", ["get", "type"],["motorway","trunk","primary","secondary" ], 28, 23], 20, ["match", ["get", "type"],["motorway","trunk","primary","secondary" ], 55, 55] ] },
       "id":"roads_centre_major",
       "ref":"roads_casing_major"
+    },
+    {
+      "paint":{"line-color":"#444444", "line-width":{"stops":[[8,2],[14,6]]}},
+      "id":"roads_casing_major2",
+      "source":"antique",
+      "source-layer":"major_roads",
+      "type":"line",
+      "minzoom":8,
+      "maxzoom":13
+    },
+    {
+      "paint":{"line-color":"#e8e0c8","line-width":{"stops":[[8,1],[14,5]]}},
+      "id":"roads_centre_major2",
+      "ref":"roads_casing_major2"
     },
 
     {
