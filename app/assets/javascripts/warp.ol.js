@@ -300,7 +300,9 @@ var layersToFilter = [
   "road_names",
   "minor_roads",
   "roads_casing_major",
-  "roads_centre_major"
+  "roads_centre_major",
+  "roads_casing_major2",
+  "roads_centre_major2"
 ];
 
 function applyFilter(date_str){
